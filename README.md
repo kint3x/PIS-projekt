@@ -11,4 +11,4 @@ mvn libery:devc
 ```
 
 # Building the application
-**TODO:** Create a docker-compose file for building the application.
+**TODO:** Create a docker-compose file for building the application (both api and app).
