@@ -3,21 +3,22 @@ networks:
   default:
     name: pis-development
 services:
-  # nodejs-server:
-  #   build:
-  #     context: ./api
-  #   ports:
-  #     - "3080:3080"
-  #   container_name: node-api
-  #   volumes:
-  #      - ./api:/usr/src/app/api
-  #      - /usr/src/app/api/node_modules
+  api:
+    build:
+      context: ./api
+    ports:
+      - 9080:9080
+      - 7777:7777
+      - 9443:9443
+    container_name: pis-api
+    volumes:
+       - ./api:/api
   app:
     build:
       context: ./app
     ports:
-      - "3000:3000"
-    container_name: pis_app
+      - 3000:3000
+    container_name: pis-app
     stdin_open: true
     volumes:
        - ./app:/app

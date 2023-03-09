@@ -3,12 +3,13 @@ Project for the [PIS](https://www.fit.vut.cz/study/course/PIS/.cs) course at BUT
 
 # Developing the application
 
-To work on the API, first make sure `docker` service is running. Then enter the following commands to create and start a container running in development mode, so that it listens for any changes in the application source code or configuration and rebuilds the image and restarts the container as necessary.
+First make sure `docker` service is running. Then enter the following command to create and start the containers in development mode.
 
 ```
-cd api/
-mvn libery:devc
+docker compose up
 ```
+
+Check if everything works properly by going to http://localhost:3000 (UI) and http://localhost:9080/crm/api/ping (API).
 
 # Building the application
 **TODO:** Create a docker-compose file for building the application (both api and app).
