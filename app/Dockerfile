@@ -1,9 +1,11 @@
 FROM node:lts-hydrogen
 
-WORKDIR /app
+WORKDIR /opt/app
 
-COPY package.json .
+COPY package*.json .
 
 RUN npm install
+
+COPY . .
 
 CMD ["npm", "start"]

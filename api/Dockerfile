@@ -9,7 +9,7 @@ RUN curl https://dlcdn.apache.org/maven/maven-3/3.9.0/binaries/apache-maven-3.9.
     ln -s apache-maven-3.9.0 maven; \
     rm -f apache-maven-3.9.0-bin.tar.gz
 
-WORKDIR /api
+WORKDIR /opt/api
 
 ENV M2_HOME=/opt/maven
 ENV PATH=${M2_HOME}/bin:${PATH}

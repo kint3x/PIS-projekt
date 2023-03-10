@@ -12,7 +12,7 @@ services:
       - 9443:9443
     container_name: pis-api
     volumes:
-       - ./api:/api
+       - ./api:/opt/api
   app:
     build:
       context: ./app
@@ -21,4 +21,5 @@ services:
     container_name: pis-app
     stdin_open: true
     volumes:
-       - ./app:/app
+       - /opt/app/node_modules
+       - ./app:/opt/app
