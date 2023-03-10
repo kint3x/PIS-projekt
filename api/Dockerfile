@@ -1,19 +1,17 @@
 FROM icr.io/appcafe/open-liberty:full-java11-openj9-ubi
 
-ARG VERSION=1.0
-ARG REVISION=SNAPSHOT
-
-LABEL \
-  org.opencontainers.image.url="local" \
-  org.opencontainers.image.source="https://github.com/kint3x/PIS-projekt/api" \
-  org.opencontainers.image.version="$VERSION" \
-  org.opencontainers.image.revision="$REVISION" \
-  name="pis_api" \
-  version="$VERSION-$REVISION" \
-  summary="Container running the REST API interface for the project in PIS course at VUT FIT."
-
 USER root
 
-COPY --chown=1001:0 src/main/liberty/config/server.xml /config/
-COPY --chown=1001:0 target/*.war /config/apps/
-USER 1001
+WORKDIR /opt/
+
+RUN curl https://dlcdn.apache.org/maven/maven-3/3.9.0/binaries/apache-maven-3.9.0-bin.tar.gz -o apache-maven-3.9.0-bin.tar.gz; \
+    tar xzf apache-maven-3.9.0-bin.tar.gz; \
+    ln -s apache-maven-3.9.0 maven; \
+    rm -f apache-maven-3.9.0-bin.tar.gz
+
+WORKDIR /api
+
+ENV M2_HOME=/opt/maven
+ENV PATH=${M2_HOME}/bin:${PATH}
+
+CMD ["mvn", "liberty:dev"]
