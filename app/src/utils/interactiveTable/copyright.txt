@@ -1,0 +1,2 @@
+this component is taken from https://github.com/Marujah/React-interactive-Table
+i needed to modify it a bit, so i couldnt import it as a module
