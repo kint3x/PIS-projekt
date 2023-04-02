@@ -9,7 +9,7 @@
     text-align: center;
   }
 
-.client-detail {
+.meeting-detail {
   display: flexbox;
   align-items: flex-start;
   margin-right: 50px;
@@ -21,7 +21,7 @@
   padding: 15px;
 }
 
-.client-detail-container {
+.meeting-detail-container {
     display: inline-flex;
     flex-direction: row; 
     align-items: flex-start;

@@ -18,7 +18,7 @@ export default class InteractiveTableHeaderCell extends Component {
                     if (index > -1) {
                         downClassName.slice(index, 1);
                     }
-                    console.log('upClassName', upClassName);
+                    // console.log('upClassName', upClassName);
                 } else {
                     downClassName.push('active');
                     const index = upClassName.indexOf('active');

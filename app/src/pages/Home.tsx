@@ -2,10 +2,11 @@ import React from 'react'
 import LoginForm from "./LoginForm"
 
 
-const Home = () => {
+const Home = ({method}:any) => {
+
     return (
       <div className="home">
-        <LoginForm/>
+        <LoginForm method={method}/>
       </div>
     );
   }

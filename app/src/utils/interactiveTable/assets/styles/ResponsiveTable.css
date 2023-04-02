@@ -43,8 +43,8 @@
     display: -moz-box;
     display: -ms-flexbox;
     display: flex;
-    align-items: start;
-    justify-content: start;
+    align-items: flex-start;
+    justify-content: flex-start;
     flex-wrap: wrap;
     padding: 33px 30px;
 }

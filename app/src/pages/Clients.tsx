@@ -5,7 +5,7 @@ import {useHistory} from "react-router-dom";
 
 const Clients = () => {
 
-    const { data,  setData, isPending, error} = useFetch('http://localhost:8000/clients')
+    const { data, isPending, error} = useFetch('http://localhost:8000/clients')
 
     const history = useHistory();
 

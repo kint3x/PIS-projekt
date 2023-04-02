@@ -32,3 +32,17 @@
   margin: 40px auto;
   padding: 20px;
 }
+
+.username-label {
+  margin: 20px auto;
+  color:yellowgreen;
+  background-color: white;
+  padding-left: 10px;
+}
+
+.logged-user-label {
+  margin: 20px auto;
+  color:black;
+  background-color: white;
+  padding-left: 20px;
+}
