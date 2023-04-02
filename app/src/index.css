@@ -7,6 +7,7 @@
   color: #333;
 }
 .navbar {
+  width: 70%;
   padding: 20px;
   display: flex;
   align-items: center;

@@ -1,5 +1,6 @@
 import React from "react"
 import './LoginForm.css';
+import "bootstrap/dist/css/bootstrap.min.css"
 import { useHistory } from "react-router-dom";
 
 function LoginForm(){

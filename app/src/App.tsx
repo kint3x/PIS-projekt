@@ -4,7 +4,6 @@ import Home from './pages/Home';
 import Clients from './pages/Clients';
 import Meetings from './pages/Clients';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import "bootstrap/dist/css/bootstrap.min.css"
 import Navbar from './Navbar';
 import ClientDetail from './pages/ClientDetail';
 
@@ -13,7 +12,7 @@ function App() {
     <Router>
       <div className="App">
       <Navbar/>
-        <div className="content">
+        <div className="app-content">
           <Switch>
             <Route exact path="/">
               <Home />

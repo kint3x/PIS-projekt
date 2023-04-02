@@ -43,8 +43,8 @@
     display: -moz-box;
     display: -ms-flexbox;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: start;
+    justify-content: start;
     flex-wrap: wrap;
     padding: 33px 30px;
 }
@@ -52,7 +52,7 @@
 .search-container {
     flex-basis: 100%;
     margin-bottom: 20px;
-    max-width: 100%;
+    max-width: 400px;
 }
 
 .table-search {

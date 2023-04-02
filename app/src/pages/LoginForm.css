@@ -3,8 +3,9 @@
     display: center;
     justify-content: center;
     align-items: center;
-    width: 100vw;
-    height: 100vh;
+    align-self: center;
+    justify-self: center;
+    margin-top: 35px;
   }
   
   .Auth-form {
