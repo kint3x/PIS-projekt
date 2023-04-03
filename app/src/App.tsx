@@ -1,24 +1,26 @@
 import React from 'react';
 import './App.css';
-import Home from './pages/Home';
-import Clients from './pages/Clients';
-import Meetings from './pages/Meetings';
+import Home from './pages/Home/Home';
+import Clients from './pages/Clients/Clients';
+import Meetings from './pages/Meetings/Meetings';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './Navbar';
-import ClientDetail from './pages/ClientDetail';
-import MeetingDetail from './pages/MeetingDetail';
+import ClientDetail from './pages/ClientDetail/ClientDetail';
+import MeetingDetail from './pages/MeetingDetail/MeetingDetail';
 import CustomersDepartment from './pages/CustomersDepartment';
 import Manager from './pages/Manager';
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 
 function App() {
 
-  const[name,setName]= useState(null);
-  const[userType, setUserType] = useState(null);
+  const[name,setName]= useState(localStorage.getItem("name") || "");
+  const[userType, setUserType] = useState(localStorage.getItem("userType") || "");
 
   const handleLogin = (userName:any, userType:any) => {
       setName(userName)
-      setUserType(userName)
+      setUserType(userType)
+      console.log(userName)
+      console.log(userType)
   } 
 
   return (
@@ -30,16 +32,16 @@ function App() {
             <Route exact path="/">
               <Home method={handleLogin}/>
             </Route>
-            <Route exact path="/worker/clients">
+            <Route exact path="/clients">
               <Clients />
             </Route>
-            <Route exact path="/worker/meetings">
+            <Route exact path="/meetings">
               <Meetings />
             </Route>
-            <Route exact path="/worker/clients/:id">
+            <Route exact path="/clients/:id">
               <ClientDetail />
             </Route>
-            <Route exact path="/worker/meetings/:id">
+            <Route exact path="/meetings/:id">
               <MeetingDetail />
             </Route>
             <Route exact path="/manager">

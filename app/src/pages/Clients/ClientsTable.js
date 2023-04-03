@@ -1,7 +1,7 @@
 import React from 'react'
-import InteractiveTable from '../utils/interactiveTable/InteractiveTable';
+import InteractiveTable from '../../utils/interactiveTable/InteractiveTable';
  
-export default class MeetingsTable extends React.Component {
+export default class ClientsTable extends React.Component {
     
     render () {
         const data = this.props.data
@@ -14,35 +14,23 @@ export default class MeetingsTable extends React.Component {
                 dataList={data} 
                 columns={
                     {
-                        client: {
-                            alias: 'Client',
+                        name: {
+                            alias: 'Name',
                             sortable: true,
                             active: true,
-                            sortingKey: 'client'
+                            sortingKey: 'name'
                         },
-                        employee: {
-                            alias: 'Employee',
+                        email: {
+                            alias: 'Email',
                             sortable: true,
                             active: false,
-                            sortingKey: 'employee'
+                            sortingKey: 'email'
                         },
-                        subject: {
-                            alias: 'Subject',
+                        phone: {
+                            alias: 'Phone',
                             sortable: true,
                             active: false,
-                            sortingKey: 'subject'
-                        },
-                        dateStart: {
-                            alias: 'End',
-                            sortable: true,
-                            active: false,
-                            sortingKey: 'dateStart'
-                        },
-                        dateEnd: {
-                            alias: 'End',
-                            sortable: true,
-                            active: false,
-                            sortingKey: 'dateEnd'
+                            sortingKey: 'phone'
                         },
                     }
                 }

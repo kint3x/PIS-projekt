@@ -1,5 +1,5 @@
 import { useParams} from "react-router-dom";
-import useFetch from "../utils/useFetch";
+import useFetch from "../../utils/useFetch";
 import React from 'react'
 import './ClientDetail.css';
 import {useState, useEffect} from 'react'

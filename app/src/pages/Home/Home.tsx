@@ -4,6 +4,8 @@ import LoginForm from "./LoginForm"
 
 const Home = ({method}:any) => {
 
+  localStorage.clear()
+
     return (
       <div className="home">
         <LoginForm method={method}/>

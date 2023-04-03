@@ -1,6 +1,6 @@
 import React from 'react'
 import MeetingsTable from "./MeetingsTable";
-import useFetch from "../utils/useFetch";
+import useFetch from "../../utils/useFetch";
 import {useHistory} from "react-router-dom";
 
 const Meetings = () => {
@@ -10,7 +10,7 @@ const Meetings = () => {
   const history = useHistory();
 
   const handleClick = (id:any) => {
-    history.push(`/worker/meetings/${id}`);
+    history.push(`/meetings/${id}`);
   }
 
   return (

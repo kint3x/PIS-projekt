@@ -1,7 +1,7 @@
 import React from 'react'
-import InteractiveTable from '../utils/interactiveTable/InteractiveTable';
+import InteractiveTable from '../../utils/interactiveTable/InteractiveTable';
  
-export default class ClientsTable extends React.Component {
+export default class MeetingsTable extends React.Component {
     
     render () {
         const data = this.props.data
@@ -14,23 +14,35 @@ export default class ClientsTable extends React.Component {
                 dataList={data} 
                 columns={
                     {
-                        name: {
-                            alias: 'Name',
+                        client: {
+                            alias: 'Client',
                             sortable: true,
                             active: true,
-                            sortingKey: 'name'
+                            sortingKey: 'client'
                         },
-                        email: {
-                            alias: 'Email',
+                        employee: {
+                            alias: 'Employee',
                             sortable: true,
                             active: false,
-                            sortingKey: 'email'
+                            sortingKey: 'employee'
                         },
-                        phone: {
-                            alias: 'Phone',
+                        subject: {
+                            alias: 'Subject',
                             sortable: true,
                             active: false,
-                            sortingKey: 'phone'
+                            sortingKey: 'subject'
+                        },
+                        dateStart: {
+                            alias: 'End',
+                            sortable: true,
+                            active: false,
+                            sortingKey: 'dateStart'
+                        },
+                        dateEnd: {
+                            alias: 'End',
+                            sortable: true,
+                            active: false,
+                            sortingKey: 'dateEnd'
                         },
                     }
                 }

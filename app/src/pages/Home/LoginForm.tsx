@@ -2,7 +2,7 @@ import React from "react"
 import './LoginForm.css';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { useHistory } from "react-router-dom";
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const LoginForm = ({method}:any) => {
 
@@ -13,16 +13,22 @@ const LoginForm = ({method}:any) => {
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (username === "worker" || username === ""){
-      history.push("/worker/clients")
-      method("worker","worker")
+        localStorage.setItem("name", "worker");
+        localStorage.setItem("userType", "worker")
+        method("worker","worker")
+        history.push("/clients")
     }
     else if (username === "manager") {
-      history.push("/manager")
-      method("manager","manager")
+        localStorage.setItem("name", "manager");
+        localStorage.setItem("userType", "manager")
+        method("manager","manager")
+        history.push("/manager")
     }
     else if (username === "customer-department") {
-      history.push("/customer-department")
-      method("customer-department","customer-department")
+        localStorage.setItem("name", "customer-department");
+        localStorage.setItem("userType", "customer-department")
+        method("customer-department","customer-department")
+        history.push("/customer-department")
     }
     else{
       setErrorMessage("Invalid username or password!")

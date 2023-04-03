@@ -1,6 +1,6 @@
 import React from 'react'
 import ClientsTable from "./ClientsTable";
-import useFetch from "../utils/useFetch";
+import useFetch from "../../utils/useFetch";
 import {useHistory} from "react-router-dom";
 
 const Clients = () => {
@@ -10,7 +10,7 @@ const Clients = () => {
     const history = useHistory();
 
     const handleClick = (id:any) => {
-      history.push(`/worker/clients/${id}`);
+      history.push(`/clients/${id}`);
     }
 
     return (
