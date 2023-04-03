@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Navbar = ({name, userType}:any) => {
+const Navbar = ({name, userType}:{name:string,userType:string}) => {
 
   let menu;
 

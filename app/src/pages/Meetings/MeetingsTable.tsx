@@ -1,12 +1,8 @@
 import React from 'react'
 import InteractiveTable from '../../utils/interactiveTable/InteractiveTable';
  
-export default class MeetingsTable extends React.Component {
+const MeetingsTable = ({data, method}:any) => {
     
-    render () {
-        const data = this.props.data
-        const method = this.props.method
-        
         return (
             <InteractiveTable
                 onItemClick = {method} 
@@ -61,5 +57,6 @@ export default class MeetingsTable extends React.Component {
                 }}
             />
         )
-    }
 }
+
+export default MeetingsTable;

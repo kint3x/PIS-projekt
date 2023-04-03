@@ -1,11 +1,7 @@
 import React from 'react'
 import InteractiveTable from '../../utils/interactiveTable/InteractiveTable';
  
-export default class ClientsTable extends React.Component {
-    
-    render () {
-        const data = this.props.data
-        const method = this.props.method
+const ClientsTable = ({data,method}:any) => {
         
         return (
             <InteractiveTable
@@ -49,5 +45,6 @@ export default class ClientsTable extends React.Component {
                 }}
             />
         )
-    }
 }
+
+export default ClientsTable;

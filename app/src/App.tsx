@@ -16,7 +16,7 @@ function App() {
   const[name,setName]= useState(localStorage.getItem("name") || "");
   const[userType, setUserType] = useState(localStorage.getItem("userType") || "");
 
-  const handleLogin = (userName:any, userType:any) => {
+  const handleLogin = (userName:string, userType:string) => {
       setName(userName)
       setUserType(userType)
       console.log(userName)
