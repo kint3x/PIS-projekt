@@ -19,15 +19,22 @@ const Navbar = ({name, userType}:{name:string,userType:string}) => {
   {
     menu =(
       <div className="links">
+        <a href="/clients">Clients</a>
+        <a href="/employees">Employees</a>
         <a href="/" onClick={() => localStorage.clear()}>Logout</a>
+        <label className="logged-user-label">Logged user: </label>
+        <label className="username-label">{name}</label>
       </div>
     )
   }
-  else if (userType === "customers-department")
+  else if (userType === "customer-department")
   {
     menu =(
       <div className="links">
+        <a href="/clients">Clients</a>
         <a href="/" onClick={() => localStorage.clear()}>Logout</a>
+        <label className="logged-user-label">Logged user: </label>
+        <label className="username-label">{name}</label>
       </div>
     )
   }

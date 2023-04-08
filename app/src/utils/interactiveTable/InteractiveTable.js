@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import InteractiveTableHeaderCell from './InteractiveTableHeaderCell';
 import InteractiveTablePagination from './InteractiveTablePagination';
+import "bootstrap/dist/css/bootstrap.min.css"
 
 export default class InteractiveTable extends Component {
     constructor(props) {
@@ -25,7 +26,25 @@ export default class InteractiveTable extends Component {
         this.handleCurrentPage = this.handleCurrentPage.bind(this);
         this.changeCurrentPage = this.changeCurrentPage.bind(this);
         this.showAllRows = this.showAllRows.bind(this);
-        this.showDetail = props.onItemClick
+
+        this.buttonsNum = props.buttonsNum
+        this.button1 = false
+        this.button2 = false
+        if (parseInt(this.buttonsNum,10) >= 1)
+            this.button1 = true
+
+        if (parseInt(this.buttonsNum,10) >= 2)
+            this.button2 = true
+
+
+        this.button1name = props.button1name
+        this.button1OnClick = props.button1OnClick
+        this.button2name = props.button2name 
+        this.button2OnClick = props.button2OnClick
+
+        this.addEnabled = props.addEnabled
+        this.addOnClick = props.addOnClick
+
     }
 
     asc(a, b) {
@@ -172,6 +191,7 @@ export default class InteractiveTable extends Component {
                     {searching && searching.active && searching.searchKeys.length &&
                 <div className="search-container">
                     <input className="table-search" type="search" placeholder={searching.searchPlaceholder} onChange={this.filterSearch}/>
+                    {this.addEnabled && <button className="btn btn-primary add-new-button" onChange={this.addOnClick()}>Add</button>}
                 </div>
                     }
                     <div className="wrap-table100">
@@ -198,7 +218,11 @@ export default class InteractiveTable extends Component {
                                             {Object.keys(columns).map(function (filter, indx) {
                                                 return <div className="cell" style={cellWidth} key={indx}>{item[filter]}</div>;
                                             })}
-                                            <button className="detail-button" onClick={() => this.showDetail(item.id)}>Detail</button>
+                                            
+                                            <div className="buttons cell"> 
+                                                {this.button1 && <button className="btn btn-primary row-button" onClick={() => this.button1OnClick(item.id)}>{this.button1name}</button>}
+                                                {this.button2 && <button className="btn btn-primary row-button" onClick={() => this.button2OnClick(item.id)}>{this.button2name}</button>}
+                                            </div>
                                         </div>
                                     );
                                 })
@@ -213,7 +237,11 @@ export default class InteractiveTable extends Component {
                                         {Object.keys(columns).map(function (filter, idx) {
                                         return <div className="cell" key={idx}>{item[filter]}</div>
                                         })}
-                                        <button className="detail-button" onClick={() => this.showDetail(item.id)}>Detail</button>
+
+                                        <div className="buttons cell"> 
+                                            {this.button1 && <button className="btn btn-primary row-button" onClick={() => this.button1OnClick(item.id)}>{this.button1name}</button>}
+                                            {this.button2 && <button className="btn btn-primary row-button" onClick={() => this.button2OnClick(item.id)}>{this.button2name}</button>}
+                                        </div>
                                     </div>
                                 )
                             })}

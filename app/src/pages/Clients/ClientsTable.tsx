@@ -1,11 +1,19 @@
 import React from 'react'
 import InteractiveTable from '../../utils/interactiveTable/InteractiveTable';
  
-const ClientsTable = ({data,method}:any) => {
-        
+const ClientsTable = ({data,buttonsNum,button1name,button1OnClick,button2name,button2OnClick,addEnabled,addOnClick}:any) => {
         return (
             <InteractiveTable
-                onItemClick = {method} 
+                buttonsNum = {buttonsNum}
+                button1name = {button1name} 
+                button1OnClick = {button1OnClick} 
+                button2name = {button2name} 
+                button2OnClick = {button2OnClick}
+                
+                addEnabled = {addEnabled}
+                addOnClick = {addOnClick}
+
+
                 tableStyles={'responsive'}
                 dataList={data} 
                 columns={

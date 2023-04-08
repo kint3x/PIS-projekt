@@ -22,13 +22,13 @@ const LoginForm = ({method}:any) => {
         localStorage.setItem("name", "manager");
         localStorage.setItem("userType", "manager")
         method("manager","manager")
-        history.push("/manager")
+        history.push("/clients")
     }
     else if (username === "customer-department") {
         localStorage.setItem("name", "customer-department");
         localStorage.setItem("userType", "customer-department")
         method("customer-department","customer-department")
-        history.push("/customer-department")
+        history.push("/clients")
     }
     else{
       setErrorMessage("Invalid username or password!")

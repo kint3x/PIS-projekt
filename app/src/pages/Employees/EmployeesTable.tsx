@@ -1,8 +1,7 @@
 import React from 'react'
 import InteractiveTable from '../../utils/interactiveTable/InteractiveTable';
  
-const MeetingsTable = ({data,buttonsNum,button1name,button1OnClick,button2name,button2OnClick,addEnabled,addOnClick}:any) => {
-    
+const EmployeesTable = ({data,buttonsNum,button1name,button1OnClick,button2name,button2OnClick,addEnabled,addOnClick}:any) => {
         return (
             <InteractiveTable
                 buttonsNum = {buttonsNum}
@@ -12,42 +11,42 @@ const MeetingsTable = ({data,buttonsNum,button1name,button1OnClick,button2name,b
                 button2OnClick = {button2OnClick}
                 
                 addEnabled = {addEnabled}
-                addOnClick = {addOnClick}    
+                addOnClick = {addOnClick}
 
 
                 tableStyles={'responsive'}
                 dataList={data} 
                 columns={
                     {
-                        client: {
-                            alias: 'Client',
+                        name: {
+                            alias: 'Name',
                             sortable: true,
                             active: true,
-                            sortingKey: 'client'
+                            sortingKey: 'name'
                         },
-                        employee: {
-                            alias: 'Employee',
+                        username: {
+                            alias: 'Username',
+                            sortable: true,
+                            active: true,
+                            sortingKey: 'username'
+                        },
+                        type: {
+                            alias: 'Type',
+                            sortable: true,
+                            active: true,
+                            sortingKey: 'type'
+                        },
+                        email: {
+                            alias: 'Email',
                             sortable: true,
                             active: false,
-                            sortingKey: 'employee'
+                            sortingKey: 'email'
                         },
-                        subject: {
-                            alias: 'Subject',
+                        phone: {
+                            alias: 'Phone',
                             sortable: true,
                             active: false,
-                            sortingKey: 'subject'
-                        },
-                        dateStart: {
-                            alias: 'Start',
-                            sortable: true,
-                            active: false,
-                            sortingKey: 'dateStart'
-                        },
-                        dateEnd: {
-                            alias: 'End',
-                            sortable: true,
-                            active: false,
-                            sortingKey: 'dateEnd'
+                            sortingKey: 'phone'
                         },
                     }
                 }
@@ -68,4 +67,4 @@ const MeetingsTable = ({data,buttonsNum,button1name,button1OnClick,button2name,b
         )
 }
 
-export default MeetingsTable;
+export default EmployeesTable;

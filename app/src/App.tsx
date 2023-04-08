@@ -3,12 +3,12 @@ import './App.css';
 import Home from './pages/Home/Home';
 import Clients from './pages/Clients/Clients';
 import Meetings from './pages/Meetings/Meetings';
+import Employees from './pages/Employees/Employees';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './Navbar';
-import ClientDetail from './pages/ClientDetail/ClientDetail';
-import MeetingDetail from './pages/MeetingDetail/MeetingDetail';
-import CustomersDepartment from './pages/CustomersDepartment';
-import Manager from './pages/Manager';
+import ClientDetail from './pages/Clients/ClientDetail';
+import MeetingDetail from './pages/Meetings/MeetingDetail';
+import EmployeeDetail from './pages/Employees/EmployeeDetail';
 import {useState, useEffect} from 'react'
 
 function App() {
@@ -19,8 +19,6 @@ function App() {
   const handleLogin = (userName:string, userType:string) => {
       setName(userName)
       setUserType(userType)
-      console.log(userName)
-      console.log(userType)
   } 
 
   return (
@@ -44,11 +42,11 @@ function App() {
             <Route exact path="/meetings/:id">
               <MeetingDetail />
             </Route>
-            <Route exact path="/manager">
-              <Manager />
+            <Route exact path="/employees">
+              <Employees />
             </Route>
-            <Route exact path="/customers-department">
-              <CustomersDepartment />
+            <Route exact path="/employees/:id">
+              <EmployeeDetail />
             </Route>
           </Switch>
         </div>
