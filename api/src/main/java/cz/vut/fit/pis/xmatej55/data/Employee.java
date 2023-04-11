@@ -4,12 +4,14 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,11 +29,15 @@ public class Employee extends Person {
         EmployeeType_2,
         EmployeeType_3
     }
+
     @Enumerated(EnumType.STRING)
     private EmployeeType type;
-    
-    @ManyToMany(mappedBy = "employees", fetch=FetchType.EAGER)
+
+    @ManyToMany(mappedBy = "employees", fetch = FetchType.EAGER)
     private Set<Meeting> meetings = new HashSet<Meeting>();
+
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Meeting> created_meetings = new HashSet<Meeting>();
 
     public Employee(String phone, String address, Date dob, String name, String surname, String email, String image,
             String username, String password, EmployeeType type, Set<Meeting> meetings) {
