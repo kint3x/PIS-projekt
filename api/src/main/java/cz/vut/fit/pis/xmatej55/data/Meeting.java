@@ -39,19 +39,20 @@ public class Meeting {
 
     @Column(name = "notes")
     private String notes;
-    
-    @ManyToMany(fetch=FetchType.EAGER)
-    @JoinTable(
-        name = "MeetingEmployee",
-        joinColumns = {@JoinColumn(name="meeting_id")},
-        inverseJoinColumns = {@JoinColumn(name="employee_id")}
-    )
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "MeetingEmployee", joinColumns = { @JoinColumn(name = "meeting_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "employee_id") })
     private Set<Employee> employees = new HashSet<Employee>();
-    
-    @ManyToOne(fetch=FetchType.EAGER)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client client;
-    
-    public Meeting() {}
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Employee author;
+
+    public Meeting() {
+    }
 
     public Meeting(String subject, Date start, Date end, String notes) {
         this.subject = subject;
@@ -114,5 +115,13 @@ public class Meeting {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public Employee getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Employee author) {
+        this.author = author;
     }
 }

@@ -3,48 +3,44 @@ package cz.vut.fit.pis.xmatej55.data;
 import java.sql.Date;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.MappedSuperclass;
 
-@Entity
-@Table(name = "Person")
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
 public class Person {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(name = "phone")
     private String phone;
-    
+
     @Column(name = "address")
     private String address;
-    
+
     @Temporal(TemporalType.DATE)
     @Column(name = "dob")
     private Date dob;
-    
+
     @Column(name = "name")
     private String name;
-    
+
     @Column(name = "surname")
     private String surname;
-    
+
     @Column(name = "email")
     private String email;
-    
+
     @Column(name = "image")
     private String image;
 
-    public Person() {}
+    public Person() {
+    }
 
     public Person(String phone, String address, Date dob, String name, String surname, String email, String image) {
         this.phone = phone;
