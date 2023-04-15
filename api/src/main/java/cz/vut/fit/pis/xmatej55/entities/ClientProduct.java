@@ -1,4 +1,4 @@
-package cz.vut.fit.pis.xmatej55.data;
+package cz.vut.fit.pis.xmatej55.entities;
 
 import java.sql.Date;
 
@@ -21,11 +21,11 @@ public class ClientProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @Column(name = "client")
     private Client client;
 
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @Column(name = "product")
     private Product product;
 
@@ -34,10 +34,11 @@ public class ClientProduct {
         ProductState_2,
         ProductState_3
     }
+
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private ProductState state;
-    
+
     @Column(name = "date")
     private Date date;
 

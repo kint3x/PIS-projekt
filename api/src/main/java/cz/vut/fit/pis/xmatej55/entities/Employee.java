@@ -1,4 +1,4 @@
-package cz.vut.fit.pis.xmatej55.data;
+package cz.vut.fit.pis.xmatej55.entities;
 
 import java.sql.Date;
 import java.util.HashSet;
