@@ -1,4 +1,4 @@
-package cz.vut.fit.pis.xmatej55.data;
+package cz.vut.fit.pis.xmatej55.entities;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,11 +26,11 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(name = "name")
     private String name;
-    
-    @OneToMany(mappedBy="product", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<ClientProduct> clientProducts = new HashSet<ClientProduct>();
 
     public Long getId() {

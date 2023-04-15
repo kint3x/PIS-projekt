@@ -1,4 +1,4 @@
-package cz.vut.fit.pis.xmatej55.data;
+package cz.vut.fit.pis.xmatej55.entities;
 
 import java.sql.Date;
 import java.util.HashSet;
@@ -14,14 +14,14 @@ import jakarta.persistence.OneToMany;
 @Entity
 @Table(name = "Client")
 public class Client extends Person {
-    
+
     @Column(name = "notes")
     private String notes;
-    
-    @OneToMany(mappedBy="client", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<ClientProduct> clientProducts = new HashSet<ClientProduct>();
 
-    @OneToMany(mappedBy="client", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Meeting> meetings = new HashSet<Meeting>();
 
     public Client(String phone, String address, Date dob, String name, String surname, String email, String image,
