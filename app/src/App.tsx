@@ -11,6 +11,12 @@ import MeetingDetail from './pages/Meetings/MeetingDetail';
 import EmployeeDetail from './pages/Employees/EmployeeDetail';
 import {useState, useEffect} from 'react'
 
+import { InputText } from "primereact/InputText";
+
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";  
+
 function App() {
 
   const[name,setName]= useState(localStorage.getItem("name") || "");

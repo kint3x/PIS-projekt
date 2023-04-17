@@ -4,10 +4,10 @@ USER root
 
 WORKDIR /opt/
 
-RUN curl https://dlcdn.apache.org/maven/maven-3/3.9.0/binaries/apache-maven-3.9.0-bin.tar.gz -o apache-maven-3.9.0-bin.tar.gz; \
-    tar xzf apache-maven-3.9.0-bin.tar.gz; \
-    ln -s apache-maven-3.9.0 maven; \
-    rm -f apache-maven-3.9.0-bin.tar.gz
+RUN curl https://dlcdn.apache.org/maven/maven-3/3.9.1/binaries/apache-maven-3.9.1-bin.tar.gz -o apache-maven-3.9.1-bin.tar.gz; \
+    tar xzf apache-maven-3.9.1-bin.tar.gz; \
+    ln -s apache-maven-3.9.1 maven; \
+    rm -f apache-maven-3.9.1-bin.tar.gz
 
 WORKDIR /opt/api
 
