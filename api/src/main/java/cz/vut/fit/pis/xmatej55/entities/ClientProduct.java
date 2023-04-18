@@ -10,11 +10,13 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-@Table(name = "ClientProduct")
+@Table(name = "ClientProduct", uniqueConstraints = @UniqueConstraint(columnNames = { "client", "product" }))
 public class ClientProduct {
 
     @Id
@@ -22,11 +24,11 @@ public class ClientProduct {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @Column(name = "client")
+    @JoinColumn(name = "client")
     private Client client;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @Column(name = "product")
+    @JoinColumn(name = "product")
     private Product product;
 
     public enum ProductState {
@@ -87,6 +89,16 @@ public class ClientProduct {
     }
 
     public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setStateWithDate(ProductState state) {
+        this.state = state;
+        this.date = new Date(System.currentTimeMillis());
+    }
+
+    public void setStateWithDate(ProductState state, Date date) {
+        this.state = state;
         this.date = date;
     }
 }
