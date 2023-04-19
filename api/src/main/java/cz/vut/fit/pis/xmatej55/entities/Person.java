@@ -2,6 +2,7 @@ package cz.vut.fit.pis.xmatej55.entities;
 
 import java.util.Date;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +26,7 @@ public class Person {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "dob")
+    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")  
     private Date dob;
 
     @Column(name = "name")

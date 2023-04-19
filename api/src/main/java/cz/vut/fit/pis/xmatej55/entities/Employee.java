@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 @Table(name = "Employee")
 public class Employee extends Person {
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")

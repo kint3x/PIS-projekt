@@ -14,4 +14,6 @@ WORKDIR /opt/api
 ENV M2_HOME=/opt/maven
 ENV PATH=${M2_HOME}/bin:${PATH}
 
+COPY . .
+
 CMD ["mvn", "liberty:dev"]
