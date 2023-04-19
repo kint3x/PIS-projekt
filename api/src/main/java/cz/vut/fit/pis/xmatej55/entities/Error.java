@@ -1,14 +1,14 @@
 package cz.vut.fit.pis.xmatej55.entities;
 
-public class ErrorDTO {
+public class Error {
 
   private String message;
 
-  public ErrorDTO() {
+  public Error() {
 
   }
 
-  public ErrorDTO(String message) {
+  public Error(String message) {
     this.message = message;
   }
 

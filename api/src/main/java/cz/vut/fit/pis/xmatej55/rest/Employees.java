@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import cz.vut.fit.pis.xmatej55.entities.Employee;
-import cz.vut.fit.pis.xmatej55.entities.ErrorDTO;
-import cz.vut.fit.pis.xmatej55.services.EmployeeService;
+import cz.vut.fit.pis.xmatej55.entities.Error;
+import cz.vut.fit.pis.xmatej55.managers.EmployeeManager;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.PathParam;
@@ -22,7 +22,7 @@ import jakarta.ws.rs.core.Response.Status;
 @RequestScoped
 public class Employees {
     @Inject
-    private EmployeeService employeeService;
+    private EmployeeManager employeeManager;
 
     @Context
     private UriInfo context;
@@ -34,17 +34,17 @@ public class Employees {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Employee> getEmployees() {
-        return employeeService.findAll();
+        return employeeManager.findAll();
     }
 
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEmployeeById(@PathParam("id") Long id) {
-        Optional<Employee> e = employeeService.findById(id);
+        Optional<Employee> e = employeeManager.findById(id);
         
         if (!e.isPresent()) {
-            return Response.status(Status.NOT_FOUND).entity(new ErrorDTO(String.format("Person with id '%d' not found.", id))).build();
+            return Response.status(Status.NOT_FOUND).entity(new Error(String.format("Person with id '%d' not found.", id))).build();
         }
         
         return Response.ok(e.get()).build();
