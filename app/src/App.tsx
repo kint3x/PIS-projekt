@@ -1,25 +1,57 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Home from './pages/Home/Home';
+import Clients from './pages/Clients/Clients';
+import Meetings from './pages/Meetings/Meetings';
+import Employees from './pages/Employees/Employees';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Navbar from './Navbar';
+import ClientDetail from './pages/Clients/ClientDetail';
+import MeetingDetail from './pages/Meetings/MeetingDetail';
+import EmployeeDetail from './pages/Employees/EmployeeDetail';
+import {useState, useEffect} from 'react'
 
 function App() {
+
+  const[name,setName]= useState(localStorage.getItem("name") || "");
+  const[userType, setUserType] = useState(localStorage.getItem("userType") || "");
+
+  const handleLogin = (userName:string, userType:string) => {
+      setName(userName)
+      setUserType(userType)
+  } 
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+      <Navbar name= {name} userType={userType}/>
+        <div className="app-content">
+          <Switch>
+            <Route exact path="/">
+              <Home method={handleLogin}/>
+            </Route>
+            <Route exact path="/clients">
+              <Clients />
+            </Route>
+            <Route exact path="/meetings">
+              <Meetings />
+            </Route>
+            <Route exact path="/clients/:id">
+              <ClientDetail />
+            </Route>
+            <Route exact path="/meetings/:id">
+              <MeetingDetail />
+            </Route>
+            <Route exact path="/employees">
+              <Employees />
+            </Route>
+            <Route exact path="/employees/:id">
+              <EmployeeDetail />
+            </Route>
+          </Switch>
+        </div>
+      </div>
+    </Router>
   );
 }
 
