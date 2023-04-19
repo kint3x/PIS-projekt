@@ -2,6 +2,7 @@ package cz.vut.fit.pis.xmatej55.entities;
 
 import java.util.Date;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,6 +14,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -38,23 +41,18 @@ public class ClientProduct {
     }
 
     @Enumerated(EnumType.STRING)
+    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")
     @Column(name = "state")
     private ProductState state;
 
     @Column(name = "date")
+    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")
+    @Temporal(TemporalType.DATE)
     private Date date;
 
     public ClientProduct() {
         
     }
-
-    // public ClientProduct(Long id, Client client, Product product, ProductState state, Date date) {
-    //     this.id = id;
-    //     this.client = client;
-    //     this.product = product;
-    //     this.state = state;
-    //     this.date = date;
-    // }
 
     public Long getId() {
         return id;

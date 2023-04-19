@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 @Table(name = "Employee")
 public class Employee extends Person {
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")
@@ -41,22 +41,6 @@ public class Employee extends Person {
     public Employee() {
         
     }
-
-    // public Employee(String phone, String address, Date dob, String name, String surname, String email, String image,
-    //         String username, String password, EmployeeType type, Set<Meeting> meetings) {
-    //     super(phone, address, dob, name, surname, email, image);
-    //     this.username = username;
-    //     this.password = password;
-    //     this.type = type;
-    //     this.meetings = meetings;
-    // }
-
-    // public Employee(String username, String password, EmployeeType type, Set<Meeting> meetings) {
-    //     this.username = username;
-    //     this.password = password;
-    //     this.type = type;
-    //     this.meetings = meetings;
-    // }
 
     public String getUsername() {
         return username;

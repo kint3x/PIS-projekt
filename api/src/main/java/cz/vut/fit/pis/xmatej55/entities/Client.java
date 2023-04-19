@@ -27,20 +27,6 @@ public class Client extends Person {
         
     }
 
-    // public Client(String phone, String address, Date dob, String name, String surname, String email, String image,
-    //         String notes, Set<ClientProduct> clientProducts, Set<Meeting> meetings) {
-    //     super(phone, address, dob, name, surname, email, image);
-    //     this.notes = notes;
-    //     this.clientProducts = clientProducts;
-    //     this.meetings = meetings;
-    // }
-
-    // public Client(String notes, Set<ClientProduct> clientProducts, Set<Meeting> meetings) {
-    //     this.notes = notes;
-    //     this.clientProducts = clientProducts;
-    //     this.meetings = meetings;
-    // }
-
     public String getNotes() {
         return notes;
     }

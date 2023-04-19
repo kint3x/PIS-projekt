@@ -6,8 +6,11 @@ import cz.vut.fit.pis.xmatej55.managers.EmployeeManager;
 import java.util.List;
 import java.util.Optional;
 
+import javax.swing.text.html.Option;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
@@ -43,6 +46,20 @@ public class EmployeeManager {
 
     public Optional<Employee> findById(Long id) {
         return Optional.ofNullable(em.find(Employee.class, id));
+    }
+
+    public Optional<Employee> findByUsername(String username) {
+        TypedQuery<Employee> query = em.createQuery(
+                "SELECT e FROM Employee e WHERE e.username = :username",
+                Employee.class);
+        query.setParameter("username", username);
+        
+        try {
+            Employee e = query.getSingleResult();
+            return Optional.ofNullable(e);
+        } catch (NoResultException exception) {
+            return Optional.ofNullable(null);
+        }
     }
 
     public List<Employee> findAll() {

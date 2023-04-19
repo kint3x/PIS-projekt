@@ -2,21 +2,41 @@ package cz.vut.fit.pis.xmatej55.services;
 
 import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.Meeting;
+import cz.vut.fit.pis.xmatej55.managers.ClientManager;
+import cz.vut.fit.pis.xmatej55.services.ClientService;
 import java.util.List;
 import java.util.Optional;
 
-public interface ClientService {
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
-    Client update(Client client);
+@ApplicationScoped
+public class ClientService {
 
-    Client saveClient(Client client);
+    @Inject
+    private ClientManager clientManager;
 
-    void deleteClient(Client client);
+    public Client update(Client client) {
+        return clientManager.update(client);
+    }
 
-    Optional<Client> findById(Long id);
+    public Client saveClient(Client client) {
+        return clientManager.saveClient(client);
+    }
 
-    List<Client> findAll();
+    public void deleteClient(Client client) {
+        clientManager.deleteClient(client);
+    }
 
-    List<Meeting> findAllMeetingsByClient(Client client);
+    public Optional<Client> findById(Long id) {
+        return clientManager.findById(id);
+    }
 
+    public List<Client> findAll() {
+        return clientManager.findAll();
+    }
+
+    public List<Meeting> findAllMeetingsByClient(Client client) {
+        return clientManager.findAllMeetingsByClient(client);
+    }
 }

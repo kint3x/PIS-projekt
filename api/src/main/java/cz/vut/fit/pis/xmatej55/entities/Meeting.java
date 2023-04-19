@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,10 +31,12 @@ public class Meeting {
     private String subject;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")
     @Column(name = "meeting_start")
     private Date start;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")
     @Column(name = "meeting_end")
     private Date end;
 
@@ -54,13 +57,6 @@ public class Meeting {
     public Meeting() {
     
     }
-
-    // public Meeting(String subject, Date start, Date end, String notes) {
-    //     this.subject = subject;
-    //     this.start = start;
-    //     this.end = end;
-    //     this.notes = notes;
-    // }
 
     public Long getId() {
         return id;
