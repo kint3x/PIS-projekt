@@ -1,6 +1,5 @@
 package cz.vut.fit.pis.xmatej55.entities;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
