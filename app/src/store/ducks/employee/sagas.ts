@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import api from '@services/api';
+import api from '../../../services/api';
 import { loadSuccess, loadFailure } from './actions';
 import { AnyAction } from 'redux';
 import { EmployeeTypes } from './types';
