@@ -1,5 +1,7 @@
 FROM node:lts-hydrogen
 
+ENV NODE_OPTIONS="--openssl-legacy-provider"
+
 WORKDIR /opt/app
 
 COPY package*.json .
