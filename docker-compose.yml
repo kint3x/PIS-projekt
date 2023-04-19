@@ -22,5 +22,5 @@ services:
     container_name: pis-app
     stdin_open: true
     volumes:
-       - /opt/app/node_modules
        - ./app:/opt/app
+       - /opt/app/node_modules
