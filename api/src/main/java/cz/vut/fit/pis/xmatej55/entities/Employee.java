@@ -1,6 +1,6 @@
 package cz.vut.fit.pis.xmatej55.entities;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,21 +39,25 @@ public class Employee extends Person {
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Meeting> created_meetings = new HashSet<Meeting>();
 
-    public Employee(String phone, String address, Date dob, String name, String surname, String email, String image,
-            String username, String password, EmployeeType type, Set<Meeting> meetings) {
-        super(phone, address, dob, name, surname, email, image);
-        this.username = username;
-        this.password = password;
-        this.type = type;
-        this.meetings = meetings;
+    public Employee() {
+        
     }
 
-    public Employee(String username, String password, EmployeeType type, Set<Meeting> meetings) {
-        this.username = username;
-        this.password = password;
-        this.type = type;
-        this.meetings = meetings;
-    }
+    // public Employee(String phone, String address, Date dob, String name, String surname, String email, String image,
+    //         String username, String password, EmployeeType type, Set<Meeting> meetings) {
+    //     super(phone, address, dob, name, surname, email, image);
+    //     this.username = username;
+    //     this.password = password;
+    //     this.type = type;
+    //     this.meetings = meetings;
+    // }
+
+    // public Employee(String username, String password, EmployeeType type, Set<Meeting> meetings) {
+    //     this.username = username;
+    //     this.password = password;
+    //     this.type = type;
+    //     this.meetings = meetings;
+    // }
 
     public String getUsername() {
         return username;

@@ -1,6 +1,6 @@
 package cz.vut.fit.pis.xmatej55.entities;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,11 +30,11 @@ public class Meeting {
     private String subject;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start")
+    @Column(name = "meeting_start")
     private Date start;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "end")
+    @Column(name = "meeting_end")
     private Date end;
 
     @Column(name = "notes")
@@ -52,14 +52,15 @@ public class Meeting {
     private Employee author;
 
     public Meeting() {
+    
     }
 
-    public Meeting(String subject, Date start, Date end, String notes) {
-        this.subject = subject;
-        this.start = start;
-        this.end = end;
-        this.notes = notes;
-    }
+    // public Meeting(String subject, Date start, Date end, String notes) {
+    //     this.subject = subject;
+    //     this.start = start;
+    //     this.end = end;
+    //     this.notes = notes;
+    // }
 
     public Long getId() {
         return id;

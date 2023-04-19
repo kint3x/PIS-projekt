@@ -1,6 +1,6 @@
 package cz.vut.fit.pis.xmatej55.entities;
 
-import java.sql.Date;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,13 +44,17 @@ public class ClientProduct {
     @Column(name = "date")
     private Date date;
 
-    public ClientProduct(Long id, Client client, Product product, ProductState state, Date date) {
-        this.id = id;
-        this.client = client;
-        this.product = product;
-        this.state = state;
-        this.date = date;
+    public ClientProduct() {
+        
     }
+
+    // public ClientProduct(Long id, Client client, Product product, ProductState state, Date date) {
+    //     this.id = id;
+    //     this.client = client;
+    //     this.product = product;
+    //     this.state = state;
+    //     this.date = date;
+    // }
 
     public Long getId() {
         return id;

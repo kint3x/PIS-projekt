@@ -4,14 +4,21 @@ import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.managers.ProductManager;
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
+@ApplicationScoped
 public class ProductManagerImpl implements ProductManager {
 
     @PersistenceContext
     private EntityManager em;
+
+    public ProductManagerImpl() {
+
+    }
 
     @Override
     @Transactional

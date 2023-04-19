@@ -1,6 +1,6 @@
 package cz.vut.fit.pis.xmatej55.entities;
 
-import java.sql.Date;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -40,17 +40,18 @@ public class Person {
     private String image;
 
     public Person() {
+    
     }
 
-    public Person(String phone, String address, Date dob, String name, String surname, String email, String image) {
-        this.phone = phone;
-        this.address = address;
-        this.dob = dob;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.image = image;
-    }
+    // public Person(String phone, String address, Date dob, String name, String surname, String email, String image) {
+    //     this.phone = phone;
+    //     this.address = address;
+    //     this.dob = dob;
+    //     this.name = name;
+    //     this.surname = surname;
+    //     this.email = email;
+    //     this.image = image;
+    // }
 
     public Long getId() {
         return id;
