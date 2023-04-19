@@ -12,7 +12,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './Navbar';
 import ClientDetail from './pages/Clients/ClientDetail';
 import MeetingDetail from './pages/Meetings/MeetingDetail';
-import EmployeeDetail from './pages/Employees/EmployeeDetail';
 import {useState, useEffect} from 'react'
 
 function App() {
@@ -49,9 +48,7 @@ function App() {
             <Route exact path="/employees">
               <Employees />
             </Route>
-            <Route exact path="/employees/:id">
-              <EmployeeDetail />
-            </Route>
+            
           </Switch>
         </div>
       </div>
