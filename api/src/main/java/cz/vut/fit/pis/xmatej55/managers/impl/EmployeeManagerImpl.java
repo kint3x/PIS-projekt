@@ -5,15 +5,22 @@ import cz.vut.fit.pis.xmatej55.entities.Meeting;
 import cz.vut.fit.pis.xmatej55.managers.EmployeeManager;
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
+@ApplicationScoped
 public class EmployeeManagerImpl implements EmployeeManager {
 
     @PersistenceContext
     private EntityManager em;
+
+    public EmployeeManagerImpl() {
+        
+    }
 
     @Override
     @Transactional

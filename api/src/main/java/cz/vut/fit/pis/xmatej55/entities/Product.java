@@ -17,11 +17,15 @@ import jakarta.persistence.Table;
 @Table(name = "Product")
 public class Product {
 
-    public Product(Long id, String name, Set<ClientProduct> clientProducts) {
-        this.id = id;
-        this.name = name;
-        this.clientProducts = clientProducts;
+    public Product() {
+        
     }
+
+    // public Product(Long id, String name, Set<ClientProduct> clientProducts) {
+    //     this.id = id;
+    //     this.name = name;
+    //     this.clientProducts = clientProducts;
+    // }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

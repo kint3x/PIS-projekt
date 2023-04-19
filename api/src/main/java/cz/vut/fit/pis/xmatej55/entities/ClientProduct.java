@@ -1,6 +1,6 @@
 package cz.vut.fit.pis.xmatej55.entities;
 
-import java.sql.Date;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.ManyToOne;
 
@@ -22,11 +23,11 @@ public class ClientProduct {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @Column(name = "client")
+    @JoinColumn(name = "client")
     private Client client;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @Column(name = "product")
+    @JoinColumn(name = "product")
     private Product product;
 
     public enum ProductState {
@@ -42,13 +43,17 @@ public class ClientProduct {
     @Column(name = "date")
     private Date date;
 
-    public ClientProduct(Long id, Client client, Product product, ProductState state, Date date) {
-        this.id = id;
-        this.client = client;
-        this.product = product;
-        this.state = state;
-        this.date = date;
+    public ClientProduct() {
+        
     }
+
+    // public ClientProduct(Long id, Client client, Product product, ProductState state, Date date) {
+    //     this.id = id;
+    //     this.client = client;
+    //     this.product = product;
+    //     this.state = state;
+    //     this.date = date;
+    // }
 
     public Long getId() {
         return id;

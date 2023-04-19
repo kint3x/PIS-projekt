@@ -5,6 +5,7 @@ import cz.vut.fit.pis.xmatej55.entities.Meeting;
 import cz.vut.fit.pis.xmatej55.managers.ClientManager;
 import java.util.List;
 import java.util.Optional;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -14,6 +15,10 @@ import jakarta.persistence.TypedQuery;
 public class ClientManagerImpl implements ClientManager {
     @PersistenceContext
     private EntityManager em;
+
+    public ClientManagerImpl() {
+
+    }
 
     @Override
     public Client saveClient(Client client) {

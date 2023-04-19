@@ -1,6 +1,7 @@
 package cz.vut.fit.pis.xmatej55.managers;
 
 import cz.vut.fit.pis.xmatej55.entities.Product;
+
 import java.util.List;
 import java.util.Optional;
 
