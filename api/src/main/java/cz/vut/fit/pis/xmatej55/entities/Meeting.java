@@ -1,9 +1,10 @@
 package cz.vut.fit.pis.xmatej55.entities;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,11 +31,13 @@ public class Meeting {
     private String subject;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start")
+    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")
+    @Column(name = "meeting_start")
     private Date start;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "end")
+    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")
+    @Column(name = "meeting_end")
     private Date end;
 
     @Column(name = "notes")
@@ -52,13 +55,7 @@ public class Meeting {
     private Employee author;
 
     public Meeting() {
-    }
-
-    public Meeting(String subject, Date start, Date end, String notes) {
-        this.subject = subject;
-        this.start = start;
-        this.end = end;
-        this.notes = notes;
+    
     }
 
     public Long getId() {

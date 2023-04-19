@@ -1,19 +1,37 @@
 package cz.vut.fit.pis.xmatej55.services;
 
 import cz.vut.fit.pis.xmatej55.entities.Product;
+import cz.vut.fit.pis.xmatej55.managers.ProductManager;
+import cz.vut.fit.pis.xmatej55.services.ProductService;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductService {
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
-    Product create(Product product);
+@ApplicationScoped
+public class ProductService {
 
-    Product update(Product product);
+    @Inject
+    private ProductManager productManager;
 
-    void deleteById(Long id);
+    public Product create(Product product) {
+        return productManager.create(product);
+    }
 
-    Optional<Product> findById(Long id);
+    public Product update(Product product) {
+        return productManager.update(product);
+    }
 
-    List<Product> findAll();
+    public void deleteById(Long id) {
+        productManager.deleteById(id);
+    }
 
+    public Optional<Product> findById(Long id) {
+        return productManager.findById(id);
+    }
+
+    public List<Product> findAll() {
+        return productManager.findAll();
+    }
 }

@@ -2,21 +2,45 @@ package cz.vut.fit.pis.xmatej55.services;
 
 import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.entities.Meeting;
-
+import cz.vut.fit.pis.xmatej55.managers.EmployeeManager;
+import cz.vut.fit.pis.xmatej55.services.EmployeeService;
 import java.util.List;
 import java.util.Optional;
 
-public interface EmployeeService {
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
-    Employee create(Employee employee);
+@ApplicationScoped
+public class EmployeeService{
 
-    Employee update(Employee employee);
+    @Inject
+    private EmployeeManager employeeManager;
 
-    void deleteById(Long id);
+    public Employee create(Employee employee) {
+        return employeeManager.create(employee);
+    }
 
-    Optional<Employee> findById(Long id);
+    public Employee update(Employee employee) {
+        return employeeManager.update(employee);
+    }
 
-    List<Employee> findAll();
+    public void deleteById(Long id) {
+        employeeManager.deleteById(id);
+    }
 
-    public List<Meeting> findAllMeetingsByEmployee(Employee employee);
+    public Optional<Employee> findById(Long id) {
+        return employeeManager.findById(id);
+    }
+
+    public Optional<Employee> findByUsername(String username) {
+        return employeeManager.findByUsername(username);
+    }
+
+    public List<Employee> findAll() {
+        return employeeManager.findAll();
+    }
+
+    public List<Meeting> findAllMeetingsByEmployee(Employee employee) {
+        return employeeManager.findAllMeetingsByEmployee(employee);
+    }
 }
