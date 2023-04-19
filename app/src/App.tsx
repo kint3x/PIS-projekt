@@ -1,5 +1,9 @@
 import React from 'react';
 import './App.css';
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
+
 import Home from './pages/Home/Home';
 import Clients from './pages/Clients/Clients';
 import Meetings from './pages/Meetings/Meetings';
