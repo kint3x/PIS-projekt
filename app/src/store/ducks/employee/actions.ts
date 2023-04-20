@@ -3,7 +3,7 @@ import { EmployeeTypes, EmployeeModel } from './types';
 
 export const loadRequest = (
   id: number | 'all',
-) => action(EmployeeTypes.LOAD_REQUEST, id);
+) => action(EmployeeTypes.LOAD_REQUEST, { id });
 
 export const loadSuccess = (
   id: number,
