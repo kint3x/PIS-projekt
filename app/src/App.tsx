@@ -1,19 +1,21 @@
-import React from 'react';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+import Navbar from './Navbar';
 import Home from './pages/Home/Home';
 import Clients from './pages/Clients/Clients';
 import Meetings from './pages/Meetings/Meetings';
 import Employees from './pages/Employees/Employees';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Navbar from './Navbar';
 import ClientDetail from './pages/Clients/ClientDetail';
 import MeetingDetail from './pages/Meetings/MeetingDetail';
-import EmployeeDetail from './pages/Employees/EmployeeDetail';
-import {useState, useEffect} from 'react'
 
+import './App.css';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";  
+
+import store from "../src/store";
 
 function App() {
 
@@ -26,36 +28,36 @@ function App() {
   } 
 
   return (
-    <Router>
-      <div className="App">
-      <Navbar name= {name} userType={userType}/>
-        <div className="app-content">
-          <Switch>
-            <Route exact path="/">
-              <Home method={handleLogin}/>
-            </Route>
-            <Route exact path="/clients">
-              <Clients />
-            </Route>
-            <Route exact path="/meetings">
-              <Meetings />
-            </Route>
-            <Route exact path="/clients/:id">
-              <ClientDetail />
-            </Route>
-            <Route exact path="/meetings/:id">
-              <MeetingDetail />
-            </Route>
-            <Route exact path="/employees">
-              <Employees />
-            </Route>
-            <Route exact path="/employees/:id">
-              <EmployeeDetail />
-            </Route>
-          </Switch>
+    <Provider store={store}>
+      <Router>
+        <div className="App">
+        <Navbar name= {name} userType={userType}/>
+          <div className="app-content">
+            <Switch>
+              <Route exact path="/">
+                <Home method={handleLogin}/>
+              </Route>
+              <Route exact path="/clients">
+                <Clients />
+              </Route>
+              <Route exact path="/meetings">
+                <Meetings />
+              </Route>
+              <Route exact path="/clients/:id">
+                <ClientDetail />
+              </Route>
+              <Route exact path="/meetings/:id">
+                <MeetingDetail />
+              </Route>
+              <Route exact path="/employees">
+                <Employees />
+              </Route>
+              
+            </Switch>
+          </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </Provider>
   );
 }
 

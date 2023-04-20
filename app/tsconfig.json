@@ -19,11 +19,6 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "paths": {
-      "@services/*": [
-        "./src/services/*",
-      ]
-    }
   },
   "include": [
     "src"

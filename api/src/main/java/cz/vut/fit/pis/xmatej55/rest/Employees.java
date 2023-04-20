@@ -39,8 +39,10 @@ public class Employees {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Employee> getEmployees() {
-        return employeeService.findAll();
+    public Response getEmployees() {
+        return Response.ok(employeeService.findAll())
+            .header("Access-Control-Allow-Origin", "*")
+            .build();
     }
 
     @Path("/{id}")
@@ -51,10 +53,11 @@ public class Employees {
 
         if (!e.isPresent()) {
             return Response.status(Status.NOT_FOUND)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity(new Error(String.format("Person with id '%d' not found.", id))).build();
         }
         
-        return Response.ok(e.get()).build();
+        return Response.ok(e.get()).header("Access-Control-Allow-Origin", "*").build();
     }
 
     @POST
@@ -65,7 +68,12 @@ public class Employees {
 
         if (existing.isPresent()) {
             return Response.status(Status.CONFLICT)
-                    .entity(new Error(String.format("Person with username '%s' already exists.", employee.getUsername()))).build();
+                    .header("Access-Control-Allow-Origin", "*")
+                    .entity(
+                        new Error(
+                            String.format("Person with username '%s' already exists.", 
+                            employee.getUsername())))
+                    .build();
         }
 
         Employee savedEmployee = employeeService.create(employee);
@@ -81,11 +89,12 @@ public class Employees {
 
         if (!e.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Person with id '%d' not found.", id))).build();
+                .header("Access-Control-Allow-Origin", "*")
+                .entity(new Error(String.format("Person with id '%d' not found.", id))).build();
         }
 
         employeeService.deleteById(e.get().getId());
-        return Response.ok().build();
+        return Response.ok().header("Access-Control-Allow-Origin", "*").build();
     }
 
     @Path("/{id}")
@@ -97,9 +106,12 @@ public class Employees {
 
         if (!e.isPresent()) {
             return Response.status(Status.NOT_FOUND)
+                    .header("Access-Control-Allow-Origin", "*")
                     .entity(new Error(String.format("Person with id '%d' not found.", id))).build();
         }
 
-        return Response.ok(employeeService.update(newEmployee)).build();
+        return Response.ok(employeeService.update(newEmployee))
+            .header("Access-Control-Allow-Origin", "*")
+            .build();
     }
 }

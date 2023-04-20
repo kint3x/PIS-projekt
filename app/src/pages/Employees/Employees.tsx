@@ -1,32 +1,30 @@
 import React from 'react'
-import EmployeesTable from "./EmployeesTable";
-import useFetch from "../../utils/useFetch";
-import {useHistory} from "react-router-dom";
+
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+
+import { loadRequest as loadEmployees } from '../../store/ducks/employee/actions';
+import { AppState } from '../../store';
 
 const Employees = () => {
+    const dispatch = useDispatch();
 
-    const { data, isPending, error} = useFetch('http://localhost:8000/employees')
+    useEffect(() => {
+      dispatch(loadEmployees('all'));
+    }, [dispatch]);
 
-    const history = useHistory();
+    const employees = useSelector((state: AppState) => state.employee.data);
+    const loading = useSelector((state: AppState) => state.employee.loading);
+    const error = useSelector((state: AppState) => state.employee.error);
 
-    const showDetail = (id:any) => {
-      history.push(`/employees/${id}`);
-    }
+    console.log(employees);
 
-    const deleteItem = (id:any) => {
-      console.log("delete")
-    }
-
-    const addNewItem = () => {
-      console.log("add")
-    }
+    // TODO: Render employees
+    // TODO: Render loading screen if loading
+    // TODO: Don't display when error
 
     return (
-        <div>
-          { error && <div>{ error }</div> }
-          { isPending && <div>Loading...</div> }
-          { data && <EmployeesTable data={data} buttonsNum={"2"} button1name="Detail" button1OnClick={showDetail} button2name="Delete" button2OnClick={deleteItem} addEnabled={true} addOnClick={addNewItem}/>}
-        </div>
+      <h1>Employees</h1>
     );
   
 }

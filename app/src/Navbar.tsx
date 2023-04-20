@@ -1,52 +1,43 @@
 import React from 'react'
+import { Menubar } from 'primereact/menubar';
 
 const Navbar = ({name, userType}:{name:string,userType:string}) => {
 
   let menu;
 
-  if (userType === "worker"){
-    menu =(
-      <div className="links">
-        <a href="/clients">Clients</a>
-        <a href="/meetings">Meetings</a>
-        <a href="/" onClick={() => localStorage.clear()}>Logout</a>
-        <label className="logged-user-label">Logged user: </label>
-        <label className="username-label">{name}</label>
-      </div>
-    )
+  let items;
+  if(userType === "worker"){
+    
+    items = [
+      { 
+        label : "Clients",
+        url   : "/clients"
+      },
+      {
+        label : "Meetings",
+        url   : "/meetings",
+      }
+    ]
+
   }
-  else if (userType === "manager")
-  {
-    menu =(
-      <div className="links">
-        <a href="/clients">Clients</a>
-        <a href="/employees">Employees</a>
-        <a href="/" onClick={() => localStorage.clear()}>Logout</a>
-        <label className="logged-user-label">Logged user: </label>
-        <label className="username-label">{name}</label>
-      </div>
-    )
-  }
-  else if (userType === "customer-department")
-  {
-    menu =(
-      <div className="links">
-        <a href="/clients">Clients</a>
-        <a href="/" onClick={() => localStorage.clear()}>Logout</a>
-        <label className="logged-user-label">Logged user: </label>
-        <label className="username-label">{name}</label>
-      </div>
-    )
+  else if( userType === "manager"){
+    items = [
+      { 
+        label : "Clients",
+        url   : "/clients"
+      },
+      {
+        label : "Employees",
+        url   : "/employees",
+      }
+    ]
   }
   else{
-    menu = <div></div>
+    items = Array()
   }
 
   return (
-    <nav className="navbar">
-      <h1>PIS project</h1>
-      {menu}
-    </nav>
+    <Menubar model={items}/>
   );
 }
    
