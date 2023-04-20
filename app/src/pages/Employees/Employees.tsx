@@ -1,16 +1,27 @@
 import React from 'react'
 
-import store from '../../store';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import { loadRequest } from '../../store/ducks/employee/actions';
-
+import store from '../../store';
+i
 const Employees = () => {
+    const dispatch = useDispatch();
+   let r;
 
-    let test = loadRequest("all")
+    useEffect(() => {
+      r = dispatch(loadRequest("all"));
+    }, []);
 
-    console.log(test);
+
+
     return (
-        <h1>Employees</h1>
+      <Provider store={store}> // Set context
+      <h1>Employees F {JSON.stringify(r)}</h1>
+      </Provider>
     );
+      
+    
   
 }
    
