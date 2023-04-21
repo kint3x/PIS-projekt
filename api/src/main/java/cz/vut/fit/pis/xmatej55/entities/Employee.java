@@ -12,21 +12,25 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "Employee")
+@Table(
+    name = "Employee",
+    uniqueConstraints=
+        @UniqueConstraint(columnNames={"username"}))
 public class Employee extends Person {
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username")
     private String username;
 
     @Column(name = "password")
     private String password;
 
     public enum EmployeeType {
-        EmployeeType_1,
-        EmployeeType_2,
-        EmployeeType_3
+        Worker,
+        Manager,
+        Owner
     }
 
     @Enumerated(EnumType.STRING)
