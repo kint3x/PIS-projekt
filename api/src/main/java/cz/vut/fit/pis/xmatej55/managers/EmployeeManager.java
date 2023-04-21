@@ -6,8 +6,6 @@ import cz.vut.fit.pis.xmatej55.managers.EmployeeManager;
 import java.util.List;
 import java.util.Optional;
 
-import javax.swing.text.html.Option;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
