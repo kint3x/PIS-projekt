@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState} from 'react';
 
 import { loadRequest as loadEmployees } from '../../store/ducks/employee/actions';
+import { updateRequest as updateEmployee } from '../../store/ducks/employee/actions';
+import { removeRequest as removeEmployee } from '../../store/ducks/employee/actions';
 import { AppState } from '../../store';
 
 import { DataTable, DataTableValueArray , DataTableRowClickEvent } from 'primereact/datatable';
@@ -23,7 +25,7 @@ const Employees = () => {
 
     useEffect(() => {
       dispatch(loadEmployees('all'));
-    }, [dispatch]);
+    }, [dispatch]);   
 
     const employees = useSelector((state: AppState) => state.employee.data);
     const loading = useSelector((state: AppState) => state.employee.loading);
@@ -63,6 +65,8 @@ const Employees = () => {
         dialog_data.password = password_change;
       }
 
+      dispatch(updateEmployee(dialog_data.id, dialog_data));
+
       //call api: if response 200 close dialog
         setModalErr({visible:'hidden', msg: ''});
         setShowDialog(false);
@@ -74,6 +78,8 @@ const Employees = () => {
     function onUserDelete() : void{
         // Check if can delete
         // #TODO Call api to delete user
+        dispatch(removeEmployee(dialog_data.id));
+        setShowDialog(true);
     }
     
     if(!error){
