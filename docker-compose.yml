@@ -3,17 +3,17 @@ networks:
   default:
     name: pis-development
 services:
-  # api:
-  #   build:
-  #     context: ./api
-  #   ports:
-  #     - 9080:9080
-  #     - 7777:7777
-  #     - 9443:9443
-  #   container_name: pis-api
-  #   volumes:
-  #      - /opt/api/target/
-  #      - ./api:/opt/api
+  api:
+    build:
+      context: ./api
+    ports:
+      - 9080:9080
+      - 7777:7777
+      - 9443:9443
+    container_name: pis-api
+    volumes:
+       - /opt/api/target/
+       - ./api:/opt/api
   app:
     build:
       context: ./app
