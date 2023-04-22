@@ -73,7 +73,7 @@ public class Clients {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createEmployee(Client client) {
         Client savedClient = clientService.create(client);
-        final URI uri = UriBuilder.fromPath("/employees/{resourceServerId}").build(savedClient.getId());
+        final URI uri = UriBuilder.fromPath("/clients/{resourceServerId}").build(savedClient.getId());
 
         return Response.created(uri).entity(savedClient).build();
     }

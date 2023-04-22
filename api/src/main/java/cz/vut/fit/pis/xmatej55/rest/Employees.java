@@ -3,8 +3,8 @@ package cz.vut.fit.pis.xmatej55.rest;
 import java.net.URI;
 import java.util.Optional;
 
+import cz.vut.fit.pis.xmatej55.dto.Error;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
-import cz.vut.fit.pis.xmatej55.entities.Error;
 import cz.vut.fit.pis.xmatej55.services.EmployeeService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

@@ -1,4 +1,4 @@
-package cz.vut.fit.pis.xmatej55.entities;
+package cz.vut.fit.pis.xmatej55.dto;
 
 public class Error {
 
