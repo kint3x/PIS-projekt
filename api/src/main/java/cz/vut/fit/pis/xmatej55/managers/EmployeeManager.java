@@ -64,11 +64,11 @@ public class EmployeeManager {
         return em.createQuery("SELECT e FROM Employee e", Employee.class).getResultList();
     }
 
-    public List<Meeting> findAllMeetingsByEmployee(Employee client) {
+    public List<Meeting> findAllMeetingsByEmployee(Employee employee) {
         TypedQuery<Meeting> query = em.createQuery(
                 "SELECT m FROM Meeting m WHERE m.employee.id = :employeeId",
                 Meeting.class);
-        query.setParameter("employeeId", client.getId());
+        query.setParameter("employeeId", employee.getId());
         return query.getResultList();
     }
 }
