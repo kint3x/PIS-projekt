@@ -1,7 +1,6 @@
 package cz.vut.fit.pis.xmatej55.managers;
 
 import cz.vut.fit.pis.xmatej55.entities.Employee;
-import cz.vut.fit.pis.xmatej55.entities.Meeting;
 import cz.vut.fit.pis.xmatej55.managers.EmployeeManager;
 import java.util.List;
 import java.util.Optional;
@@ -62,13 +61,5 @@ public class EmployeeManager {
 
     public List<Employee> findAll() {
         return em.createQuery("SELECT e FROM Employee e", Employee.class).getResultList();
-    }
-
-    public List<Meeting> findAllMeetingsByEmployee(Employee employee) {
-        TypedQuery<Meeting> query = em.createQuery(
-                "SELECT m FROM Meeting m WHERE m.employee.id = :employeeId",
-                Meeting.class);
-        query.setParameter("employeeId", employee.getId());
-        return query.getResultList();
     }
 }
