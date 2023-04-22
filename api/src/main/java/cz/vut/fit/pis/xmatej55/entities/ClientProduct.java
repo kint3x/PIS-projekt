@@ -41,7 +41,6 @@ public class ClientProduct {
     }
 
     @Enumerated(EnumType.STRING)
-    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")
     @Column(name = "state")
     private ProductState state;
 

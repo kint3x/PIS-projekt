@@ -3,6 +3,7 @@ package cz.vut.fit.pis.xmatej55.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,9 +38,11 @@ public class Employee extends Person {
     private EmployeeType type;
 
     @ManyToMany(mappedBy = "employees", fetch = FetchType.EAGER)
+    @JsonbTransient
     private Set<Meeting> meetings = new HashSet<Meeting>();
 
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonbTransient
     private Set<Meeting> created_meetings = new HashSet<Meeting>();
 
     public Employee() {
