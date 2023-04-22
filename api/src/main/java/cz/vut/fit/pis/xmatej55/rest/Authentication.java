@@ -3,6 +3,7 @@ package cz.vut.fit.pis.xmatej55.rest;
 import java.util.Optional;
 
 import cz.vut.fit.pis.xmatej55.entities.Employee.EmployeeType;
+import cz.vut.fit.pis.xmatej55.jwt.Credentials;
 import cz.vut.fit.pis.xmatej55.jwt.JwtTokenGenerator;
 import cz.vut.fit.pis.xmatej55.services.AuthenticationService;
 import jakarta.ws.rs.Produces;
@@ -22,11 +23,13 @@ public class Authentication {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response authenticateUser(String username, String password) {
-        Optional<EmployeeType> employeeType = authenticationService.isValidUser(username, password);
+    public Response authenticateUser(Credentials credentials) {
+        Optional<EmployeeType> employeeType = authenticationService.isValidUser(credentials.getUsername(),
+                credentials.getPassword());
         if (employeeType.isPresent()) {
             try {
-                String token = JwtTokenGenerator.generateJWTString(username, employeeType.get());
+                String token = JwtTokenGenerator.generateJWTString(credentials.getUsername(),
+                        employeeType.get());
                 return Response.ok(token).build();
             } catch (Exception e) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
