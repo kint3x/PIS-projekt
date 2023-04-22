@@ -59,13 +59,7 @@ const Employees = () => {
     function onUserEdit() : void{
       //#TODO Call api to edit user with dialog_data
 
-      if(password_change !== "") {
-        const updatedData = { ...dialog_data, password: password_change };
-        setDialogData(updatedData);
-      }
-
-
-      dispatch(updateEmployee(dialog_data.id, dialog_data));
+      dispatch(updateEmployee(dialog_data.id, {...dialog_data, password: (password_change == "") ? dialog_data.password : password_change }));
 
       if(!error){
         setShowDialog(false);
