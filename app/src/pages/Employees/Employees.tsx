@@ -31,7 +31,6 @@ const Employees = () => {
     }, [dispatch,show_dialog]);   
 
     const employees = useSelector((state: AppState) => state.employee.data);
-    console.log(employees);
     const loading = useSelector((state: AppState) => state.employee.loading);
     const error = useSelector((state: AppState) => state.employee.error);
     const errMsg = useSelector((state: AppState) => state.employee.errMsg);
@@ -51,7 +50,6 @@ const Employees = () => {
     }
 
     function onClickHandle(event: DataTableRowClickEvent) : void{
-      console.log(event);
       setDialogData(event.data);
       setShowDialog(true);
     }
@@ -64,7 +62,6 @@ const Employees = () => {
       if(!error){
         setShowDialog(false);
         setModalErr({msg: "", visible: "hidden"})
-        dispatch(loadEmployees("all"));
       }
       else{
         setModalErr({msg: errMsg, visible: ""})
@@ -80,7 +77,6 @@ const Employees = () => {
         if(!error){
           setShowDialog(false);
           setModalErr({msg: "", visible: "hidden"})
-          dispatch(loadEmployees("all"));
         }
         else{
           setModalErr({msg: errMsg, visible: ""})
