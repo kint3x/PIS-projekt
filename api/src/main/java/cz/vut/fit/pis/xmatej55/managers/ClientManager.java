@@ -22,12 +22,9 @@ public class ClientManager {
     }
 
     @Transactional
-    public Client saveClient(Client client) {
-        if (client.getId() == null) {
-            em.persist(client);
-        } else {
-            client = em.merge(client);
-        }
+    public Client create(Client client) {
+        em.persist(client);
+
         return client;
     }
 
@@ -37,8 +34,11 @@ public class ClientManager {
     }
 
     @Transactional
-    public void deleteClient(Client client) {
-        em.remove(em.contains(client) ? client : em.merge(client));
+    public void deleteById(Long id) {
+        Client client = em.find(Client.class, id);
+        if (client != null) {
+            em.remove(client);
+        }
     }
 
     @Transactional
