@@ -15,6 +15,7 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
+import { RadioButton } from 'primereact/radiobutton';
 
 //#TODO if clicked, edit user 
 //#Add user
@@ -37,7 +38,7 @@ const Employees = () => {
 
     const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
     const [dialog_data, setDialogData] = useState<any>({});
-    
+
     var password_change = "";
 
     
@@ -63,14 +64,19 @@ const Employees = () => {
         setDialogData(updatedData);
       }
 
+
       dispatch(updateEmployee(dialog_data.id, dialog_data));
 
-      //call api: if response 200 close dialog
-        setModalErr({visible:'hidden', msg: ''});
+      if(!error){
         setShowDialog(false);
-     
-      //else if something wrong:
-        //setModalErr({visible:'', msg: 'Some error'});
+        setModalErr({msg: "", visible: "hidden"})
+        dispatch(loadEmployees("all"));
+      }
+      else{
+        setModalErr({msg: errMsg, visible: ""})
+        setShowDialog(true);
+      }
+
     }
 
     function onUserDelete() : void{
@@ -102,6 +108,7 @@ const Employees = () => {
         </DataTable>
 
         <Dialog header="Edit User" className="edit-user" visible={show_dialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
+          {JSON.stringify(dialog_data)}
           <div className={modal_err_msg.visible}>
             <Message severity="error" text={modal_err_msg.msg} />
           </div>
@@ -114,6 +121,22 @@ const Employees = () => {
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Password</span>
             <InputText placeholder="Password" onChange={(e) => {password_change = e.target.value}}/>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <div className="flex align-items-center">
+                <RadioButton inputId="Worker" name="type" value="Worker" onClick={(e)=>setDialogData({...dialog_data, type: "Worker"})} 
+                checked={dialog_data.type == "Worker"} />
+                <label htmlFor="Worker" className="ml-2">Worker</label>
+            </div>
+            <div className="flex align-items-center">
+                <RadioButton inputId="Manager" name="type" value="Manager"  checked={dialog_data.type == "Manager"} />
+                <label htmlFor="Manager" className="ml-2">Manager</label>
+            </div>
+            <div className="flex align-items-center">
+                <RadioButton inputId="Owner" name="type" value="Owner" checked={dialog_data.type == "Owner"} />
+                <label htmlFor="Owner" className="ml-2">Owner</label>
+            </div>
           </div>
 
           <div className="p-inputgroup">
