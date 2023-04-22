@@ -8,7 +8,6 @@ import cz.vut.fit.pis.xmatej55.entities.Error;
 import cz.vut.fit.pis.xmatej55.services.EmployeeService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.OPTIONS;
@@ -63,7 +62,7 @@ public class Employees {
 
         if (!e.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Person with id '%d' not found.", id))).build();
+                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
         }
         
         return Response.ok(e.get()).build();
@@ -79,7 +78,7 @@ public class Employees {
             return Response.status(Status.CONFLICT)
                     .entity(
                         new Error(
-                            String.format("Person with username '%s' already exists.", 
+                            String.format("Employee with username '%s' already exists.", 
                             employee.getUsername())))
                     .build();
         }
@@ -92,12 +91,12 @@ public class Employees {
     @Path("/{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removePerson(@PathParam("id") Long id) {
+    public Response removeEmployee(@PathParam("id") Long id) {
         Optional<Employee> e = employeeService.findById(id);
 
         if (!e.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                .entity(new Error(String.format("Person with id '%d' not found.", id))).build();
+                .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
         }
 
         employeeService.deleteById(e.get().getId());
@@ -113,7 +112,7 @@ public class Employees {
 
         if (!old.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Person with id '%d' not found.", id))).build();
+                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
         }
 
         Optional<Employee> existing = employeeService.findByUsername(newEmployee.getUsername());
@@ -122,7 +121,7 @@ public class Employees {
 
         if (existing.isPresent() && existing.get().getId() != oldEmployee.getId()) {
             return Response.status(Status.CONFLICT)
-                    .entity(new Error(String.format("Person with username '%s' already exists.", newEmployee.getUsername())))
+                    .entity(new Error(String.format("Employee with username '%s' already exists.", newEmployee.getUsername())))
                     .build();
         }
         

@@ -20,12 +20,12 @@ public class ClientService {
         return clientManager.update(client);
     }
 
-    public Client saveClient(Client client) {
-        return clientManager.saveClient(client);
+    public Client create(Client client) {
+        return clientManager.create(client);
     }
 
-    public void deleteClient(Client client) {
-        clientManager.deleteClient(client);
+    public void deleteById(Long id) {
+        clientManager.deleteById(id);
     }
 
     public Optional<Client> findById(Long id) {

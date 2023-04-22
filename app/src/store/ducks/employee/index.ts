@@ -33,6 +33,7 @@ const employeeModelToState = (
 const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyAction) => {
   switch (action.type) {
     case EmployeeTypes.CREATE_REQUEST:
+    case EmployeeTypes.UPDATE_REQUEST:
     case EmployeeTypes.REMOVE_REQUEST:
     case EmployeeTypes.LOAD_REQUEST:
       return { ...state, loading: true }
@@ -69,6 +70,7 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
       }
     case EmployeeTypes.REMOVE_FAILURE:
     case EmployeeTypes.LOAD_FAILURE:
+    case EmployeeTypes.UPDATE_FAILURE:
     case EmployeeTypes.CREATE_FAILURE:
       return {
         ...state,

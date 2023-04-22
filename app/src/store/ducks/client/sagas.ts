@@ -1,10 +1,10 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import api from '../../../services/api';
-import * as actions from './actions'; 
+import * as actions from './actions';
 import { AnyAction } from 'redux';
-import { EmployeeTypes } from './types';
+import { ClientTypes } from './types';
 
-const endpoint = 'employees';
+const endpoint = 'clients';
 
 function* load(action: AnyAction) {
   const { id } = action.payload;
@@ -48,11 +48,11 @@ function* remove(action: AnyAction) {
   }
 }
 
-const employeeSagas = [
-  takeLatest(EmployeeTypes.LOAD_REQUEST, load),
-  takeLatest(EmployeeTypes.CREATE_REQUEST, create),
-  takeLatest(EmployeeTypes.UPDATE_REQUEST, update),
-  takeLatest(EmployeeTypes.REMOVE_REQUEST, remove)
+const clientSagas = [
+  takeLatest(ClientTypes.LOAD_REQUEST, load),
+  takeLatest(ClientTypes.CREATE_REQUEST, create),
+  takeLatest(ClientTypes.UPDATE_REQUEST, update),
+  takeLatest(ClientTypes.REMOVE_REQUEST, remove)
 ];
 
-export default employeeSagas;
+export default clientSagas;
