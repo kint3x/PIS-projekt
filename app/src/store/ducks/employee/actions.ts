@@ -33,6 +33,8 @@ export const removeRequest = (
   id: number
 ) => action(EmployeeTypes.REMOVE_REQUEST, { id });
 
-export const removeSuccess = () => action(EmployeeTypes.REMOVE_SUCCESS);
+export const removeSuccess = (
+  id: number
+) => action(EmployeeTypes.REMOVE_SUCCESS,{ id });
 
 export const removeFailure = (err: any) => action(EmployeeTypes.REMOVE_FAILURE, err);

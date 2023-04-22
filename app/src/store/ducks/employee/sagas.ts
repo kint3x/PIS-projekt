@@ -40,7 +40,7 @@ function* remove(action: AnyAction) {
   const { id } = action.payload;
   try {
     yield call(api.delete, `/employees/${id}`);
-    yield put(actions.removeSuccess());
+    yield put(actions.removeSuccess(id));
   } catch (err) {
     yield put(actions.removeFailure(err as any));
   }
