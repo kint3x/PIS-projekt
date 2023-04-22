@@ -4,7 +4,9 @@ import java.net.URI;
 import java.util.Optional;
 
 import cz.vut.fit.pis.xmatej55.entities.Client;
+import cz.vut.fit.pis.xmatej55.services.ClientProductService;
 import cz.vut.fit.pis.xmatej55.services.ClientService;
+import cz.vut.fit.pis.xmatej55.services.MeetingService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.PathParam;
@@ -28,6 +30,12 @@ import jakarta.ws.rs.core.Response.Status;
 public class Clients {
     @Inject
     private ClientService clientService;
+
+    @Inject
+    private MeetingService meetingService;
+
+    @Inject
+    private ClientProductService clientProductService;    
 
     @Context
     private UriInfo context;
@@ -117,5 +125,35 @@ public class Clients {
         oldClient.setImage(newClient.getImage());
 
         return Response.ok(clientService.update(oldClient)).build();
+    }
+
+    @Path("/{id}/meetings")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMeetings(@PathParam("id") Long id) {
+        Optional<Client> optClient = clientService.findById(id);
+
+        if (!optClient.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Client with id '%d' not found.", id))).build();
+        }
+
+        Client client = optClient.get();
+
+        return Response.ok(meetingService.findAllByClient(client)).build();
+    }
+
+    @Path("/{id}/products")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProducts(@PathParam("id") Long id) {
+        Optional<Client> optClient = clientService.findById(id);
+
+        if (!optClient.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Client with id '%d' not found.", id))).build();
+        }
+
+        return Response.ok(clientProductService.findAllProductsByClientId(id)).build();
     }
 }

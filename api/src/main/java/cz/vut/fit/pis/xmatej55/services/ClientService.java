@@ -1,7 +1,6 @@
 package cz.vut.fit.pis.xmatej55.services;
 
 import cz.vut.fit.pis.xmatej55.entities.Client;
-import cz.vut.fit.pis.xmatej55.entities.Meeting;
 import cz.vut.fit.pis.xmatej55.managers.ClientManager;
 import cz.vut.fit.pis.xmatej55.services.ClientService;
 import java.util.List;
@@ -34,9 +33,5 @@ public class ClientService {
 
     public List<Client> findAll() {
         return clientManager.findAll();
-    }
-
-    public List<Meeting> findAllMeetingsByClient(Client client) {
-        return clientManager.findAllMeetingsByClient(client);
     }
 }

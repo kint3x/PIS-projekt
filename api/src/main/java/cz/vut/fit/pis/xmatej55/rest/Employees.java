@@ -6,6 +6,7 @@ import java.util.Optional;
 import cz.vut.fit.pis.xmatej55.dto.Error;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.services.EmployeeService;
+import cz.vut.fit.pis.xmatej55.services.MeetingService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.PathParam;
@@ -29,6 +30,9 @@ import jakarta.ws.rs.core.Response.Status;
 public class Employees {
     @Inject
     private EmployeeService employeeService;
+
+    @Inject
+    private MeetingService meetingService;
 
     @Context
     private UriInfo context;
@@ -137,5 +141,21 @@ public class Employees {
         oldEmployee.setImage(newEmployee.getImage());
 
         return Response.ok(employeeService.update(oldEmployee)).build();
+    }
+
+    @Path("/{id}/meetings")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMeetings(@PathParam("id") Long id) {
+        Optional<Employee> optEmployee = employeeService.findById(id);
+
+        if (!optEmployee.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
+        }
+
+        Employee employee = optEmployee.get();
+
+        return Response.ok(meetingService.findAllByEmployee(employee)).build();
     }
 }
