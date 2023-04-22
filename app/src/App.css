@@ -13,15 +13,38 @@
   color: white;
 }
 
+.hidden {
+  display:none;
+}
 .App-link {
   color: #61dafb;
 }
 
-.app-content {
-  margin: 0px auto;
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  height: 100vh;
-  align-self: center;
+.flex{
+  display:flex;
+}
+
+.align-items-center{
+  align-items: center;
+}
+
+.app-content{ 
+  padding: 0 20% 0 20%;
+}
+.float-right{
+  float: right;
+}
+
+.p-datatable tr:hover{
+  cursor: pointer;
+  background: rgba(148,232,249,0.4) !important;
+}
+
+.edit-user .p-dialog-content div{
+  margin-top:5px;
+  margin-bottom:5px;
+}
+.page-heading{
+  width: 100%;
+  text-align: center;
 }

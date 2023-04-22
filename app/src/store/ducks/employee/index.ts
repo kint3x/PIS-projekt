@@ -55,7 +55,13 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
         };
       }
     case EmployeeTypes.REMOVE_SUCCESS:
-    case EmployeeTypes.UPDATE_SUCCESS:
+      const {id} = action.payload;
+      delete state.data[id];
+      return {
+        ...state,
+        loading: false,
+        error: false
+      }
     case EmployeeTypes.CREATE_SUCCESS:
       return {
         ...state,
