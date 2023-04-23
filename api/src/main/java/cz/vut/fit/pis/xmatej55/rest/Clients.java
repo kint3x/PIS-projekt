@@ -58,15 +58,15 @@ public class Clients {
     }
 
     @OPTIONS
-    public Response options() {
-        return Response.ok("").build();
-    }
-
-    @OPTIONS
-    @Path("/{id}")
+    @Path("{var:.+}")
     public Response options(@PathParam("id") Long id) {
         return Response.ok("").build();
     }
+
+    // @OPTIONS
+    // public Response options() {
+    //     return Response.ok("").build();
+    // }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

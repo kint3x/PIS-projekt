@@ -1,14 +1,20 @@
 import { Reducer, AnyAction } from 'redux';
 import { EmployeeModel, EmployeeState, EmployeeTypes } from './types';
+import { meetingsModelToState } from '../meeting';
+import { clientModelToState } from '../client';
+import { productModelToState } from '../product';
 
 export const INITIAL_STATE: EmployeeState = {
   data: {},
   loading: false,
   errMsg: '',
-  error: false
+  error: false,
+  meetings: {},
+  products: {},
+  clients: {},
 };
 
-const employeeModelToState = (
+export const employeeModelToState = (
   data: { [key: number]: EmployeeModel },
   item: EmployeeModel
 ) => {
@@ -35,8 +41,37 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
     case EmployeeTypes.CREATE_REQUEST:
     case EmployeeTypes.UPDATE_REQUEST:
     case EmployeeTypes.REMOVE_REQUEST:
+    case EmployeeTypes.LOAD_MEETINGS_REQUEST:
+    case EmployeeTypes.LOAD_PRODUCTS_REQUEST:
+    case EmployeeTypes.LOAD_CLIENTS_REQUEST:
+    case EmployeeTypes.ADD_CLIENT_REQUEST:
+    case EmployeeTypes.REMOVE_CLIENT_REQUEST:
     case EmployeeTypes.LOAD_REQUEST:
       return { ...state, loading: true }
+    case EmployeeTypes.LOAD_CLIENTS_SUCCESS:
+      const clients = action.payload.data;
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        clients: clients.reduce(clientModelToState, state.clients)
+      }
+    case EmployeeTypes.LOAD_PRODUCTS_SUCCESS:
+      const products = action.payload.data;
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        products: products.reduce(productModelToState, state.products)
+      }
+    case EmployeeTypes.LOAD_MEETINGS_SUCCESS:
+      const meetings = action.payload.data;
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        meetings: meetings.reduce(meetingsModelToState, state.meetings)
+      }
     case EmployeeTypes.LOAD_SUCCESS:
       if (action.payload.id === 'all') {
         const employees = action.payload.data;
@@ -54,21 +89,34 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
           data: employeeModelToState(state.data, action.payload.data)
         };
       }
+    case EmployeeTypes.REMOVE_CLIENT_SUCCESS:
+      var { id } = action.payload;
+      delete state.clients[id];
+      return {
+        ...state,
+        loading: false,
+        error: false
+      }
     case EmployeeTypes.REMOVE_SUCCESS:
-      const {id} = action.payload;
+      var { id } = action.payload;
       delete state.data[id];
       return {
         ...state,
         loading: false,
         error: false
       }
+    case EmployeeTypes.ADD_CLIENT_SUCCESS:
     case EmployeeTypes.CREATE_SUCCESS:
       return {
         ...state,
         loading: false,
         error: false
       }
+    case EmployeeTypes.LOAD_PRODUCTS_FAILURE:
     case EmployeeTypes.REMOVE_FAILURE:
+    case EmployeeTypes.ADD_CLIENT_FAILURE:
+    case EmployeeTypes.LOAD_MEETINGS_FAILURE:
+    case EmployeeTypes.LOAD_CLIENTS_FAILURE:
     case EmployeeTypes.LOAD_FAILURE:
     case EmployeeTypes.UPDATE_FAILURE:
     case EmployeeTypes.CREATE_FAILURE:

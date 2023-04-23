@@ -3,7 +3,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState} from 'react';
 
-import { loadRequest as loadEmployees } from '../../store/ducks/employee/actions';
+import { loadRequest as loadEmployees, removeClientRequest } from '../../store/ducks/employee/actions';
 import { updateRequest as updateEmployee } from '../../store/ducks/employee/actions';
 import { removeRequest as removeEmployee } from '../../store/ducks/employee/actions';
 import { AppState } from '../../store';
@@ -29,13 +29,22 @@ const Employees = () => {
 
     useEffect(() => {
       dispatch(loadEmployees('all'));
-    }, [dispatch,show_dialog]);   
+    }, [dispatch,show_dialog]);
 
+    
+    useEffect(() => {
+      dispatch(removeClientRequest(1, 1));
+    }, [dispatch]);  
+
+    
     const employees = useSelector((state: AppState) => state.employee.data);
     const loading = useSelector((state: AppState) => state.employee.loading);
     const error = useSelector((state: AppState) => state.employee.error);
     const errMsg = useSelector((state: AppState) => state.employee.errMsg);
-
+    
+    const clients = useSelector((state: AppState) => state.employee.clients);
+    console.log(clients)
+    
     const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
     const [dialog_data, setDialogData] = useState<any>({});
 
