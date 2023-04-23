@@ -92,7 +92,6 @@ function* add_client(action: AnyAction) {
   }
 }
 
-
 function* remove_client(action: AnyAction) {
   const { employee_id, client_id } = action.payload;
   try {
@@ -103,8 +102,25 @@ function* remove_client(action: AnyAction) {
   }
 }
 
-// TODO: add_product
-// TODO: remove_product
+function* add_product(action: AnyAction) {
+  const { employee_id, product_id } = action.payload;
+  try {
+    yield call(api.post, `/${endpoint}/${employee_id}/add_product`, { "productId": product_id });
+    yield put(actions.addProductSuccess());
+  } catch (err) {
+    yield put(actions.addProductFailure(err as any));
+  }
+}
+
+function* remove_product(action: AnyAction) {
+  const { employee_id, product_id } = action.payload;
+  try {
+    yield call(api.delete, `/${endpoint}/${employee_id}/remove_product`, { "data": {"productId": product_id }});
+    yield put(actions.removeProductSuccess(product_id));
+  } catch (err) {
+    yield put(actions.removeProductFailure(err as any));
+  }
+}
 
 const employeeSagas = [
   takeLatest(EmployeeTypes.LOAD_REQUEST, load),
@@ -115,7 +131,9 @@ const employeeSagas = [
   takeLatest(EmployeeTypes.LOAD_PRODUCTS_REQUEST, load_products),
   takeLatest(EmployeeTypes.LOAD_CLIENTS_REQUEST, load_clients),
   takeLatest(EmployeeTypes.ADD_CLIENT_REQUEST, add_client),
-  takeLatest(EmployeeTypes.REMOVE_CLIENT_REQUEST, remove_client)
+  takeLatest(EmployeeTypes.REMOVE_CLIENT_REQUEST, remove_client),
+  takeLatest(EmployeeTypes.ADD_PRODUCT_REQUEST, add_product),
+  takeLatest(EmployeeTypes.REMOVE_PRODUCT_REQUEST, remove_product)
 ];
 
 export default employeeSagas;
