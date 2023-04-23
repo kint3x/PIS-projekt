@@ -45,6 +45,8 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
     case EmployeeTypes.LOAD_PRODUCTS_REQUEST:
     case EmployeeTypes.LOAD_CLIENTS_REQUEST:
     case EmployeeTypes.ADD_CLIENT_REQUEST:
+    case EmployeeTypes.ADD_PRODUCT_REQUEST:
+    case EmployeeTypes.REMOVE_PRODUCT_REQUEST:
     case EmployeeTypes.REMOVE_CLIENT_REQUEST:
     case EmployeeTypes.LOAD_REQUEST:
       return { ...state, loading: true }
@@ -97,6 +99,14 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
         loading: false,
         error: false
       }
+    case EmployeeTypes.REMOVE_PRODUCT_SUCCESS:
+      var { id } = action.payload;
+      delete state.products[id];
+      return {
+        ...state,
+        loading: false,
+        error: false
+      };
     case EmployeeTypes.REMOVE_SUCCESS:
       var { id } = action.payload;
       delete state.data[id];
@@ -104,16 +114,19 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
         ...state,
         loading: false,
         error: false
-      }
+      };
     case EmployeeTypes.ADD_CLIENT_SUCCESS:
+    case EmployeeTypes.ADD_PRODUCT_SUCCESS:
     case EmployeeTypes.CREATE_SUCCESS:
       return {
         ...state,
         loading: false,
         error: false
-      }
+      };
     case EmployeeTypes.LOAD_PRODUCTS_FAILURE:
     case EmployeeTypes.REMOVE_FAILURE:
+    case EmployeeTypes.ADD_PRODUCT_FAILURE:
+    case EmployeeTypes.REMOVE_PRODUCT_FAILURE:
     case EmployeeTypes.ADD_CLIENT_FAILURE:
     case EmployeeTypes.LOAD_MEETINGS_FAILURE:
     case EmployeeTypes.LOAD_CLIENTS_FAILURE:

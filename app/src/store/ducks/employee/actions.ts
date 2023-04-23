@@ -86,3 +86,21 @@ export const removeClientRequest = (
 export const removeClientSuccess = (id: number) => action(EmployeeTypes.REMOVE_CLIENT_SUCCESS, { id });
 
 export const removeClientFailure = (err: any) => action(EmployeeTypes.REMOVE_CLIENT_FAILURE, err);
+
+export const addProductRequest = (
+  employee_id: number,
+  product_id: number
+) => action(EmployeeTypes.ADD_PRODUCT_REQUEST, { employee_id, product_id });
+
+export const addProductSuccess = () => action(EmployeeTypes.ADD_PRODUCT_REQUEST);
+
+export const addProductFailure = (err: any) => action(EmployeeTypes.ADD_PRODUCT_FAILURE, err);
+
+export const removeProductRequest = (
+  employee_id: number,
+  product_id: number
+) => action(EmployeeTypes.REMOVE_PRODUCT_REQUEST, { employee_id, product_id });
+
+export const removeProductSuccess = (id: number) => action(EmployeeTypes.REMOVE_CLIENT_SUCCESS, { id });
+
+export const removeProductFailure = (err: any) => action(EmployeeTypes.REMOVE_PRODUCT_FAILURE, err);
