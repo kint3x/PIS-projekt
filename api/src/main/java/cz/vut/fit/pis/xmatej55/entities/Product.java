@@ -3,6 +3,7 @@ package cz.vut.fit.pis.xmatej55.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +11,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -29,7 +33,14 @@ public class Product {
     private String name;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonbTransient
     private Set<ClientProduct> clientProducts = new HashSet<ClientProduct>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "EmployeeClient", joinColumns = { @JoinColumn(name = "product_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "employee_id") })
+    @JsonbTransient
+    private Set<Employee> employees = new HashSet<Employee>();
 
     public Long getId() {
         return id;
@@ -45,6 +56,14 @@ public class Product {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
     }
 
     public Set<ClientProduct> getClientProducts() {

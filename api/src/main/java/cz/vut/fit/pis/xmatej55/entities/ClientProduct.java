@@ -3,6 +3,7 @@ package cz.vut.fit.pis.xmatej55.entities;
 import java.util.Date;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,6 +33,7 @@ public class ClientProduct {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product")
+    @JsonbTransient
     private Product product;
 
     public enum ProductState {

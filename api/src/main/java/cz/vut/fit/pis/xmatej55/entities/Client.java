@@ -8,6 +8,9 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.OneToMany;
 
@@ -17,6 +20,12 @@ public class Client extends Person {
 
     @Column(name = "notes")
     private String notes;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "EmployeeClient", joinColumns = { @JoinColumn(name = "client_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "employee_id") })
+    @JsonbTransient
+    private Set<Employee> employees = new HashSet<Employee>();
 
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonbTransient
@@ -44,6 +53,14 @@ public class Client extends Person {
 
     public void setClientProducts(Set<ClientProduct> clientProducts) {
         this.clientProducts = clientProducts;
+    }
+
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
     }
 
     public Set<Meeting> getMeetings() {

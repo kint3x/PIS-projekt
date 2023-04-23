@@ -1,6 +1,8 @@
 package cz.vut.fit.pis.xmatej55.services;
 
+import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
+import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.managers.EmployeeManager;
 import cz.vut.fit.pis.xmatej55.services.EmployeeService;
 import java.util.List;
@@ -37,5 +39,13 @@ public class EmployeeService{
 
     public List<Employee> findAll() {
         return employeeManager.findAll();
+    }
+
+    public List<Employee> findByProduct(Product product) {
+        return employeeManager.findByProduct(product);
+    }
+
+    public List<Employee> findByClient(Client client) {
+        return employeeManager.findByClient(client);
     }
 }

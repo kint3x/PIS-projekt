@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import cz.vut.fit.pis.xmatej55.rest.Employees;
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -50,7 +49,6 @@ public class Meeting {
     private Set<Employee> employees = new HashSet<Employee>();
 
     @ManyToOne(fetch = FetchType.EAGER)
-    // @JsonbTypeSerializer(value = )
     private Client client;
 
     @ManyToOne(fetch = FetchType.EAGER)

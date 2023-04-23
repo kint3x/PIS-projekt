@@ -22,10 +22,10 @@ import jakarta.persistence.UniqueConstraint;
         @UniqueConstraint(columnNames={"username"}))
 public class Employee extends Person {
 
-    @Column(name = "username")
+    @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     public enum EmployeeType {
@@ -37,9 +37,17 @@ public class Employee extends Person {
     @Enumerated(EnumType.STRING)
     private EmployeeType type;
 
-    @ManyToMany(mappedBy = "employees", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "employees", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonbTransient
     private Set<Meeting> meetings = new HashSet<Meeting>();
+
+    @ManyToMany(mappedBy = "employees", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonbTransient
+    private Set<Product> products = new HashSet<Product>();
+
+    @ManyToMany(mappedBy = "employees", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    // @JsonbTransient
+    private Set<Client> clients = new HashSet<Client>();
 
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonbTransient
@@ -79,5 +87,29 @@ public class Employee extends Person {
 
     public void setMeetings(Set<Meeting> meetings) {
         this.meetings = meetings;
+    }
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
+    }
+
+    public Set<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(Set<Client> clients) {
+        this.clients = clients;
+    }
+
+    public void addClient(Client client) {
+        this.clients.add(client);
+    }
+
+    public void removeClient(Client client) {
+        this.clients.remove(client);
     }
 }

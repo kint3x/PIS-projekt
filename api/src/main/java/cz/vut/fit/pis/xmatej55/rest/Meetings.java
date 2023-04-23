@@ -67,7 +67,7 @@ public class Meetings {
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEmployeeById(@PathParam("id") Long id) {
+    public Response getMeetingById(@PathParam("id") Long id) {
         Optional<Meeting> m = meetingService.findById(id);
 
         if (!m.isPresent()) {
@@ -182,7 +182,7 @@ public class Meetings {
 
         if (!optEmployee.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
+                    .entity(new Error(String.format("Employee with id '%d' not found.", employeeDTO.getEmployeeId()))).build();
         }
 
         Employee employee = optEmployee.get();
