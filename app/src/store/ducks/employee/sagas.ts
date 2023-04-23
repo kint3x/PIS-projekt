@@ -3,6 +3,7 @@ import api from '../../../services/api';
 import * as actions from './actions'; 
 import { AnyAction } from 'redux';
 import { EmployeeTypes } from './types';
+import { productModelToState } from '../product';
 
 const endpoint = 'employees';
 
@@ -48,11 +49,73 @@ function* remove(action: AnyAction) {
   }
 }
 
+function* load_meetings(action: AnyAction) {
+  const { id } = action.payload;
+  try {
+    const response: { [key: string] : any } = yield call(api.get, `/${endpoint}/${id}/meetings`);
+    const data = response.data;
+    yield put(actions.loadMeetingSuccess(id, data));
+  } catch (err) {
+    yield put(actions.loadMeetingFailure(err as any));
+  }
+}
+
+function* load_products(action: AnyAction) {
+  const { id } = action.payload;
+  try {
+    const response: { [key: string] : any } = yield call(api.get, `/${endpoint}/${id}/products`);
+    const data = response.data;
+    yield put(actions.loadProductsSuccess(id, data));
+  } catch (err) {
+    yield put(actions.loadProductsFailure(err as any));
+  }
+}
+
+function* load_clients(action: AnyAction) {
+  const { id } = action.payload;
+  try {
+    const response: { [key: string] : any } = yield call(api.get, `/${endpoint}/${id}/clients`);
+    const data = response.data;
+    yield put(actions.loadClientSuccess(id, data));
+  } catch (err) {
+    yield put(actions.loadClientFailure(err as any));
+  }
+}
+
+function* add_client(action: AnyAction) {
+  const { employee_id, client_id } = action.payload;
+  try {
+    yield call(api.post, `/${endpoint}/${employee_id}/add_client`, { "clientId": client_id });
+    yield put(actions.addClientSuccess());
+  } catch (err) {
+    yield put(actions.addClientFailure(err as any));
+  }
+}
+
+
+function* remove_client(action: AnyAction) {
+  const { employee_id, client_id } = action.payload;
+  try {
+    yield call(api.delete, `/${endpoint}/${employee_id}/remove_client`, { "data": {"clientId": client_id }});
+    yield put(actions.removeClientSuccess(client_id));
+  } catch (err) {
+    yield put(actions.addClientFailure(err as any));
+  }
+}
+
+// TODO: add_product
+// TODO: remove_product
+
 const employeeSagas = [
   takeLatest(EmployeeTypes.LOAD_REQUEST, load),
   takeLatest(EmployeeTypes.CREATE_REQUEST, create),
   takeLatest(EmployeeTypes.UPDATE_REQUEST, update),
-  takeLatest(EmployeeTypes.REMOVE_REQUEST, remove)
+  takeLatest(EmployeeTypes.REMOVE_REQUEST, remove),
+  takeLatest(EmployeeTypes.LOAD_MEETINGS_REQUEST, load_meetings),
+  takeLatest(EmployeeTypes.LOAD_PRODUCTS_REQUEST, load_products),
+  takeLatest(EmployeeTypes.LOAD_CLIENTS_REQUEST, load_clients),
+  takeLatest(EmployeeTypes.ADD_CLIENT_REQUEST, add_client),
+  takeLatest(EmployeeTypes.REMOVE_CLIENT_REQUEST, remove_client)
 ];
 
 export default employeeSagas;
