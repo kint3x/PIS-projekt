@@ -16,6 +16,7 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { RadioButton } from 'primereact/radiobutton';
+import { Calendar } from 'primereact/calendar';
 
 //#TODO if clicked, edit user 
 //#Add user
@@ -146,6 +147,19 @@ const Employees = () => {
             <InputText placeholder="Surname" value={dialog_data.surname}
             onChange={(e) => onInputChange(e, 'surname')} />
           </div>
+
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">DOB</span>
+            <Calendar
+              showIcon={true}
+              value={new Date(dialog_data.date)}
+              onChange={(e) => {console.log(new Date(dialog_data.date))}}
+              dateFormat="dd-mm-yy"
+              mask="99-99-99"
+              />
+          </div>
+          
+
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Phone</span>
             <InputText placeholder="Phone" value={dialog_data.phone}
