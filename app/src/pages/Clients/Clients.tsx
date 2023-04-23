@@ -6,6 +6,7 @@ import { useEffect, useState} from 'react';
 import { loadRequest as loadClients } from '../../store/ducks/client/actions';
 import { updateRequest as updateClient } from '../../store/ducks/client/actions';
 import { removeRequest as removeClient } from '../../store/ducks/client/actions';
+import { createRequest as addClient } from '../../store/ducks/client/actions'
 import { AppState } from '../../store';
 
 import { DataTable, DataTableValueArray , DataTableRowClickEvent } from 'primereact/datatable';
@@ -18,18 +19,19 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { MultiSelect } from 'primereact/multiselect';
 import { ListBox, ListBoxChangeEvent } from 'primereact/listbox';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
+import { Calendar } from 'primereact/calendar';
+import { format } from "date-fns";
 
-//#TODO if clicked, edit client 
-//#Add client
 
 const Clients = () => {
     const dispatch = useDispatch();
     
     const [show_client_dialog,setShowClientDialog] = useState(false);
+    const [show_add_client_dialog,setShowAddClientDialog] = useState(false);
 
     useEffect(() => {
       dispatch(loadClients('all'));
-    }, [dispatch,show_client_dialog]);   
+    }, [dispatch,show_client_dialog,show_add_client_dialog]);   
 
     const clients = useSelector((state: AppState) => state.client.data);
     const loading = useSelector((state: AppState) => state.client.loading);
@@ -38,6 +40,7 @@ const Clients = () => {
 
     const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
     const [client_dialog_data, setClientDialogData] = useState<any>({});
+    const [add_client_dialog_data, setAddClientDialogData] = useState<any>({});
 
     
     function onInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) {
@@ -54,8 +57,6 @@ const Clients = () => {
     }
 
     function onClientEdit() : void{
-      //#TODO Call api to edit client with dialog_data
-
       dispatch(updateClient(client_dialog_data.id, {...client_dialog_data}))
 
       if(!error){
@@ -70,8 +71,7 @@ const Clients = () => {
     }
 
     function onClientDelete() : void{
-        // Check if can delete
-        // #TODO Call api to delete client
+        // TODO should cascade delete on ClientProducts
         dispatch(removeClient(client_dialog_data.id));
         if(!error){
           setShowClientDialog(false);
@@ -83,6 +83,17 @@ const Clients = () => {
         }
     }
 
+    function AddClientSubmit(){
+      dispatch(addClient(add_client_dialog_data));
+      if(!error){
+        setShowAddClientDialog(false);
+        setModalErr({msg: "", visible: "hidden"});
+      }
+      else{
+        setModalErr({msg: errMsg, visible: ""})
+        setShowAddClientDialog(true);
+      }
+    }
 
     //temporary solution till authentification works
     const [loggedUser,setLoggedUser] = useState("Worker");
@@ -99,7 +110,7 @@ const Clients = () => {
     }
     
 
-    //todo editing notes
+    //todo add submit button for editing notes
     const [show_notes,setShowNotes] = useState(false)
 
 
@@ -158,7 +169,7 @@ const Clients = () => {
       <>
         <div className='page-heading'><h1>Clients</h1><br /></div>
 
-        {loggedUser !== "Worker" && <Button label="Add client" severity="success" className="float-left" />}
+        {loggedUser !== "Worker" && <Button label="Add client" severity="success" className="float-left" onClick={()=>setShowAddClientDialog(true)} />}
         <Button label="Change user" severity="danger"  onClick = {() => changeUser()} className="float-right" />
 
         <br />
@@ -166,8 +177,7 @@ const Clients = () => {
         <br />
 
         <DataTable loading={loading} value={Object.values(clients)} tableStyle={{ minWidth: '50rem' }} 
-        onRowClick={ClientRowClickHandle}
-        >
+        onRowClick={ClientRowClickHandle}>
           <Column field="id" header="ID"></Column>
           <Column filter={true} field="name" header="Name"></Column>
           <Column filter={true} field="surname" header="Surname"></Column>
@@ -202,11 +212,27 @@ const Clients = () => {
             <InputText placeholder="Surname" value={client_dialog_data.surname}
             onChange={(e) => onInputChange(e, 'surname')} />
           </div>
+
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">DOB</span>
+            <Calendar
+              showIcon={true}
+              value={new Date(client_dialog_data.dob)}
+              onChange={(e) => 
+                {
+                  if(e.value instanceof Date) setClientDialogData({...client_dialog_data, dob: format(e.value, "yyyy-MM-dd")+"T00:00:00"})
+                }
+              }
+              dateFormat="yy-mm-dd"
+                  />
+          </div>
+
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Phone</span>
             <InputText placeholder="Phone" value={client_dialog_data.phone}
             onChange={(e) => onInputChange(e, 'phone')} />
           </div>
+
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Address</span>
             <InputTextarea style={{ height: '50px' }} placeholder="Address" value={client_dialog_data.address}
@@ -220,6 +246,56 @@ const Clients = () => {
       </Dialog>
 
 
+
+
+      <Dialog header="Add Client" className="add-client" visible={show_add_client_dialog} style={{ width: '50%' }} onHide={() => {setShowAddClientDialog(false);setAddClientDialogData({}) }}>
+          
+          {JSON.stringify(client_dialog_data)}
+          <div className={modal_err_msg.visible}>
+            <Message severity="error" text={modal_err_msg.msg} />
+          </div>
+
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Email</span>
+            <InputText placeholder="Email" onChange={(e)=>setAddClientDialogData({...add_client_dialog_data, email: e.target.value})} />
+          </div>
+
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Name</span>
+            <InputText placeholder="Name" onChange={(e)=>setAddClientDialogData({...add_client_dialog_data, name: e.target.value})} />
+          </div>
+          
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Surname</span>
+            <InputText placeholder="Surname" onChange={(e)=>setAddClientDialogData({...add_client_dialog_data, surname: e.target.value})} />
+          </div>
+
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">DOB</span>
+            <Calendar
+              showIcon={true}
+              onChange={(e) => 
+                {
+                  if(e.value instanceof Date) setAddClientDialogData({...add_client_dialog_data, dob: format(e.value, "yyyy-MM-dd")+"T00:00:00"})
+                }
+              }
+              dateFormat="yy-mm-dd"
+                  />
+          </div>
+
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Phone</span>
+            <InputText placeholder="Phone" onChange={(e)=>setAddClientDialogData({...add_client_dialog_data, phone: e.target.value})} />
+          </div>
+
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Address</span>
+            <InputTextarea style={{ height: '50px' }} placeholder="Address" onChange={(e)=>setAddClientDialogData({...add_client_dialog_data, address: e.target.value})} />
+          </div>
+
+          <Button label="Submit" severity="success" onClick = {() => AddClientSubmit()} />
+          <Button label="Sumbit and Assign employees" severity="success"  onClick = {() => {AddClientSubmit();setShowClientProductDialog(true)}}/>
+      </Dialog>
 
 
 
