@@ -2,7 +2,7 @@ package cz.vut.fit.pis.xmatej55.services;
 
 import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.ClientProduct;
-import cz.vut.fit.pis.xmatej55.entities.ClientProduct.ProductState;
+import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.managers.ClientProductManager;
 import cz.vut.fit.pis.xmatej55.services.ClientProductService;
 import java.util.List;
@@ -37,15 +37,15 @@ public class ClientProductService {
         return clientProductManager.findAll();
     }
 
-    public List<ClientProduct> findAllByState(ProductState state) {
-        return clientProductManager.findAllByState(state);
+    public List<ClientProduct> findByClient(Client client) {
+        return clientProductManager.findByClient(client);
     }
 
-    public Optional<ClientProduct> findByClientAndProductId(Client client, Long productId) {
-        return clientProductManager.findByClientAndProductId(client, productId);
+    public List<ClientProduct> findByProduct(Product product) {
+        return clientProductManager.findByProduct(product);
     }
 
-    public List<ClientProduct> findAllProductsByClientId(Long clientId) {
-        return clientProductManager.findAllProductsByClientId(clientId);
+    public Optional<ClientProduct> findByClientAndProduct(Client client, Product product) {
+        return clientProductManager.findByClientAndProduct(client, product);
     }
 }

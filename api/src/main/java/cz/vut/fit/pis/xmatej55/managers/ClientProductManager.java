@@ -2,6 +2,7 @@ package cz.vut.fit.pis.xmatej55.managers;
 
 import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.ClientProduct;
+import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.managers.ClientProductManager;
 import java.util.List;
 import java.util.Optional;
@@ -48,25 +49,25 @@ public class ClientProductManager {
         return em.createQuery("SELECT cp FROM ClientProduct cp", ClientProduct.class).getResultList();
     }
 
-    public List<ClientProduct> findAllByState(ClientProduct.ProductState state) {
-        return em.createQuery("SELECT cp FROM ClientProduct cp WHERE cp.state = :state", ClientProduct.class)
-                .setParameter("state", state)
+    public List<ClientProduct> findByClient(Client client) {
+        return em.createQuery("SELECT cp FROM ClientProduct cp WHERE cp.client = :client", ClientProduct.class)
+                .setParameter("client", client)
                 .getResultList();
     }
 
-    public Optional<ClientProduct> findByClientAndProductId(Client client, Long productId) {
+    public List<ClientProduct> findByProduct(Product product) {
+        return em.createQuery("SELECT cp FROM ClientProduct cp WHERE cp.product = :product", ClientProduct.class)
+                .setParameter("product", product)
+                .getResultList();
+    }
+
+    public Optional<ClientProduct> findByClientAndProduct(Client client, Product product) {
         return em
-                .createQuery("SELECT cp FROM ClientProduct cp WHERE cp.client = :client AND cp.product.id = :productId",
+                .createQuery("SELECT cp FROM ClientProduct cp WHERE cp.client = :client AND cp.product = :product",
                         ClientProduct.class)
                 .setParameter("client", client)
-                .setParameter("productId", productId)
+                .setParameter("product", product)
                 .getResultStream()
                 .findFirst();
-    }
-
-    public List<ClientProduct> findAllProductsByClientId(Long clientId) {
-        return em.createQuery("SELECT cp FROM ClientProduct cp WHERE cp.client.id = :clientId", ClientProduct.class)
-                .setParameter("clientId", clientId)
-                .getResultList();
     }
 }

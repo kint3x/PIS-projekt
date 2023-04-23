@@ -127,6 +127,17 @@ public class Meeting {
     }
 
     public void removeEmployee(Employee employee) {
-        this.employees.remove(employee);
+        Employee res = null;
+
+        for (Employee e : this.employees) {
+            if (e.getId() == employee.getId()) {
+                res = e;
+                break;
+            }
+        }
+
+        if (res != null) {
+            this.employees.remove(res);
+        }
     }
 }
