@@ -116,8 +116,8 @@ const Clients = () => {
     // const cp_error = useSelector((state: AppState) => state.client.error);
     // const cp_errMsg = useSelector((state: AppState) => state.client.errMsg);
 
-    // const [clientproduct_modal_err_msg, setClientProductModalErr] = useState<any>({visible: "hidden", msg: ""});
-    // const [clientproduct_dialog_data, setClientProductDialogData] = useState<any>({});
+    const [clientproduct_modal_err_msg, setClientProductModalErr] = useState<any>({visible: "hidden", msg: ""});
+    const [clientproduct_dialog_data, setClientProductDialogData] = useState<any>({});
 
 
     //temporary, just to visualize
