@@ -35,6 +35,11 @@
   float: right;
 }
 
+.float-left{
+  float: left
+}
+
+
 .p-datatable tr:hover{
   cursor: pointer;
   background: rgba(148,232,249,0.4) !important;
@@ -47,4 +52,8 @@
 .page-heading{
   width: 100%;
   text-align: center;
+}
+
+textarea {
+  height: 300px;
 }

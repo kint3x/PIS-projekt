@@ -153,7 +153,7 @@ const Employees = () => {
           </div>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Address</span>
-            <InputTextarea placeholder="Address" value={dialog_data.address}
+            <InputTextarea style={{ height: '50px' }} placeholder="Address" value={dialog_data.address}
             onChange={(e) => onInputChange(e, 'address')} />
           </div>
 
