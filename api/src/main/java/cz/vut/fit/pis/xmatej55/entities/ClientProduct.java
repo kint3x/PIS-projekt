@@ -3,11 +3,8 @@ package cz.vut.fit.pis.xmatej55.entities;
 import java.util.Date;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
-import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,18 +30,10 @@ public class ClientProduct {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product")
-    @JsonbTransient
     private Product product;
 
-    public enum ProductState {
-        ProductState_1,
-        ProductState_2,
-        ProductState_3
-    }
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "state")
-    private ProductState state;
+    @Column(name = "active")
+    private Boolean active;
 
     @Column(name = "date")
     @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")
@@ -79,12 +68,12 @@ public class ClientProduct {
         this.product = product;
     }
 
-    public ProductState getState() {
-        return state;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setState(ProductState state) {
-        this.state = state;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Date getDate() {
@@ -95,13 +84,13 @@ public class ClientProduct {
         this.date = date;
     }
 
-    public void setStateWithDate(ProductState state) {
-        this.state = state;
+    public void setActivateWithDate(Boolean active) {
+        this.active = active;
         this.date = new Date(System.currentTimeMillis());
     }
 
-    public void setStateWithDate(ProductState state, Date date) {
-        this.state = state;
+    public void setActivateWithDate(Boolean active, Date date) {
+        this.active = active;
         this.date = date;
     }
 }

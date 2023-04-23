@@ -11,8 +11,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -36,9 +34,7 @@ public class Product {
     @JsonbTransient
     private Set<ClientProduct> clientProducts = new HashSet<ClientProduct>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "EmployeeClient", joinColumns = { @JoinColumn(name = "product_id") }, inverseJoinColumns = {
-            @JoinColumn(name = "employee_id") })
+    @ManyToMany(mappedBy = "products", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonbTransient
     private Set<Employee> employees = new HashSet<Employee>();
 
