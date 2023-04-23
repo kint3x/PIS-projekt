@@ -53,10 +53,10 @@ public class Employees {
 
     }
 
-    // @OPTIONS
-    // public Response options() {
-    //     return Response.ok("").build();
-    // }
+    @OPTIONS
+    public Response options() {
+        return Response.ok("").build();
+    }
 
     @OPTIONS
     @Path("{var:.+}")
