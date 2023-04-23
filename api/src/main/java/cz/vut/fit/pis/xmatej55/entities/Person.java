@@ -26,7 +26,7 @@ public class Person {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "dob")
-    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")  
+    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")  
     private Date dob;
 
     @Column(name = "name")
