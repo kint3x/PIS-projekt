@@ -5,10 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Navbar from './Navbar';
 import Home from './pages/Home/Home';
 import Clients from './pages/Clients/Clients';
-import Meetings from './pages/Meetings/Meetings';
 import Employees from './pages/Employees/Employees';
-import ClientDetail from './pages/Clients/ClientDetail';
-import MeetingDetail from './pages/Meetings/MeetingDetail';
 
 import './App.css';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -39,15 +36,6 @@ function App() {
               </Route>
               <Route exact path="/clients">
                 <Clients />
-              </Route>
-              <Route exact path="/meetings">
-                <Meetings />
-              </Route>
-              <Route exact path="/clients/:id">
-                <ClientDetail />
-              </Route>
-              <Route exact path="/meetings/:id">
-                <MeetingDetail />
               </Route>
               <Route exact path="/employees">
                 <Employees />
