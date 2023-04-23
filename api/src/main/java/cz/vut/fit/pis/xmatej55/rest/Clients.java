@@ -156,4 +156,9 @@ public class Clients {
 
         return Response.ok(clientProductService.findAllProductsByClientId(id)).build();
     }
+
+    // TODO: addEmployee, removeEmployee
+    // TODO: addProduct, removeProduct
+    // TODO: getProducts,
+    // TODO: getEmployees
 }

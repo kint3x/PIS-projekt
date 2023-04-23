@@ -1,6 +1,7 @@
 package cz.vut.fit.pis.xmatej55.managers;
 
 import cz.vut.fit.pis.xmatej55.entities.Client;
+import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.managers.ClientManager;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +48,13 @@ public class ClientManager {
 
     public List<Client> findAll() {
         TypedQuery<Client> query = em.createQuery("SELECT c FROM Client c", Client.class);
+        return query.getResultList();
+    }
+
+    public List<Client> findByEmployee(Employee employee) {
+        TypedQuery<Client> query = em.createQuery("SELECT c FROM Client c JOIN c.employees e WHERE e = :employee",
+                Client.class);
+        query.setParameter("employee", employee);
         return query.getResultList();
     }
 }
