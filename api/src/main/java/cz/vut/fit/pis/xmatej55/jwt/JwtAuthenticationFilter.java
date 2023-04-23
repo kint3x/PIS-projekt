@@ -84,7 +84,7 @@ public class JwtAuthenticationFilter implements ContainerRequestFilter {
             SignedJWT jwt = SignedJWT.parse(token);
             JWTClaimsSet claimsSet = jwt.getJWTClaimsSet();
 
-            // Verify the signature
+            // Check token signature
             JWSVerifier verifier = new RSASSAVerifier(publicKey);
             if (!jwt.verify(verifier)) {
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
