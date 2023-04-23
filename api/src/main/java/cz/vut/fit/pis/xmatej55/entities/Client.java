@@ -3,10 +3,12 @@ package cz.vut.fit.pis.xmatej55.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.OneToMany;
 
@@ -17,10 +19,16 @@ public class Client extends Person {
     @Column(name = "notes")
     private String notes;
 
+    @ManyToMany(mappedBy = "clients", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonbTransient
+    private Set<Employee> employees = new HashSet<Employee>();
+
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonbTransient
     private Set<ClientProduct> clientProducts = new HashSet<ClientProduct>();
 
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonbTransient
     private Set<Meeting> meetings = new HashSet<Meeting>();
 
     public Client() {
@@ -41,6 +49,14 @@ public class Client extends Person {
 
     public void setClientProducts(Set<ClientProduct> clientProducts) {
         this.clientProducts = clientProducts;
+    }
+
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
     }
 
     public Set<Meeting> getMeetings() {

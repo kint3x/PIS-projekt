@@ -9,7 +9,7 @@ export const INITIAL_STATE: ClientState = {
   error: false
 };
 
-const clientModelToState = (
+export const clientModelToState = (
   data: { [key: number]: ClientModel },
   item: ClientModel
 ) => {

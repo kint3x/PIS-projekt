@@ -1,5 +1,8 @@
 import { action } from 'typesafe-actions';
 import { EmployeeTypes, EmployeeModel, EmployeeData } from './types';
+import { MeetingModel } from '../meeting/types';
+import { ProductModel } from '../product/types';
+import { ClientModel } from '../client/types';
 
 export const loadRequest = (
   id: number | 'all',
@@ -38,3 +41,66 @@ export const removeSuccess = (
 ) => action(EmployeeTypes.REMOVE_SUCCESS,{ id });
 
 export const removeFailure = (err: any) => action(EmployeeTypes.REMOVE_FAILURE, err);
+
+export const loadMeetingRequest = (id: number) => action(EmployeeTypes.LOAD_MEETINGS_REQUEST, { id })
+
+export const loadMeetingSuccess = (
+  id: number,
+  data: MeetingModel[]
+) => action(EmployeeTypes.LOAD_MEETINGS_SUCCESS, { id, data })
+
+export const loadMeetingFailure = (err: any) => action(EmployeeTypes.LOAD_MEETINGS_FAILURE, err);
+
+export const loadProductsRequest = (id: number) => action(EmployeeTypes.LOAD_PRODUCTS_REQUEST, { id })
+
+export const loadProductsSuccess = (
+  id: number,
+  data: ProductModel[]
+) => action(EmployeeTypes.LOAD_PRODUCTS_SUCCESS, { id, data })
+
+export const loadProductsFailure = (err: any) => action(EmployeeTypes.LOAD_PRODUCTS_FAILURE, err);
+
+export const loadClientRequest = (id: number) => action(EmployeeTypes.LOAD_CLIENTS_REQUEST, { id })
+
+export const loadClientSuccess = (
+  id: number,
+  data: ClientModel[]
+) => action(EmployeeTypes.LOAD_CLIENTS_SUCCESS, { id, data })
+
+export const loadClientFailure = (err: any) => action(EmployeeTypes.LOAD_CLIENTS_SUCCESS, err);
+
+export const addClientRequest = (
+  employee_id: number,
+  client_id: number
+) => action(EmployeeTypes.ADD_CLIENT_REQUEST, { employee_id, client_id });
+
+export const addClientSuccess = () => action(EmployeeTypes.ADD_CLIENT_SUCCESS);
+
+export const addClientFailure = (err: any) => action(EmployeeTypes.ADD_CLIENT_FAILURE, err);
+
+export const removeClientRequest = (
+  employee_id: number,
+  client_id: number
+) => action(EmployeeTypes.REMOVE_CLIENT_REQUEST, { employee_id, client_id });
+
+export const removeClientSuccess = (id: number) => action(EmployeeTypes.REMOVE_CLIENT_SUCCESS, { id });
+
+export const removeClientFailure = (err: any) => action(EmployeeTypes.REMOVE_CLIENT_FAILURE, err);
+
+export const addProductRequest = (
+  employee_id: number,
+  product_id: number
+) => action(EmployeeTypes.ADD_PRODUCT_REQUEST, { employee_id, product_id });
+
+export const addProductSuccess = () => action(EmployeeTypes.ADD_PRODUCT_REQUEST);
+
+export const addProductFailure = (err: any) => action(EmployeeTypes.ADD_PRODUCT_FAILURE, err);
+
+export const removeProductRequest = (
+  employee_id: number,
+  product_id: number
+) => action(EmployeeTypes.REMOVE_PRODUCT_REQUEST, { employee_id, product_id });
+
+export const removeProductSuccess = (id: number) => action(EmployeeTypes.REMOVE_CLIENT_SUCCESS, { id });
+
+export const removeProductFailure = (err: any) => action(EmployeeTypes.REMOVE_PRODUCT_FAILURE, err);

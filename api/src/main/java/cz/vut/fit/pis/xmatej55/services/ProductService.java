@@ -1,5 +1,6 @@
 package cz.vut.fit.pis.xmatej55.services;
 
+import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.managers.ProductManager;
 import cz.vut.fit.pis.xmatej55.services.ProductService;
@@ -33,5 +34,9 @@ public class ProductService {
 
     public List<Product> findAll() {
         return productManager.findAll();
+    }
+
+    public List<Product> findByEmployee(Employee employee) {
+        return productManager.findByEmployee(employee);
     }
 }

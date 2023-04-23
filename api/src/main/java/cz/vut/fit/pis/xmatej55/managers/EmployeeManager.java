@@ -1,7 +1,8 @@
 package cz.vut.fit.pis.xmatej55.managers;
 
+import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
-import cz.vut.fit.pis.xmatej55.entities.Meeting;
+import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.managers.EmployeeManager;
 import java.util.List;
 import java.util.Optional;
@@ -64,11 +65,17 @@ public class EmployeeManager {
         return em.createQuery("SELECT e FROM Employee e", Employee.class).getResultList();
     }
 
-    public List<Meeting> findAllMeetingsByEmployee(Employee employee) {
-        TypedQuery<Meeting> query = em.createQuery(
-                "SELECT m FROM Meeting m WHERE m.employee.id = :employeeId",
-                Meeting.class);
-        query.setParameter("employeeId", employee.getId());
+    public List<Employee> findByProduct(Product product) {
+        TypedQuery<Employee> query = em
+                .createQuery("SELECT e FROM Employee e JOIN e.products p WHERE p = :product", Employee.class);
+        query.setParameter("product", product);
+        return query.getResultList();
+    }
+
+    public List<Employee> findByClient(Client client) {
+        TypedQuery<Employee> query = em
+                .createQuery("SELECT e FROM Employee e JOIN e.clients c WHERE c = :client", Employee.class);
+        query.setParameter("client", client);
         return query.getResultList();
     }
 }

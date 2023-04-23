@@ -1,5 +1,6 @@
 package cz.vut.fit.pis.xmatej55.managers;
 
+import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.managers.ProductManager;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
@@ -45,5 +47,12 @@ public class ProductManager {
 
     public List<Product> findAll() {
         return em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
+    }
+
+    public List<Product> findByEmployee(Employee employee) {
+        TypedQuery<Product> query = em
+                .createQuery("SELECT p FROM Product p JOIN p.employees e WHERE e = :employee", Product.class);
+        query.setParameter("employee", employee);
+        return query.getResultList();
     }
 }

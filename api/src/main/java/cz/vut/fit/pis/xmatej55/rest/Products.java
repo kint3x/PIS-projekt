@@ -3,8 +3,9 @@ package cz.vut.fit.pis.xmatej55.rest;
 import java.net.URI;
 import java.util.Optional;
 
+import cz.vut.fit.pis.xmatej55.dto.AddClient;
 import cz.vut.fit.pis.xmatej55.dto.AddEmployee;
-import cz.vut.fit.pis.xmatej55.dto.AddProduct;
+import cz.vut.fit.pis.xmatej55.dto.Error;
 import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.ClientProduct;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
@@ -12,35 +13,28 @@ import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.services.ClientProductService;
 import cz.vut.fit.pis.xmatej55.services.ClientService;
 import cz.vut.fit.pis.xmatej55.services.EmployeeService;
-import cz.vut.fit.pis.xmatej55.services.MeetingService;
 import cz.vut.fit.pis.xmatej55.services.ProductService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.OPTIONS;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.OPTIONS;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
-import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.core.Response.Status;
 
-@Path("/clients")
+@Path("/products")
 @ApplicationScoped
-public class Clients {
-    @Inject
-    private ClientService clientService;
-
-    @Inject
-    private MeetingService meetingService;
-
+public class Products {
     @Inject
     private ProductService productService;
 
@@ -48,12 +42,15 @@ public class Clients {
     private EmployeeService employeeService;
 
     @Inject
-    private ClientProductService clientProductService;    
+    private ClientService clientService;
+
+    @Inject
+    private ClientProductService clientProductService;
 
     @Context
     private UriInfo context;
 
-    public Clients() {
+    public Products() {
 
     }
 
@@ -68,49 +65,54 @@ public class Clients {
     //     return Response.ok("").build();
     // }
 
+    // @OPTIONS
+    // @Path("/{id}")
+    // public Response options(@PathParam("id") Long id) {
+    //     return Response.ok("").build();
+    // }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getClients() {
-        return Response.ok(clientService.findAll()).build();
+    public Response getProducts() {
+        return Response.ok(productService.findAll()).build();
     }
 
-    @Path("/{id}")
     @GET
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEmployeeById(@PathParam("id") Long id) {
-        Optional<Client> c = clientService.findById(id);
+    public Response getProductById(@PathParam("id") Long id) {
+        Optional<Product> optProduct = productService.findById(id);
 
-        if (!c.isPresent()) {
+        if (!optProduct.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id)))
-                    .build();
+                    .entity(new Error(String.format("Product with id '%d' not found.", id))).build();
         }
 
-        return Response.ok(c.get()).build();
+        return Response.ok(optProduct.get()).build();
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createEmployee(Client client) {
-        Client savedClient = clientService.create(client);
-        final URI uri = UriBuilder.fromPath("/clients/{resourceServerId}").build(savedClient.getId());
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createProduct(Product product) {
+        Product savedProduct = productService.create(product);
+        final URI uri = UriBuilder.fromPath("/products/{resourceServerId}").build(savedProduct.getId());
 
-        return Response.created(uri).entity(savedClient).build();
+        return Response.created(uri).entity(savedProduct).build();
     }
 
     @Path("/{id}")
     @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response removeEmployee(@PathParam("id") Long id) {
-        Optional<Client> c = clientService.findById(id);
+    public Response removeProduct(@PathParam ("id") Long id) {
+        Optional<Product> p = productService.findById(id);
 
-        if (!c.isPresent()) {
+        if (!p.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id))).build();
+                    .entity(new Error(String.format("Product with id '%d' not found.", id))).build();
         }
 
-        clientService.deleteById(c.get().getId());
+        productService.deleteById(p.get().getId());
+
         return Response.ok().build();
     }
 
@@ -118,98 +120,46 @@ public class Clients {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateEmployee(@PathParam("id") Long id, Client newClient) {
-        Optional<Client> old = clientService.findById(id);
+    public Response updateProduct(@PathParam("id") Long id, Product newProduct) {
+        Optional<Product> optProduct = productService.findById(id);
 
-        if (!old.isPresent()) {
+        if (!optProduct.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id))).build();
+                    .entity(new Error(String.format("Product with id '%d' not found.", id))).build();
         }
 
-        Client oldClient = old.get();
+        Product oldProduct = optProduct.get();
 
-        oldClient.setNotes(newClient.getNotes());
-        oldClient.setPhone(newClient.getPhone());
-        oldClient.setAddress(newClient.getAddress());
-        oldClient.setDob(newClient.getDob());
-        oldClient.setName(newClient.getName());
-        oldClient.setSurname(newClient.getSurname());
-        oldClient.setEmail(newClient.getEmail());
-        oldClient.setImage(newClient.getImage());
+        oldProduct.setName(newProduct.getName());
 
-        return Response.ok(clientService.update(oldClient)).build();
-    }
-
-    @Path("/{id}/meetings")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getMeetings(@PathParam("id") Long id) {
-        Optional<Client> optClient = clientService.findById(id);
-
-        if (!optClient.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id))).build();
-        }
-
-        Client client = optClient.get();
-
-        return Response.ok(meetingService.findAllByClient(client)).build();
+        return Response.ok(productService.update(oldProduct)).build();
     }
 
     @Path("/{id}/employees")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEmployees(@PathParam("id") Long id) {
-        Optional<Client> optClient = clientService.findById(id);
+        Optional<Product> optProduct = productService.findById(id);
 
-        if (!optClient.isPresent()) {
+        if (!optProduct.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id))).build();
+                    .entity(new Error(String.format("Product with id '%d' not found.", id))).build();
         }
 
-        Client client = optClient.get();
+        Product product = optProduct.get();
 
-        return Response.ok(employeeService.findByClient(client)).build();
+        return Response.ok(employeeService.findByProduct(product)).build();
     }
-
 
     @Path("/{id}/add_employee")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public Response addEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
-        Optional<Client> optClient = clientService.findById(id);
-        
-        if (!optClient.isPresent()) {
+        Optional<Product> optProduct = productService.findById(id);
+
+        if (!optProduct.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id)))
-                    .build();
-        }
-        
-        Optional<Employee> optEmployee = employeeService.findById(employeeDTO.getEmployeeId());
-        
-        if (!optEmployee.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-            .entity(new Error(String.format("Employee with id '%d' not found.", employeeDTO.getEmployeeId()))).build();
-        }
-
-        Client client = optClient.get();
-        Employee employee = optEmployee.get();
-
-        employee.addClient(client);
-        employeeService.update(employee);
-        
-        return Response.ok(client).build();
-    }
-
-    @Path("/{id}/remove_employee")
-    @DELETE 
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response removeEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
-        Optional<Client> optClient = clientService.findById(id);
-
-        if (!optClient.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id)))
+                    .entity(new Error(String.format("Product with id '%d' not found.", id)))
                     .build();
         }
 
@@ -221,49 +171,79 @@ public class Clients {
                     .build();
         }
 
-        Client client = optClient.get();
+        Product product = optProduct.get();
         Employee employee = optEmployee.get();
 
-        employee.removeClient(client);
+        employee.addProduct(product);
         employeeService.update(employee);
 
-        return Response.ok(client).build();
+        return Response.ok(product).build();
+    }
+
+    @Path("/{id}/remove_employee")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
+        Optional<Product> optProduct = productService.findById(id);
+
+        if (!optProduct.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Product with id '%d' not found.", id)))
+                    .build();
+        }
+
+        Optional<Employee> optEmployee = employeeService.findById(employeeDTO.getEmployeeId());
+
+        if (!optEmployee.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Employee with id '%d' not found.", employeeDTO.getEmployeeId())))
+                    .build();
+        }
+
+        Product product = optProduct.get();
+        Employee employee = optEmployee.get();
+
+        employee.removeProduct(product);
+        employeeService.update(employee);
+
+        return Response.ok(product).build();
     }
 
     @Path("/{id}/client_products")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getClients(@PathParam("id") Long id) {
-        Optional<Client> optClient = clientService.findById(id);
-
-        if (!optClient.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id))).build();
-        }
-
-        Client client = optClient.get();
-
-        return Response.ok(clientProductService.findByClient(client)).build();
-    }
-
-    @Path("/{id}/add_product")
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response addProduct(@PathParam("id") Long id, AddProduct productDTO) {
-        Optional<Product> optProduct = productService.findById(productDTO.getProductId());
+        Optional<Product> optProduct = productService.findById(id);
 
         if (!optProduct.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Product with id '%d' not found.", productDTO.getProductId()))).build();
+                    .entity(new Error(String.format("Product with id '%d' not found.", id))).build();
         }
 
-        Optional<Client> optClient = clientService.findById(id);
+        Product product = optProduct.get();
+
+        return Response.ok(clientProductService.findByProduct(product)).build();
+    }
+
+    @Path("/{id}/add_client")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addClient(@PathParam("id") Long id, AddClient clientDTO) {
+        Optional<Product> optProduct = productService.findById(id);
+
+        if (!optProduct.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Product with id '%d' not found.", id))).build();
+        }
+
+        Optional<Client> optClient = clientService.findById(clientDTO.getClientId());
 
         if (!optClient.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id)))
+                    .entity(new Error(String.format("Client with id '%d' not found.", clientDTO.getClientId())))
                     .build();
         }
+
 
         Client client = optClient.get();
         Product product = optProduct.get();
@@ -287,22 +267,22 @@ public class Clients {
         return Response.ok(savedClientProduct).build();
     }
 
-    @Path("/{id}/remove_product")
+    @Path("/{id}/remove_client")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeProduct(@PathParam("id") Long id, AddProduct productDTO) {
-        Optional<Product> optProduct = productService.findById(productDTO.getProductId());
+    public Response removeClient(@PathParam("id") Long id, AddClient clientDTO) {
+        Optional<Product> optProduct = productService.findById(id);
 
         if (!optProduct.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Product with id '%d' not found.", productDTO.getProductId()))).build();
+                    .entity(new Error(String.format("Product with id '%d' not found.", id))).build();
         }
 
-        Optional<Client> optClient = clientService.findById(id);
+        Optional<Client> optClient = clientService.findById(clientDTO.getClientId());
 
         if (!optClient.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id)))
+                    .entity(new Error(String.format("Client with id '%d' not found.", clientDTO.getClientId())))
                     .build();
         }
 

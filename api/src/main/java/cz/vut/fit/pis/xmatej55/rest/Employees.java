@@ -3,9 +3,16 @@ package cz.vut.fit.pis.xmatej55.rest;
 import java.net.URI;
 import java.util.Optional;
 
+import cz.vut.fit.pis.xmatej55.dto.AddClient;
+import cz.vut.fit.pis.xmatej55.dto.AddProduct;
+import cz.vut.fit.pis.xmatej55.dto.Error;
+import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
-import cz.vut.fit.pis.xmatej55.entities.Error;
+import cz.vut.fit.pis.xmatej55.entities.Product;
+import cz.vut.fit.pis.xmatej55.services.ClientService;
 import cz.vut.fit.pis.xmatej55.services.EmployeeService;
+import cz.vut.fit.pis.xmatej55.services.MeetingService;
+import cz.vut.fit.pis.xmatej55.services.ProductService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.PathParam;
@@ -30,6 +37,15 @@ public class Employees {
     @Inject
     private EmployeeService employeeService;
 
+    @Inject
+    private MeetingService meetingService;
+
+    @Inject
+    private ClientService clientService;
+
+    @Inject
+    private ProductService productService;
+
     @Context
     private UriInfo context;
 
@@ -37,13 +53,13 @@ public class Employees {
 
     }
 
-    @OPTIONS
-    public Response options() {
-        return Response.ok("").build();
-    }
+    // @OPTIONS
+    // public Response options() {
+    //     return Response.ok("").build();
+    // }
 
     @OPTIONS
-    @Path("/{id}")
+    @Path("{var:.+}")
     public Response options(@PathParam("id") Long id) {
         return Response.ok("").build();
     }
@@ -85,6 +101,7 @@ public class Employees {
 
         Employee savedEmployee = employeeService.create(employee);
         final URI uri = UriBuilder.fromPath("/employees/{resourceServerId}").build(savedEmployee.getId());
+
         return Response.created(uri).entity(savedEmployee).build();
     }
 
@@ -100,6 +117,7 @@ public class Employees {
         }
 
         employeeService.deleteById(e.get().getId());
+
         return Response.ok().build();
     }
 
@@ -107,7 +125,7 @@ public class Employees {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateEmployee(@PathParam("id") Long id, Employee newEmployee) {
+    public Response updateMeeting(@PathParam("id") Long id, Employee newEmployee) {
         Optional<Employee> old = employeeService.findById(id);
 
         if (!old.isPresent()) {
@@ -137,5 +155,160 @@ public class Employees {
         oldEmployee.setImage(newEmployee.getImage());
 
         return Response.ok(employeeService.update(oldEmployee)).build();
+    }
+
+    @Path("/{id}/meetings")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMeetings(@PathParam("id") Long id) {
+        Optional<Employee> optEmployee = employeeService.findById(id);
+
+        if (!optEmployee.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
+        }
+
+        Employee employee = optEmployee.get();
+
+        return Response.ok(meetingService.findAllByEmployee(employee)).build();
+    }
+
+    @Path("/{id}/products")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getProducts(@PathParam("id") Long id) {
+        Optional<Employee> optEmployee = employeeService.findById(id);
+
+        if (!optEmployee.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
+        }
+
+        Employee employee = optEmployee.get();
+
+        return Response.ok(productService.findByEmployee(employee)).build();
+    }
+
+    @Path("/{id}/clients")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getClients(@PathParam("id") Long id) {
+        Optional<Employee> optEmployee = employeeService.findById(id);
+
+        if (!optEmployee.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
+        }
+
+        Employee employee = optEmployee.get();
+
+        return Response.ok(clientService.findByEmployee(employee)).build();
+    }
+
+    @Path("/{id}/add_client")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addClient(@PathParam("id") Long id, AddClient clientDTO) {
+        Optional<Employee> optEmployee = employeeService.findById(id);
+
+        if (!optEmployee.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
+        }
+
+        Optional<Client> optClient = clientService.findById(clientDTO.getClientId());
+
+        if(!optClient.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                .entity(new Error(String.format("Client with id '%d' not found.", clientDTO.getClientId()))).build();
+        }
+    
+        Employee employee = optEmployee.get();
+        Client client = optClient.get();
+
+        employee.addClient(client);
+
+        return Response.ok(employeeService.update(employee)).build();
+    }
+
+    @Path("/{id}/remove_client")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeClient(@PathParam("id") Long id, AddClient clientDTO) {
+        Optional<Employee> optEmployee = employeeService.findById(id);
+
+        if (!optEmployee.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
+        }
+
+        Optional<Client> optClient = clientService.findById(clientDTO.getClientId());
+
+        if (!optClient.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Client with id '%d' not found.", clientDTO.getClientId())))
+                    .build();
+        }
+
+        Employee employee = optEmployee.get();
+        Client client = optClient.get();
+
+        employee.removeClient(client);
+
+        return Response.ok(employeeService.update(employee)).build();
+    }
+
+    @Path("/{id}/add_product")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addProduct(@PathParam("id") Long id, AddProduct productDTO) {
+        Optional<Employee> optEmployee = employeeService.findById(id);
+
+        if (!optEmployee.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
+        }
+
+        Optional<Product> optProduct = productService.findById(productDTO.getProductId());
+
+        if (!optProduct.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Client with id '%d' not found.", productDTO.getProductId())))
+                    .build();
+        }
+
+        Employee employee = optEmployee.get();
+        Product product = optProduct.get();
+
+        employee.addProduct(product);
+
+        return Response.ok(employeeService.update(employee)).build();
+    }
+
+    @Path("/{id}/remove_product")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeClient(@PathParam("id") Long id, AddProduct productDTO) {
+        Optional<Employee> optEmployee = employeeService.findById(id);
+
+        if (!optEmployee.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
+        }
+
+        Optional<Product> optProduct = productService.findById(productDTO.getProductId());
+
+        if (!optProduct.isPresent()) {
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Client with id '%d' not found.", productDTO.getProductId())))
+                    .build();
+        }
+
+        Employee employee = optEmployee.get();
+        Product product = optProduct.get();
+
+        employee.removeProduct(product);
+
+        return Response.ok(employeeService.update(employee)).build();
     }
 }
