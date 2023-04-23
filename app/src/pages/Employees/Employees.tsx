@@ -6,6 +6,8 @@ import { useEffect, useState} from 'react';
 import { loadRequest as loadEmployees } from '../../store/ducks/employee/actions';
 import { updateRequest as updateEmployee } from '../../store/ducks/employee/actions';
 import { removeRequest as removeEmployee } from '../../store/ducks/employee/actions';
+import { createRequest as addEmployee } from '../../store/ducks/employee/actions'
+
 import { AppState } from '../../store';
 
 import { DataTable, DataTableValueArray , DataTableRowClickEvent } from 'primereact/datatable';
@@ -17,6 +19,7 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { RadioButton } from 'primereact/radiobutton';
 import { Calendar } from 'primereact/calendar';
+import { format } from "date-fns";
 
 //#TODO if clicked, edit user 
 //#Add user
@@ -26,11 +29,12 @@ const Employees = () => {
     const dispatch = useDispatch();
     
     const [show_dialog,setShowDialog] = useState(false);
+    const [show_add_dialog,setShowAddDialog] = useState(false);
 
     useEffect(() => {
       dispatch(loadEmployees('all'));
-    }, [dispatch,show_dialog]);
-    
+    }, [dispatch,show_dialog,show_add_dialog]);   
+
     const employees = useSelector((state: AppState) => state.employee.data);
     const loading = useSelector((state: AppState) => state.employee.loading);
     const error = useSelector((state: AppState) => state.employee.error);
@@ -38,6 +42,7 @@ const Employees = () => {
         
     const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
     const [dialog_data, setDialogData] = useState<any>({});
+    const [add_dialog_data, setAddDialogData] = useState<any>({});
 
     var password_change = "";
 
@@ -84,11 +89,24 @@ const Employees = () => {
           setShowDialog(true);
         }
     }
+
+    function AddUserSubmit(){
+      dispatch(addEmployee(add_dialog_data));
+      if(!error){
+        setShowAddDialog(false);
+        setModalErr({msg: "", visible: "hidden"});
+      }
+      else{
+        setModalErr({msg: errMsg, visible: ""})
+        setShowAddDialog(true);
+      }
+    }
     
 
     return(
       <>
         <div className='page-heading'><h1>Employees</h1><br /></div>
+        <Button label="Add" severity="success" onClick={()=>setShowAddDialog(true)}/>
         <DataTable loading={loading} value={Object.values(employees)} tableStyle={{ minWidth: '50rem' }} 
         onRowClick={onClickHandle}
         >
@@ -99,7 +117,6 @@ const Employees = () => {
         </DataTable>
 
         <Dialog header="Edit User" className="edit-user" visible={show_dialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
-          {JSON.stringify(dialog_data)}
           <div className={modal_err_msg.visible}>
             <Message severity="error" text={modal_err_msg.msg} />
           </div>
@@ -116,16 +133,16 @@ const Employees = () => {
 
           <div className="flex flex-wrap gap-3">
             <div className="flex align-items-center">
-                <RadioButton inputId="Worker" name="type" value="Worker" onClick={(e)=>setDialogData({...dialog_data, type: "Worker"})} 
+                <RadioButton inputId="Worker" name="type" value="Worker" onChange={(e)=>setDialogData({...dialog_data, type: "Worker"})} 
                 checked={dialog_data.type == "Worker"} />
                 <label htmlFor="Worker" className="ml-2">Worker</label>
             </div>
             <div className="flex align-items-center">
-                <RadioButton inputId="Manager" name="type" value="Manager"  checked={dialog_data.type == "Manager"} />
+                <RadioButton inputId="Manager" name="type" value="Manager" onChange={(e)=>setDialogData({...dialog_data, type: "Manager"})} checked={dialog_data.type == "Manager"} />
                 <label htmlFor="Manager" className="ml-2">Manager</label>
             </div>
             <div className="flex align-items-center">
-                <RadioButton inputId="Owner" name="type" value="Owner" checked={dialog_data.type == "Owner"} />
+                <RadioButton inputId="Owner" name="type" value="Owner" onChange={(e)=>setDialogData({...dialog_data, type: "Owner"})} checked={dialog_data.type == "Owner"} />
                 <label htmlFor="Owner" className="ml-2">Owner</label>
             </div>
           </div>
@@ -152,11 +169,14 @@ const Employees = () => {
             <span className="p-inputgroup-addon">DOB</span>
             <Calendar
               showIcon={true}
-              value={new Date(dialog_data.date)}
-              onChange={(e) => {console.log(new Date(dialog_data.date))}}
-              dateFormat="dd-mm-yy"
-              mask="99-99-99"
-              />
+              value={new Date(dialog_data.dob)}
+              onChange={(e) => 
+                {
+                  if(e.value instanceof Date) setDialogData({...dialog_data, dob: format(e.value, "yyyy-MM-dd")+"T00:00:00"})
+                }
+              }
+              dateFormat="yy-mm-dd"
+                  />
           </div>
           
 
@@ -174,6 +194,82 @@ const Employees = () => {
           <Button label="Submit" severity="success" onClick = {() => onUserEdit()} />
           <Button label="Delete" severity="danger"  onClick = {() => onUserDelete()} className="float-right"/>
       </Dialog>
+
+      <Dialog header="Add User" className="add-user" visible={show_add_dialog} style={{ width: '50vw' }} onHide={() => {setShowAddDialog(false);setAddDialogData({}) }}>
+          <div className={modal_err_msg.visible}>
+            <Message severity="error" text={modal_err_msg.msg} />
+          </div>
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Username</span>
+            <InputText placeholder="Username" onChange={(e)=>setAddDialogData({...add_dialog_data, username: e.target.value})}/>
+          </div>
+          
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Password</span>
+            <InputText placeholder="Password" onChange={(e)=>setAddDialogData({...add_dialog_data, password: e.target.value})}/>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <div className="flex align-items-center">
+                <RadioButton inputId="Worker" name="type" value="Worker" 
+                onChange={(e)=>setAddDialogData({...add_dialog_data, type: "Worker"})}
+                checked={add_dialog_data.type == "Worker"}/>
+                <label htmlFor="Worker" className="ml-2">Worker</label>
+            </div>
+            <div className="flex align-items-center">
+                <RadioButton inputId="Manager" name="type" value="Manager" 
+                onChange={(e)=>setAddDialogData({...add_dialog_data, type: "Manager"})}
+                checked={add_dialog_data.type == "Manager"}/>
+                <label htmlFor="Manager" className="ml-2">Manager</label>
+            </div>
+            <div className="flex align-items-center">
+                <RadioButton inputId="Owner" name="type" value="Owner" 
+                onChange={(e)=>setAddDialogData({...add_dialog_data, type: "Owner"})}
+                checked={add_dialog_data.type == "Owner"}/>
+                <label htmlFor="Owner" className="ml-2">Owner</label>
+            </div>
+          </div>
+
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Email</span>
+            <InputText placeholder="Email" onChange={(e)=>setAddDialogData({...add_dialog_data, email: e.target.value})}/>
+          </div>
+
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Name</span>
+            <InputText placeholder="Name" onChange={(e)=>setAddDialogData({...add_dialog_data, name: e.target.value})}/>
+          </div>
+          
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Surname</span>
+            <InputText placeholder="Surname" onChange={(e)=>setAddDialogData({...add_dialog_data, surname: e.target.value})}/>
+          </div>
+
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">DOB</span>
+            <Calendar
+              showIcon={true}
+              onChange={(e) => 
+                {
+                  if(e.value instanceof Date) setAddDialogData({...add_dialog_data, dob: format(e.value, "yyyy-MM-dd")+"T00:00:00"})
+                }
+              }
+              dateFormat="yy-mm-dd"
+                  />
+          </div>
+          
+
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Phone</span>
+            <InputText placeholder="Phone" onChange={(e)=>setAddDialogData({...add_dialog_data, phone: e.target.value})}/>
+          </div>
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Address</span>
+            <InputTextarea placeholder="Address" onChange={(e)=>setAddDialogData({...add_dialog_data, address: e.target.value})}/>
+          </div>
+
+          <Button label="Submit" severity="success" onClick = {() => AddUserSubmit()} />
+        </Dialog>
       </>
     );
 
