@@ -1,4 +1,4 @@
-import React from 'react'
+/*import React from 'react'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState} from 'react';
@@ -138,5 +138,9 @@ const Products = () => {
     );
   
 }
-   
+
+export default Products;
+*/
+
+const Products = () => {}
 export default Products;
