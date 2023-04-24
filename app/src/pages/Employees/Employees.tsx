@@ -264,7 +264,7 @@ const Employees = () => {
           </div>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Address</span>
-            <InputTextarea placeholder="Address" onChange={(e)=>setAddDialogData({...add_dialog_data, address: e.target.value})}/>
+            <InputTextarea style={{ height: '50px' }} placeholder="Address" onChange={(e)=>setAddDialogData({...add_dialog_data, address: e.target.value})}/>
           </div>
 
           <Button label="Submit" severity="success" onClick = {() => AddUserSubmit()} />

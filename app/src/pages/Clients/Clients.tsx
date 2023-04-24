@@ -101,14 +101,21 @@ const Clients = () => {
 
     //temporary solution till authentification works
     const [loggedUser,setLoggedUser] = useState("Worker");
+    const [readOnly,setReadOnly] = useState(true);
 
     function changeUser() : void{
-        if (loggedUser === "Worker")
+        if (loggedUser === "Worker"){
           setLoggedUser("Manager")
-        else if (loggedUser === "Manager")
+          setReadOnly(false)
+        }
+        else if (loggedUser === "Manager"){
           setLoggedUser("Owner")
-        else if (loggedUser === "Owner")
+          setReadOnly(false)
+        }
+        else if (loggedUser === "Owner"){
           setLoggedUser("Worker")
+          setReadOnly(true)
+        }
   
         console.log(loggedUser)
     }
@@ -159,9 +166,6 @@ const Clients = () => {
         // TODO delete ClientProduct object, cascade to delete assigned employees
     }
 
-
-
-
     return(
       <>
         <div className='page-heading'><h1>Clients</h1><br /></div>
@@ -195,19 +199,19 @@ const Clients = () => {
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Email</span>
-            <InputText placeholder="Email"  value={client_dialog_data.email} 
+            <InputText placeholder="Email" readOnly={readOnly}  value={client_dialog_data.email} 
             onChange={(e) => onInputChange(e, 'email')} />
           </div>
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Name</span>
-            <InputText placeholder="Name" value={client_dialog_data.name}
+            <InputText placeholder="Name" readOnly={readOnly} value={client_dialog_data.name}
             onChange={(e) => onInputChange(e, 'name')} />
           </div>
           
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Surname</span>
-            <InputText placeholder="Surname" value={client_dialog_data.surname}
+            <InputText placeholder="Surname" readOnly={readOnly} value={client_dialog_data.surname}
             onChange={(e) => onInputChange(e, 'surname')} />
           </div>
 
@@ -215,6 +219,7 @@ const Clients = () => {
             <span className="p-inputgroup-addon">DOB</span>
             <Calendar
               showIcon={true}
+              disabled={readOnly}
               value={new Date(client_dialog_data.dob)}
               onChange={(e) => 
                 {
@@ -227,13 +232,13 @@ const Clients = () => {
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Phone</span>
-            <InputText placeholder="Phone" value={client_dialog_data.phone}
+            <InputText placeholder="Phone" readOnly={readOnly} value={client_dialog_data.phone}
             onChange={(e) => onInputChange(e, 'phone')} />
           </div>
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Address</span>
-            <InputTextarea style={{ height: '50px' }} placeholder="Address" value={client_dialog_data.address}
+            <InputTextarea style={{ height: '50px' }} placeholder="Address" readOnly={readOnly} value={client_dialog_data.address}
             onChange={(e) => onInputChange(e, 'address')} />
           </div>
 
