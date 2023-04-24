@@ -48,7 +48,7 @@ function* remove(action: AnyAction) {
   }
 }
 
-function* load_meetings(action: AnyAction) {
+function* loadMeetings(action: AnyAction) {
   const { id } = action.payload;
   try {
     const response: { [key: string] : any } = yield call(api.get, `/${endpoint}/${id}/meetings`);
@@ -59,7 +59,7 @@ function* load_meetings(action: AnyAction) {
   }
 }
 
-function* load_employees(action: AnyAction) {
+function* loadEmployees(action: AnyAction) {
   const { id } = action.payload;
   try {
     const response: { [key: string] : any } = yield call(api.get, `/${endpoint}/${id}/employees`);
@@ -70,7 +70,7 @@ function* load_employees(action: AnyAction) {
   }
 }
 
-function* add_employee(action: AnyAction) {
+function* addEmployee(action: AnyAction) {
   const { employee_id, client_id } = action.payload;
   try {
     yield call(api.post, `/${endpoint}/${client_id}/add_employee`, { "employeeId": employee_id });
@@ -80,7 +80,7 @@ function* add_employee(action: AnyAction) {
   }
 }
 
-function* remove_employee(action: AnyAction) {
+function* removeEmployee(action: AnyAction) {
   const { employee_id, client_id } = action.payload;
   try {
     yield call(api.delete, `/${endpoint}/${client_id}/remove_employee`, { "data": {"employeeId": employee_id }});
@@ -90,7 +90,7 @@ function* remove_employee(action: AnyAction) {
   }
 }
 
-function* load_client_products(action: AnyAction) {
+function* loadClientProducts(action: AnyAction) {
   const { id } = action.payload;
   try {
     const response: { [key: string] : any } = yield call(api.get, `/${endpoint}/${id}/client_products`);
@@ -101,7 +101,7 @@ function* load_client_products(action: AnyAction) {
   }
 }
 
-function* add_product(action: AnyAction) {
+function* addProduct(action: AnyAction) {
   const { product_id, client_id } = action.payload;
   try {
     yield call(api.post, `/${endpoint}/${client_id}/add_product`, { "productId": product_id });
@@ -111,7 +111,7 @@ function* add_product(action: AnyAction) {
   }
 }
 
-function* remove_product(action: AnyAction) {
+function* removeProduct(action: AnyAction) {
   const { product_id, client_id } = action.payload;
   try {
     yield call(api.delete, `/${endpoint}/${client_id}/remove_product`, { "data": {"productId": product_id }});
@@ -126,12 +126,13 @@ const clientSagas = [
   takeLatest(ClientTypes.CREATE_REQUEST, create),
   takeLatest(ClientTypes.UPDATE_REQUEST, update),
   takeLatest(ClientTypes.REMOVE_REQUEST, remove),
-  takeLatest(ClientTypes.LOAD_MEETINGS_REQUEST, load_meetings),
-  takeLatest(ClientTypes.LOAD_EMPLOYEES_REQUEST, load_employees),
-  takeLatest(ClientTypes.ADD_EMPLOYEE_REQUEST, add_employee),
-  takeLatest(ClientTypes.LOAD_CLIENT_PRODUCTS_REQUEST, load_client_products),
-  takeLatest(ClientTypes.ADD_PRODUCT_REQUEST, add_product),
-  takeLatest(ClientTypes.REMOVE_PRODUCT_REQUEST, remove_product)
+  takeLatest(ClientTypes.LOAD_MEETINGS_REQUEST, loadMeetings),
+  takeLatest(ClientTypes.LOAD_EMPLOYEES_REQUEST, loadEmployees),
+  takeLatest(ClientTypes.ADD_EMPLOYEE_REQUEST, addEmployee),
+  takeLatest(ClientTypes.REMOVE_EMPLOYEE_REQUEST, removeEmployee),
+  takeLatest(ClientTypes.LOAD_CLIENT_PRODUCTS_REQUEST, loadClientProducts),
+  takeLatest(ClientTypes.ADD_PRODUCT_REQUEST, addProduct),
+  takeLatest(ClientTypes.REMOVE_PRODUCT_REQUEST, removeProduct)
 ];
 
 export default clientSagas;
