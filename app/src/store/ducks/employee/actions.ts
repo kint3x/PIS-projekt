@@ -42,14 +42,14 @@ export const removeSuccess = (
 
 export const removeFailure = (err: any) => action(EmployeeTypes.REMOVE_FAILURE, err);
 
-export const loadMeetingRequest = (id: number) => action(EmployeeTypes.LOAD_MEETINGS_REQUEST, { id })
+export const loadMeetingsRequest = (id: number) => action(EmployeeTypes.LOAD_MEETINGS_REQUEST, { id })
 
-export const loadMeetingSuccess = (
+export const loadMeetingsSuccess = (
   id: number,
   data: MeetingModel[]
 ) => action(EmployeeTypes.LOAD_MEETINGS_SUCCESS, { id, data })
 
-export const loadMeetingFailure = (err: any) => action(EmployeeTypes.LOAD_MEETINGS_FAILURE, err);
+export const loadMeetingsFailure = (err: any) => action(EmployeeTypes.LOAD_MEETINGS_FAILURE, err);
 
 export const loadProductsRequest = (id: number) => action(EmployeeTypes.LOAD_PRODUCTS_REQUEST, { id })
 
@@ -101,6 +101,6 @@ export const removeProductRequest = (
   product_id: number
 ) => action(EmployeeTypes.REMOVE_PRODUCT_REQUEST, { employee_id, product_id });
 
-export const removeProductSuccess = (id: number) => action(EmployeeTypes.REMOVE_CLIENT_SUCCESS, { id });
+export const removeProductSuccess = (id: number) => action(EmployeeTypes.REMOVE_PRODUCT_SUCCESS, { id });
 
 export const removeProductFailure = (err: any) => action(EmployeeTypes.REMOVE_PRODUCT_FAILURE, err);
