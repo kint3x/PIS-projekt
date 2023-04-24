@@ -54,9 +54,9 @@ function* load_meetings(action: AnyAction) {
   try {
     const response: { [key: string] : any } = yield call(api.get, `/${endpoint}/${id}/meetings`);
     const data = response.data;
-    yield put(actions.loadMeetingSuccess(id, data));
+    yield put(actions.loadMeetingsSuccess(id, data));
   } catch (err) {
-    yield put(actions.loadMeetingFailure(err as any));
+    yield put(actions.loadMeetingsFailure(err as any));
   }
 }
 

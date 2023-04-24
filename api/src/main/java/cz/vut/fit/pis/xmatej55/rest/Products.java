@@ -55,7 +55,7 @@ public class Products {
     }
 
     @OPTIONS
-    @Path("{var:.+}")
+    @Path("{var:.*}")
     public Response options(@PathParam("id") Long id) {
         return Response.ok("").build();
     }
