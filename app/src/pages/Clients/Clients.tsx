@@ -22,16 +22,20 @@ import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Calendar } from 'primereact/calendar';
 import { format } from "date-fns";
 
+// TODD page available for every user, but for "worker" it only shows their own clients
+// TODO disable editing for "worker"
 
 const Clients = () => {
     const dispatch = useDispatch();
     
     const [show_client_dialog,setShowClientDialog] = useState(false);
     const [show_add_client_dialog,setShowAddClientDialog] = useState(false);
+    const [show_notes_dialog,setShowNotesDialog] = useState(false)
+    const [show_clientproduct_dialog,setShowClientProductDialog] = useState(false);
 
     useEffect(() => {
       dispatch(loadClients('all'));
-    }, [dispatch,show_client_dialog,show_add_client_dialog]);   
+    }, [dispatch,show_client_dialog,show_add_client_dialog,show_notes_dialog,show_clientproduct_dialog]);   
 
     const clients = useSelector((state: AppState) => state.client.data);
     const loading = useSelector((state: AppState) => state.client.loading);
@@ -108,15 +112,8 @@ const Clients = () => {
   
         console.log(loggedUser)
     }
-    
-
-    //todo add submit button for editing notes
-    const [show_notes,setShowNotes] = useState(false)
-
 
     // const cp_dispatch = useDispatch();
-    
-    const [show_clientproduct_dialog,setShowClientProductDialog] = useState(false);
 
     // useEffect(() => {
     //   dispatch(loadClients('all'));
@@ -185,9 +182,10 @@ const Clients = () => {
 
         <Dialog header="Edit Client" className="edit-client" visible={show_client_dialog} style={{ width: '50%' }} onHide={() => setShowClientDialog(false)}>
           
-          <Dialog header="Notes" visible={show_notes} style={{ width: '50%' }} onHide={() => setShowNotes(false)}>
+          <Dialog header="Notes" visible={show_notes_dialog} style={{ width: '50%' }} onHide={() => setShowNotesDialog(false)}>
             <InputTextarea style={{ width: '100%' }} placeholder="Notes" value={client_dialog_data.notes}
             onChange={(e) => onInputChange(e, 'notes')} />
+            <Button label="Submit" severity="success" onClick = {() => {onClientEdit();setShowNotesDialog(false);setShowClientDialog(true)}}/>
           </Dialog>
           
           {JSON.stringify(client_dialog_data)}
@@ -240,9 +238,9 @@ const Clients = () => {
           </div>
 
           {loggedUser !== "Worker" && <Button label="Submit" severity="success" onClick = {() => onClientEdit()} />}
-          {loggedUser !== "Manager" && <Button label="View notes" severity="success" onClick = {() => setShowNotes(true)} />}
+          {loggedUser !== "Manager" && <Button label="View notes" severity="success" onClick = {() => setShowNotesDialog(true)} />}
           {loggedUser !== "Worker" && <Button label="Assign employees" severity="success"  onClick = {() => setShowClientProductDialog(true)}/>}
-          <Button label="Delete" severity="danger"  onClick = {() => onClientDelete()} className="float-right"/>
+          {loggedUser !== "Worker" && <Button label="Delete" severity="danger"  onClick = {() => onClientDelete()} className="float-right"/>}
       </Dialog>
 
 

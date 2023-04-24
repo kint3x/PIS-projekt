@@ -21,9 +21,8 @@ import { RadioButton } from 'primereact/radiobutton';
 import { Calendar } from 'primereact/calendar';
 import { format } from "date-fns";
 
-//#TODO if clicked, edit user 
-//#Add user
-
+//TODO page availabe only for manager
+//TODO add asigning to products when products api works
 
 const Employees = () => {
     const dispatch = useDispatch();
