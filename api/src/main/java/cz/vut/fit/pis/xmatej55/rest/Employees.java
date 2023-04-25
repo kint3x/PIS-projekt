@@ -59,7 +59,7 @@ public class Employees {
     }
 
     @OPTIONS
-    @Path("{var:.*}")
+    @Path("{var:.+}")
     public Response options(@PathParam("id") Long id) {
         return Response.ok("").build();
     }
@@ -227,8 +227,9 @@ public class Employees {
         Client client = optClient.get();
 
         employee.addClient(client);
+        employeeService.update(employee);
 
-        return Response.ok(employeeService.update(employee)).build();
+        return Response.ok(clientService.findByEmployee(employee)).build();
     }
 
     @Path("/{id}/remove_client")
@@ -254,8 +255,9 @@ public class Employees {
         Client client = optClient.get();
 
         employee.removeClient(client);
+        employeeService.update(employee);
 
-        return Response.ok(employeeService.update(employee)).build();
+        return Response.ok().build();
     }
 
     @Path("/{id}/add_product")
@@ -281,8 +283,9 @@ public class Employees {
         Product product = optProduct.get();
 
         employee.addProduct(product);
+        employeeService.update(employee);
 
-        return Response.ok(employeeService.update(employee)).build();
+        return Response.ok(productService.findByEmployee(employee)).build();
     }
 
     @Path("/{id}/remove_product")
@@ -308,7 +311,8 @@ public class Employees {
         Product product = optProduct.get();
 
         employee.removeProduct(product);
+        employeeService.update(employee);
 
-        return Response.ok(employeeService.update(employee)).build();
+        return Response.ok().build();
     }
 }

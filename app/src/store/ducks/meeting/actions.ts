@@ -1,5 +1,6 @@
 import { action } from 'typesafe-actions';
 import { MeetingModel, MeetingData, MeetingTypes } from './types';
+import { EmployeeModel } from '../employee/types';
 
 export const loadRequest = (
   id: number | 'all'
@@ -16,7 +17,9 @@ export const createRequest = (
   payload: MeetingModel
 ) => action(MeetingTypes.CREATE_REQUEST, { payload });
 
-export const createSuccess = () => action(MeetingTypes.CREATE_SUCCESS);
+export const createSuccess = (
+  data: MeetingModel
+) => action(MeetingTypes.CREATE_SUCCESS, { data });
 
 export const createFailure = (err: any) => action(MeetingTypes.CREATE_FAILURE, err);
 
@@ -25,7 +28,9 @@ export const updateRequest = (
   payload: MeetingData
 ) => action(MeetingTypes.UPDATE_REQUEST, { id, payload });
 
-export const updateSuccess = () => action(MeetingTypes.UPDATE_SUCCESS);
+export const updateSuccess = (
+  data: MeetingModel
+) => action(MeetingTypes.UPDATE_SUCCESS, { data });
 
 export const updateFailure = (err: any) => action(MeetingTypes.UPDATE_FAILURE, err);
 
@@ -42,7 +47,9 @@ export const addEmployeeRequest = (
   employee_id: number
 ) => action(MeetingTypes.ADD_EMPLOYEE_REQUEST, { meeting_id, employee_id });
 
-export const addEmployeeSuccess = () => action(MeetingTypes.ADD_EMPLOYEE_SUCCESS);
+export const addEmployeeSuccess = (
+  data: MeetingModel
+) => action(MeetingTypes.ADD_EMPLOYEE_SUCCESS, { data });
 
 export const addEmployeeFailure = (err: any) => action(MeetingTypes.ADD_EMPLOYEE_FAILURE, err);
 
@@ -51,6 +58,8 @@ export const removeEmployeeRequest = (
   employee_id: number
 ) => action(MeetingTypes.REMOVE_EMPLOYEE_REQUEST, { meeting_id, employee_id });
 
-export const removeEmployeeSuccess = (id: number) => action(MeetingTypes.REMOVE_EMPLOYEE_SUCCESS, { id });
+export const removeEmployeeSuccess = (
+  data: MeetingModel
+) => action(MeetingTypes.REMOVE_EMPLOYEE_SUCCESS, { data });
 
 export const removeEmployeeFailure = (err: any) => action(MeetingTypes.REMOVE_EMPLOYEE_FAILURE, err);

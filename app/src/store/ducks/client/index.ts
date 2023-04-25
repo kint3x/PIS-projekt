@@ -82,6 +82,7 @@ const reducer: Reducer<ClientState> = (state = INITIAL_STATE, action: AnyAction)
         error: false,
         meetings: meetings.reduce(meetingsModelToState, state.meetings)
       };
+    case ClientTypes.ADD_EMPLOYEE_SUCCESS:
     case ClientTypes.LOAD_EMPLOYEES_SUCCESS:
       const employees = action.payload.data;
       return {
@@ -106,16 +107,22 @@ const reducer: Reducer<ClientState> = (state = INITIAL_STATE, action: AnyAction)
         loading: false,
         error: false
       };
-    case ClientTypes.ADD_PRODUCT_SUCCESS:
-    case ClientTypes.ADD_EMPLOYEE_SUCCESS:
-    case ClientTypes.REMOVE_PRODUCT_SUCCESS:
-    case ClientTypes.UPDATE_SUCCESS:
     case ClientTypes.CREATE_SUCCESS:
+    case ClientTypes.UPDATE_SUCCESS:
       return {
         ...state,
         loading: false,
-        error: false
-      }
+        error: false,
+        data: clientModelToState(state.data, action.payload.data)
+      };
+    case ClientTypes.ADD_PRODUCT_SUCCESS:
+    case ClientTypes.REMOVE_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        clientProducts: clientProductToState(state.clientProducts, action.payload.data)
+      };
     case ClientTypes.REMOVE_FAILURE:
     case ClientTypes.LOAD_FAILURE:
     case ClientTypes.UPDATE_FAILURE:

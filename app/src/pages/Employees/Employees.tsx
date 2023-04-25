@@ -44,7 +44,6 @@ const Employees = () => {
     const [add_dialog_data, setAddDialogData] = useState<any>({});
 
     var password_change = "";
-
     
     function onInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) {
       const { value } = event.target;
@@ -60,7 +59,7 @@ const Employees = () => {
     }
 
     function onUserEdit() : void{
-      //#TODO Call api to edit user with dialog_data
+      // TODO: Call api to edit user with dialog_data
 
       dispatch(updateEmployee(dialog_data.id, {...dialog_data, password: (password_change == "") ? dialog_data.password : password_change }));
 
@@ -77,7 +76,7 @@ const Employees = () => {
 
     function onUserDelete() : void{
         // Check if can delete
-        // #TODO Call api to delete user
+        // TODO: Call api to delete user
         dispatch(removeEmployee(dialog_data.id));
         if(!error){
           setShowDialog(false);

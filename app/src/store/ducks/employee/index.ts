@@ -50,14 +50,16 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
     case EmployeeTypes.REMOVE_CLIENT_REQUEST:
     case EmployeeTypes.LOAD_REQUEST:
       return { ...state, loading: true }
+    case EmployeeTypes.ADD_CLIENT_SUCCESS:
     case EmployeeTypes.LOAD_CLIENTS_SUCCESS:
-      const clients = action.payload.data;
+      var clients = action.payload.data;
       return {
         ...state,
         loading: false,
         error: false,
         clients: clients.reduce(clientModelToState, state.clients)
       }
+    case EmployeeTypes.ADD_PRODUCT_SUCCESS:
     case EmployeeTypes.LOAD_PRODUCTS_SUCCESS:
       const products = action.payload.data;
       return {
@@ -115,13 +117,13 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
         loading: false,
         error: false
       };
-    case EmployeeTypes.ADD_CLIENT_SUCCESS:
-    case EmployeeTypes.ADD_PRODUCT_SUCCESS:
+    case EmployeeTypes.UPDATE_SUCCESS:
     case EmployeeTypes.CREATE_SUCCESS:
       return {
         ...state,
         loading: false,
-        error: false
+        error: false,
+        data: employeeModelToState(state.data, action.payload.data)
       };
     case EmployeeTypes.LOAD_PRODUCTS_FAILURE:
     case EmployeeTypes.REMOVE_FAILURE:

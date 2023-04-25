@@ -21,8 +21,9 @@ function* load(action: AnyAction) {
 function* create(action: AnyAction) {
   const { payload } = action.payload;
   try {
-    yield call(api.post, `/${endpoint}`, payload);
-    yield put(actions.createSuccess());
+    const response: { [key: string]: any } = yield call(api.post, `/${endpoint}`, payload);
+    const data = response.data;
+    yield put(actions.createSuccess(data));
   } catch (err) {
     yield put(actions.createFailure(err as any));
   }
@@ -31,8 +32,9 @@ function* create(action: AnyAction) {
 function* update(action: AnyAction) {
   const { id, payload } = action.payload;
   try {
-    yield call(api.put, `/${endpoint}/${id}`, payload);
-    yield put(actions.updateSuccess());
+    const response: { [key: string]: any } = yield call(api.put, `/${endpoint}/${id}`, payload);
+    const data = response.data;
+    yield put(actions.updateSuccess(data));
   } catch (err) {
     yield put(actions.updateFailure(err as any));
   }
@@ -41,8 +43,9 @@ function* update(action: AnyAction) {
 function* remove(action: AnyAction) {
   const { id } = action.payload;
   try {
-    yield call(api.delete, `/${endpoint}/${id}`);
-    yield put(actions.removeSuccess(id));
+    const response: { [key: string]: any } = yield call(api.delete, `/${endpoint}/${id}`);
+    const data = response.data;
+    yield put(actions.removeSuccess(data));
   } catch (err) {
     yield put(actions.removeFailure(err as any));
   }
@@ -51,8 +54,9 @@ function* remove(action: AnyAction) {
 function* addEmployee(action: AnyAction) {
   const { employee_id, meeting_id } = action.payload;
   try {
-    yield call(api.put, `/${endpoint}/${meeting_id}/add_employee`, { "employeeId": employee_id });
-    yield put(actions.addEmployeeSuccess());
+    const response: { [key: string]: any } = yield call(api.put, `/${endpoint}/${meeting_id}/add_employee`, { "employeeId": employee_id });
+    const data = response.data;
+    yield put(actions.addEmployeeSuccess(data));
   } catch (err) {
     yield put(actions.addEmployeeFailure(err as any));
   }

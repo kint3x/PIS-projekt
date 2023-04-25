@@ -21,8 +21,9 @@ function* load(action: AnyAction) {
 function* create(action: AnyAction) {
   const { payload } = action.payload;
   try {
-    yield call(api.post, `/${endpoint}`, payload);
-    yield put(actions.createSuccess());
+    const response: { [key: string] : any } = yield call(api.post, `/${endpoint}`, payload);
+    const data = response.data;
+    yield put(actions.createSuccess(data));
   } catch (err) {
     yield put(actions.createFailure(err as any));
   }
@@ -31,8 +32,9 @@ function* create(action: AnyAction) {
 function* update(action: AnyAction) {
   const { id, payload } = action.payload;
   try {
-    yield call(api.put, `/${endpoint}/${id}`, payload);
-    yield put(actions.updateSuccess());
+    const response: { [key: string] : any } = yield call(api.put, `/${endpoint}/${id}`, payload);
+    const data = response.data;
+    yield put(actions.updateSuccess(data));
   } catch (err) {
     yield put(actions.updateFailure(err as any));
   }
@@ -62,8 +64,9 @@ function* loadEmployees(action: AnyAction) {
 function* addEmployee(action: AnyAction) {
   const { employee_id, product_id } = action.payload;
   try {
-    yield call(api.post, `/${endpoint}/${product_id}/add_employee`, { "employeeId": employee_id });
-    yield put(actions.addEmployeeSuccess());
+    const response: { [key: string] : any } = yield call(api.post, `/${endpoint}/${product_id}/add_employee`, { "employeeId": employee_id });
+    const data = response.data;
+    yield put(actions.addEmployeeSuccess(data));
   } catch (err) {
     yield put(actions.addEmployeeFailure(err as any));
   }
@@ -93,8 +96,9 @@ function* loadClientProducts(action: AnyAction) {
 function* addClient(action: AnyAction) {
   const { product_id, client_id } = action.payload;
   try {
-    yield call(api.post, `/${endpoint}/${product_id}/add_client`, { "clientId": client_id });
-    yield put(actions.addClientSuccess());
+    const response: { [key: string] : any } = yield call(api.post, `/${endpoint}/${product_id}/add_client`, { "clientId": client_id });
+    const data = response.data;
+    yield put(actions.addClientSuccess(data));
   } catch (err) {
     yield put(actions.addClientFailure(err as any));
   }
