@@ -7,6 +7,8 @@ import cz.vut.fit.pis.xmatej55.managers.EmployeeManager;
 import java.util.List;
 import java.util.Optional;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -21,11 +23,15 @@ public class EmployeeManager {
     private EntityManager em;
 
     public EmployeeManager() {
-        
+
     }
 
     @Transactional
     public Employee create(Employee employee) {
+        String plainTextPassword = employee.getPassword();
+        String hashedPassword = BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+        employee.setPassword(hashedPassword);
+
         em.persist(employee);
         return employee;
     }
@@ -52,7 +58,7 @@ public class EmployeeManager {
                 "SELECT e FROM Employee e WHERE e.username = :username",
                 Employee.class);
         query.setParameter("username", username);
-        
+
         try {
             Employee e = query.getSingleResult();
             return Optional.ofNullable(e);

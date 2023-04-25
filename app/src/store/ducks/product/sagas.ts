@@ -2,9 +2,9 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import api from '../../../services/api';
 import * as actions from './actions';
 import { AnyAction } from 'redux';
-import { ClientTypes } from './types';
+import { ProductTypes } from './types';
 
-const endpoint = 'clients';
+const endpoint = 'products';
 
 function* load(action: AnyAction) {
   const { id } = action.payload;
@@ -48,17 +48,6 @@ function* remove(action: AnyAction) {
   }
 }
 
-function* loadMeetings(action: AnyAction) {
-  const { id } = action.payload;
-  try {
-    const response: { [key: string] : any } = yield call(api.get, `/${endpoint}/${id}/meetings`);
-    const data = response.data;
-    yield put(actions.loadMeetingsSuccess(id, data));
-  } catch (err) {
-    yield put(actions.loadMeetingsFailure(err as any));
-  }
-}
-
 function* loadEmployees(action: AnyAction) {
   const { id } = action.payload;
   try {
@@ -71,9 +60,9 @@ function* loadEmployees(action: AnyAction) {
 }
 
 function* addEmployee(action: AnyAction) {
-  const { employee_id, client_id } = action.payload;
+  const { employee_id, product_id } = action.payload;
   try {
-    yield call(api.post, `/${endpoint}/${client_id}/add_employee`, { "employeeId": employee_id });
+    yield call(api.post, `/${endpoint}/${product_id}/add_employee`, { "employeeId": employee_id });
     yield put(actions.addEmployeeSuccess());
   } catch (err) {
     yield put(actions.addEmployeeFailure(err as any));
@@ -81,9 +70,9 @@ function* addEmployee(action: AnyAction) {
 }
 
 function* removeEmployee(action: AnyAction) {
-  const { employee_id, client_id } = action.payload;
+  const { employee_id, product_id } = action.payload;
   try {
-    yield call(api.delete, `/${endpoint}/${client_id}/remove_employee`, { "data": {"employeeId": employee_id }});
+    yield call(api.delete, `/${endpoint}/${product_id}/remove_employee`, { "data": {"employeeId": employee_id }});
     yield put(actions.removeEmployeeSuccess(employee_id));
   } catch (err) {
     yield put(actions.removeEmployeeFailure(err as any));
@@ -101,38 +90,37 @@ function* loadClientProducts(action: AnyAction) {
   }
 }
 
-function* addProduct(action: AnyAction) {
+function* addClient(action: AnyAction) {
   const { product_id, client_id } = action.payload;
   try {
-    yield call(api.post, `/${endpoint}/${client_id}/add_product`, { "productId": product_id });
-    yield put(actions.addProductSuccess());
+    yield call(api.post, `/${endpoint}/${product_id}/add_client`, { "clientId": client_id });
+    yield put(actions.addClientSuccess());
   } catch (err) {
-    yield put(actions.addProductFailure(err as any));
+    yield put(actions.addClientFailure(err as any));
   }
 }
 
-function* removeProduct(action: AnyAction) {
+function* removeClient(action: AnyAction) {
   const { product_id, client_id } = action.payload;
   try {
-    yield call(api.delete, `/${endpoint}/${client_id}/remove_product`, { "data": {"productId": product_id }});
-    yield put(actions.removeProductSuccess(product_id));
+    yield call(api.delete, `/${endpoint}/${product_id}/remove_client`, { "data": {"clientId": client_id }});
+    yield put(actions.removeClientSuccess(client_id));
   } catch (err) {
-    yield put(actions.removeProductFailure(err as any));
+    yield put(actions.addClientFailure(err as any));
   }
 }
 
-const clientSagas = [
-  takeLatest(ClientTypes.LOAD_REQUEST, load),
-  takeLatest(ClientTypes.CREATE_REQUEST, create),
-  takeLatest(ClientTypes.UPDATE_REQUEST, update),
-  takeLatest(ClientTypes.REMOVE_REQUEST, remove),
-  takeLatest(ClientTypes.LOAD_MEETINGS_REQUEST, loadMeetings),
-  takeLatest(ClientTypes.LOAD_EMPLOYEES_REQUEST, loadEmployees),
-  takeLatest(ClientTypes.ADD_EMPLOYEE_REQUEST, addEmployee),
-  takeLatest(ClientTypes.REMOVE_EMPLOYEE_REQUEST, removeEmployee),
-  takeLatest(ClientTypes.LOAD_CLIENT_PRODUCTS_REQUEST, loadClientProducts),
-  takeLatest(ClientTypes.ADD_PRODUCT_REQUEST, addProduct),
-  takeLatest(ClientTypes.REMOVE_PRODUCT_REQUEST, removeProduct)
-];
+const productSagas = [
+  takeLatest(ProductTypes.LOAD_REQUEST, load),
+  takeLatest(ProductTypes.CREATE_REQUEST, create),
+  takeLatest(ProductTypes.UPDATE_REQUEST, update),
+  takeLatest(ProductTypes.REMOVE_REQUEST, remove),
+  takeLatest(ProductTypes.LOAD_EMPLOYEES_REQUEST, loadEmployees),
+  takeLatest(ProductTypes.ADD_EMPLOYEE_REQUEST, addEmployee),
+  takeLatest(ProductTypes.REMOVE_EMPLOYEE_REQUEST, removeEmployee),
+  takeLatest(ProductTypes.LOAD_CLIENT_PRODUCTS_REQUEST, loadClientProducts),
+  takeLatest(ProductTypes.ADD_CLIENT_REQUEST, addClient),
+  takeLatest(ProductTypes.REMOVE_CLIENT_REQUEST, removeClient)
+]
 
-export default clientSagas;
+export default productSagas;
