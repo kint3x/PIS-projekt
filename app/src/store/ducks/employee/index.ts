@@ -117,14 +117,8 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
         loading: false,
         error: false
       };
-    case EmployeeTypes.CREATE_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        error: false,
-        data: employeeModelToState(state.data, action.payload.data)
-      };
     case EmployeeTypes.UPDATE_SUCCESS:
+    case EmployeeTypes.CREATE_SUCCESS:
       return {
         ...state,
         loading: false,
