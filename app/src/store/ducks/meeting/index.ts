@@ -62,10 +62,11 @@ const reducer: Reducer<MeetingState> = (state=INITIAL_STATE, action: AnyAction) 
       return {
         ...state,
         loading: false,
-        error:false
+        error:false,
+        data: meetingsModelToState(state.data, action.payload.data)
       }
     case MeetingTypes.REMOVE_SUCCESS:
-      var { id } = action.payload;
+      const { id } = action.payload;
       delete state.data[id];
       return {
         ...state,

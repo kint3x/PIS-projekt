@@ -53,7 +53,7 @@ public class Meetings {
     }
 
     @OPTIONS
-    @Path("{var:.*}")
+    @Path("{var:.+}")
     public Response options(@PathParam("id") Long id) {
         return Response.ok("").build();
     }
