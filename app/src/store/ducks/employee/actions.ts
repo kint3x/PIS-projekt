@@ -19,7 +19,9 @@ export const createRequest = (
   payload: EmployeeData
 ) => action(EmployeeTypes.CREATE_REQUEST, { payload });
 
-export const createSuccess = () => action(EmployeeTypes.CREATE_SUCCESS);
+export const createSuccess = (
+  data: EmployeeModel
+) => action(EmployeeTypes.CREATE_SUCCESS, { data });
 
 export const createFailure = (err: any) => action(EmployeeTypes.CREATE_FAILURE, err);
 
@@ -28,7 +30,9 @@ export const updateRequest = (
   payload: EmployeeData
 ) => action(EmployeeTypes.UPDATE_REQUEST, { id, payload });
 
-export const updateSuccess = () => action(EmployeeTypes.UPDATE_SUCCESS);
+export const updateSuccess = (
+  data: EmployeeModel
+) => action(EmployeeTypes.UPDATE_SUCCESS, { data });
 
 export const updateFailure = (err: any) => action(EmployeeTypes.UPDATE_FAILURE, err);
 
@@ -74,7 +78,9 @@ export const addClientRequest = (
   client_id: number
 ) => action(EmployeeTypes.ADD_CLIENT_REQUEST, { employee_id, client_id });
 
-export const addClientSuccess = () => action(EmployeeTypes.ADD_CLIENT_SUCCESS);
+export const addClientSuccess = (
+  data: ClientModel[]
+) => action(EmployeeTypes.ADD_CLIENT_SUCCESS, { data });
 
 export const addClientFailure = (err: any) => action(EmployeeTypes.ADD_CLIENT_FAILURE, err);
 
@@ -92,7 +98,9 @@ export const addProductRequest = (
   product_id: number
 ) => action(EmployeeTypes.ADD_PRODUCT_REQUEST, { employee_id, product_id });
 
-export const addProductSuccess = () => action(EmployeeTypes.ADD_PRODUCT_REQUEST);
+export const addProductSuccess = (
+  data: ProductModel[]
+) => action(EmployeeTypes.ADD_PRODUCT_REQUEST, { data });
 
 export const addProductFailure = (err: any) => action(EmployeeTypes.ADD_PRODUCT_FAILURE, err);
 
