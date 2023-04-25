@@ -198,7 +198,7 @@ public class Clients {
         employee.addClient(client);
         employeeService.update(employee);
         
-        return Response.ok(client).build();
+        return Response.ok(employeeService.findByClient(client)).build();
     }
 
     @Path("/{id}/remove_employee")
@@ -227,7 +227,7 @@ public class Clients {
         employee.removeClient(client);
         employeeService.update(employee);
 
-        return Response.ok(client).build();
+        return Response.ok().build();
     }
 
     @Path("/{id}/client_products")
