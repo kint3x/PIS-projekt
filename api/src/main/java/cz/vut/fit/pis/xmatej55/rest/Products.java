@@ -171,7 +171,7 @@ public class Products {
         employee.addProduct(product);
         employeeService.update(employee);
 
-        return Response.ok(product).build();
+        return Response.ok(employeeService.findByProduct(product)).build();
     }
 
     @Path("/{id}/remove_employee")
@@ -200,7 +200,7 @@ public class Products {
         employee.removeProduct(product);
         employeeService.update(employee);
 
-        return Response.ok(product).build();
+        return Response.ok().build();
     }
 
     @Path("/{id}/client_products")

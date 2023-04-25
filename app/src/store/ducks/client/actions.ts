@@ -98,7 +98,7 @@ export const addProductRequest = (
 
 export const addProductSuccess = (
   data: ClientProductModel
-) => action(ClientTypes.ADD_PRODUCT_SUCCESS);
+) => action(ClientTypes.ADD_PRODUCT_SUCCESS, { data });
 
 export const addProductFailure = (err: any) => action(ClientTypes.ADD_PRODUCT_FAILURE, err);
 
@@ -109,6 +109,6 @@ export const removeProductRequest = (
 
 export const removeProductSuccess = (
   data: ClientProductModel
-) => action(ClientTypes.REMOVE_PRODUCT_SUCCESS);
+) => action(ClientTypes.REMOVE_PRODUCT_SUCCESS, { data });
 
 export const removeProductFailure = (err: any) => action(ClientTypes.REMOVE_PRODUCT_FAILURE, err);

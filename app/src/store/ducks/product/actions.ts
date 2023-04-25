@@ -18,7 +18,9 @@ export const createRequest = (
   payload: ProductData
 ) => action(ProductTypes.CREATE_REQUEST, { payload });
 
-export const createSuccess = () => action(ProductTypes.CREATE_SUCCESS);
+export const createSuccess = (
+  data: ProductModel
+) => action(ProductTypes.CREATE_SUCCESS, { data });
 
 export const createFailure = (err: any) => action(ProductTypes.CREATE_FAILURE, err);
 
@@ -27,7 +29,9 @@ export const updateRequest = (
   payload: ProductData
 ) => action(ProductTypes.UPDATE_REQUEST, { id, payload });
 
-export const updateSuccess = () => action(ProductTypes.UPDATE_SUCCESS);
+export const updateSuccess = (
+  data: ProductModel
+) => action(ProductTypes.UPDATE_SUCCESS, { data });
 
 export const updateFailure = (err: any) => action(ProductTypes.UPDATE_FAILURE, err);
 
@@ -53,7 +57,9 @@ export const addEmployeeRequest = (
   employee_id: number
 ) => action(ProductTypes.ADD_EMPLOYEE_REQUEST, { employee_id, product_id });
 
-export const addEmployeeSuccess = () => action(ProductTypes.ADD_EMPLOYEE_SUCCESS);
+export const addEmployeeSuccess = (
+  data: EmployeeModel[]
+) => action(ProductTypes.ADD_EMPLOYEE_SUCCESS, { data });
 
 export const addEmployeeFailure = (err: any) => action(ProductTypes.ADD_EMPLOYEE_FAILURE, err);
 
@@ -80,7 +86,9 @@ export const addClientRequest = (
   client_id: number
 ) => action(ProductTypes.ADD_CLIENT_REQUEST, { product_id, client_id });
 
-export const addClientSuccess = () => action(ProductTypes.ADD_CLIENT_SUCCESS);
+export const addClientSuccess = (
+  data: ClientProductModel
+) => action(ProductTypes.ADD_CLIENT_SUCCESS, { data });
 
 export const addClientFailure = (err: any) => action(ProductTypes.ADD_CLIENT_FAILURE, err);
 
@@ -89,6 +97,8 @@ export const removeClientRequest = (
   client_id: number
 ) => action(ProductTypes.REMOVE_CLIENT_REQUEST, { product_id, client_id });
 
-export const removeClientSuccess = (id: number) => action(ProductTypes.REMOVE_CLIENT_SUCCESS, { id });
+export const removeClientSuccess = (
+  data: ClientProductModel
+) => action(ProductTypes.REMOVE_CLIENT_SUCCESS, { data });
 
 export const removeClientFailure = (err: any) => action(ProductTypes.REMOVE_CLIENT_FAILURE, err);

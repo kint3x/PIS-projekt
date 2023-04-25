@@ -66,7 +66,6 @@ const reducer: Reducer<ClientState> = (state = INITIAL_STATE, action: AnyAction)
           data: clientModelToState(state.data, action.payload.data)
         };
       }
-    case ClientTypes.ADD_PRODUCT_SUCCESS:
     case ClientTypes.LOAD_CLIENT_PRODUCTS_SUCCESS:
       const clientProducts = action.payload.data;
       return {
@@ -115,13 +114,15 @@ const reducer: Reducer<ClientState> = (state = INITIAL_STATE, action: AnyAction)
         loading: false,
         error: false,
         data: clientModelToState(state.data, action.payload.data)
-      }
+      };
+    case ClientTypes.ADD_PRODUCT_SUCCESS:
     case ClientTypes.REMOVE_PRODUCT_SUCCESS:
       return {
         ...state,
         loading: false,
-        error: false
-      }
+        error: false,
+        clientProducts: clientProductToState(state.clientProducts, action.payload.data)
+      };
     case ClientTypes.REMOVE_FAILURE:
     case ClientTypes.LOAD_FAILURE:
     case ClientTypes.UPDATE_FAILURE:
