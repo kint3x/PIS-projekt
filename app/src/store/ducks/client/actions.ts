@@ -1,6 +1,6 @@
 import { action } from 'typesafe-actions';
 import { ClientTypes, ClientData, ClientModel } from './types';
-import { MeetingData } from '../meeting/types';
+import { MeetingModel } from '../meeting/types';
 import { EmployeeModel } from '../employee/types';
 import { ClientProductModel } from '../clientProduct';
 
@@ -44,7 +44,7 @@ export const loadMeetingsRequest = (id: number) => action(ClientTypes.LOAD_MEETI
 
 export const loadMeetingsSuccess = (
   id: number,
-  data: MeetingData[]
+  data: MeetingModel[]
 ) => action(ClientTypes.LOAD_MEETINGS_SUCCESS, { id, data })
 
 export const loadMeetingsFailure = (err: any) => action(ClientTypes.LOAD_MEETINGS_FAILURE, err);
