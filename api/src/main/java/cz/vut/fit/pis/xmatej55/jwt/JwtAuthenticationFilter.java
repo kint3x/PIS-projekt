@@ -70,7 +70,7 @@ public class JwtAuthenticationFilter implements ContainerRequestFilter {
         String authHeader = requestContext.getHeaderString(AUTHORIZATION_HEADER);
         String requestedPath = requestContext.getUriInfo().getPath();
 
-        if (requestedPath.endsWith("auth") || requestedPath.endsWith("auth/")) {
+        if (requestedPath.endsWith("") || requestedPath.endsWith("auth/")) {
             return;
         }
 
