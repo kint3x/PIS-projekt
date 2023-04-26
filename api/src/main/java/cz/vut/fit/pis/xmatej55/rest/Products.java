@@ -32,6 +32,12 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.Response.Status;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Path("/products")
 @ApplicationScoped
 public class Products {
@@ -67,6 +73,11 @@ public class Products {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all products")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of products", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) })
+    })
     public Response getProducts() {
         return Response.ok(productService.findAll()).build();
     }
@@ -74,6 +85,12 @@ public class Products {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get a product by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
     public Response getProductById(@PathParam("id") Long id) {
         Optional<Product> optProduct = productService.findById(id);
 
@@ -88,6 +105,11 @@ public class Products {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Create a new product")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Product created", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) })
+    })
     public Response createProduct(Product product) {
         Product savedProduct = productService.create(product);
         final URI uri = UriBuilder.fromPath("/products/{resourceServerId}").build(savedProduct.getId());
@@ -97,7 +119,13 @@ public class Products {
 
     @Path("/{id}")
     @DELETE
-    public Response removeProduct(@PathParam ("id") Long id) {
+    @Operation(summary = "Remove a product by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product removed", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
+    public Response removeProduct(@PathParam("id") Long id) {
         Optional<Product> p = productService.findById(id);
 
         if (!p.isPresent()) {
@@ -114,6 +142,12 @@ public class Products {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Update a product by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product updated", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
     public Response updateProduct(@PathParam("id") Long id, Product newProduct) {
         Optional<Product> optProduct = productService.findById(id);
 
@@ -132,6 +166,12 @@ public class Products {
     @Path("/{id}/employees")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get employees associated with a product by product ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employees found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) }),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
     public Response getEmployees(@PathParam("id") Long id) {
         Optional<Product> optProduct = productService.findById(id);
 
@@ -148,6 +188,12 @@ public class Products {
     @Path("/{id}/add_employee")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add an employee to a product by product ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employee added", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) }),
+            @ApiResponse(responseCode = "404", description = "Product or employee not found", content = @Content)
+    })
     public Response addEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
         Optional<Product> optProduct = productService.findById(id);
 
@@ -177,6 +223,12 @@ public class Products {
     @Path("/{id}/remove_employee")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Remove an employee from a product by product ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employee removed", content = {
+                    @Content(mediaType = "application/json") }),
+            @ApiResponse(responseCode = "404", description = "Product or employee not found", content = @Content)
+    })
     public Response removeEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
         Optional<Product> optProduct = productService.findById(id);
 
@@ -206,6 +258,12 @@ public class Products {
     @Path("/{id}/client_products")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get clients associated with a product by product ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Clients found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientProduct.class)) }),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
     public Response getClients(@PathParam("id") Long id) {
         Optional<Product> optProduct = productService.findById(id);
 
@@ -222,6 +280,12 @@ public class Products {
     @Path("/{id}/add_client")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add a client to a product by product ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client added", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientProduct.class)) }),
+            @ApiResponse(responseCode = "404", description = "Product or client not found", content = @Content)
+    })
     public Response addClient(@PathParam("id") Long id, AddClient clientDTO) {
         Optional<Product> optProduct = productService.findById(id);
 
@@ -237,7 +301,6 @@ public class Products {
                     .entity(new Error(String.format("Client with id '%d' not found.", clientDTO.getClientId())))
                     .build();
         }
-
 
         Client client = optClient.get();
         Product product = optProduct.get();
@@ -264,6 +327,12 @@ public class Products {
     @Path("/{id}/remove_client")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Remove a client from a product by product ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client removed", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientProduct.class)) }),
+            @ApiResponse(responseCode = "404", description = "Product or client not found", content = @Content)
+    })
     public Response removeClient(@PathParam("id") Long id, AddClient clientDTO) {
         Optional<Product> optProduct = productService.findById(id);
 
