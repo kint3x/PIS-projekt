@@ -6,6 +6,7 @@ import Navbar from './Navbar';
 import Home from './pages/Home/Home';
 import Clients from './pages/Clients/Clients';
 import Employees from './pages/Employees/Employees';
+import Products from './pages/Products/Products';
 
 import './App.css';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -40,7 +41,9 @@ function App() {
               <Route exact path="/employees">
                 <Employees />
               </Route>
-              
+              <Route exact path="/products">
+                <Products />
+              </Route>
             </Switch>
           </div>
         </div>

@@ -22,7 +22,6 @@ import { Calendar } from 'primereact/calendar';
 import { format } from "date-fns";
 
 //#TODO page availabe only for "manager"
-//TODO test when product api works
 
 const Products = () => {
     const dispatch = useDispatch();
@@ -122,13 +121,13 @@ const Products = () => {
 
 
 
-      <Dialog header="Add User" className="add-user" visible={show_add_dialog} style={{ width: '50vw' }} onHide={() => {setShowAddDialog(false);setAddDialogData({}) }}>
+      <Dialog header="Add Product" className="add-product" visible={show_add_dialog} style={{ width: '50vw' }} onHide={() => {setShowAddDialog(false);setAddDialogData({}) }}>
           <div className={modal_err_msg.visible}>
             <Message severity="error" text={modal_err_msg.msg} />
           </div>
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Username</span>
-            <InputText placeholder="Username" onChange={(e)=>setAddDialogData({...add_dialog_data, username: e.target.value})}/>
+            <span className="p-inputgroup-addon">Product name</span>
+            <InputText placeholder="Product name" onChange={(e)=>setAddDialogData({...add_dialog_data, name: e.target.value})}/>
           </div>
 
           <Button label="Submit" severity="success" onClick = {() => AddProductSubmit()} />
