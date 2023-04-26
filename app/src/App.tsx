@@ -20,14 +20,6 @@ import store from "../src/store";
 
 function App() {
 
-  /*const [name, setName] = useState(localStorage.getItem("name") || "");
-  const [userType, setUserType] = useState(localStorage.getItem("userType") || "");
-
-  const handleLogin = (userName: string, userType: string) => {
-    setName(userName)
-    setUserType(userType)
-  }*/
-
   return (
     <Provider store={store}>
       <Router>
@@ -35,16 +27,11 @@ function App() {
           <Navbar/>
           <div className="app-content">
             <Switch>
-              {/*<PublicRoute exact path="/" component={Home} method={handleLogin} />
+              <PublicRoute exact path="/" component={Home} />
               <PrivateRoute exact path="/clients" component={Clients} />
               <PrivateRoute exact path="/products" component={Products} />
               <PrivateRoute exact path="/employees" component={Employees} />
-              <PrivateRoute exact path="/meetings" component={Employees} />*/}
-              <Route exact path="/" component={Home} />
-              <Route exact path="/clients" component={Clients} />
-              <Route exact path="/products" component={Products} />
-              <Route exact path="/employees" component={Employees} />
-              <Route exact path="/meetings" component={Employees} />
+              <PrivateRoute exact path="/meetings" component={Employees} />
             </Switch>
           </div>
         </div>
