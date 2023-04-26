@@ -7,6 +7,17 @@ import { loadRequest as loadClients } from '../../store/ducks/client/actions';
 import { updateRequest as updateClient } from '../../store/ducks/client/actions';
 import { removeRequest as removeClient } from '../../store/ducks/client/actions';
 import { createRequest as addClient } from '../../store/ducks/client/actions'
+import { loadClientProductsRequest as loadClientProducts } from '../../store/ducks/client/actions'
+import { addProductRequest as addClientProducts } from '../../store/ducks/client/actions'
+import { removeProductRequest as removeClientProducts } from '../../store/ducks/client/actions'
+import { loadEmployeesRequest as loadProductEmployees} from '../../store/ducks/product/actions'
+import { loadRequest as loadProducts } from '../../store/ducks/product/actions';
+import { addClientRequest as addEmployeeClient} from '../../store/ducks/employee/actions'
+import { removeClientRequest as removeEmployeeClient} from '../../store/ducks/employee/actions'
+import { addEmployeeRequest as addClientEmployee} from '../../store/ducks/client/actions'
+import { removeEmployeeRequest as removeClientEmployee} from '../../store/ducks/client/actions'
+
+
 import { AppState } from '../../store';
 
 import { DataTable, DataTableValueArray , DataTableRowClickEvent } from 'primereact/datatable';
@@ -16,8 +27,7 @@ import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { MultiSelect } from 'primereact/multiselect';
-import { ListBox, ListBoxChangeEvent } from 'primereact/listbox';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Calendar } from 'primereact/calendar';
 import { format } from "date-fns";
@@ -35,7 +45,9 @@ const Clients = () => {
 
     useEffect(() => {
       dispatch(loadClients('all'));
-    }, [dispatch,show_client_dialog,show_add_client_dialog,show_notes_dialog,show_clientproduct_dialog]);   
+      dispatch(loadProducts('all'));
+      dispatch(loadProductEmployees(selected_product_id))
+    }, [dispatch,show_client_dialog,show_add_client_dialog,show_clientproduct_dialog]);   
 
     const clients = useSelector((state: AppState) => state.client.data);
     const loading = useSelector((state: AppState) => state.client.loading);
@@ -116,50 +128,32 @@ const Clients = () => {
           setLoggedUser("Worker")
           setReadOnly(true)
         }
-  
         console.log(loggedUser)
     }
 
-    // const cp_dispatch = useDispatch();
+    const products = useSelector((state: AppState) => state.product.data);
+    const productEmployees = useSelector((state: AppState) => state.product.employees);
 
-    // useEffect(() => {
-    //   dispatch(loadClients('all'));
-    // }, [dispatch,show_clientproduct_dialog]);   
+    const [selected_product_id, setSelectedProductId] = useState<any>({});
+    const [selected_employee_id, setSelectedEmployeeId] = useState<any>({});
 
-    // const cp_data = useSelector((state: AppState) => state.client.data);
-    // const cp_loading = useSelector((state: AppState) => state.client.loading);
-    // const cp_error = useSelector((state: AppState) => state.client.error);
-    // const cp_errMsg = useSelector((state: AppState) => state.client.errMsg);
+   
+    function onProductSelect(event: DropdownChangeEvent) : void{
+      setSelectedProductId(event.value)
+      dispatch(loadProductEmployees(selected_product_id))
+      console.log(selected_product_id)
+      console.log(productEmployees)
+  }
 
-    const [clientproduct_modal_err_msg, setClientProductModalErr] = useState<any>({visible: "hidden", msg: ""});
-    const [clientproduct_dialog_data, setClientProductDialogData] = useState<any>({});
+  function onEmployeeSelect(event: DropdownChangeEvent) : void{
+    setSelectedEmployeeId(event.value)
+    console.log(selected_employee_id)
 
-
-    //temporary, just to visualize
-    const products = ["Product1","Product2","Product3","Product4"]
-    const [selectedProduct, setSelectedProduct] = useState<any>({});
-
-    const [employees, setEmployees]= useState<any>([])
-    const [selectedEmployees, setSelectedEmployees] = useState<any>([]);
-
-    interface clientProductEmployees {
-      Id: number,
-      Product: string,
-      Employees: string
-    }
-
-    const [cpe, setCpe]= useState<clientProductEmployees[]>([{Id:1, Product:'auto',Employees:'miso,fero'}, {Id:2, Product:'traktor',Employees:'stevo'}])
+}
 
     function onClientProductCreate() : void{
       // TODO create ClientProduct object
       // Assign ClientProduct to employees
-    }
-
-    function onClientProductSelect(event: ListBoxChangeEvent) : void{
-
-      setSelectedProduct(event.value)
-      // TODO fetch employees for selected ClientProduct, show them in other listbox
-      setEmployees(["Employee1","Employee2"])
     }
 
     function onClientProductDelete() : void{
@@ -192,7 +186,6 @@ const Clients = () => {
             <Button label="Submit" severity="success" onClick = {() => {onClientEdit();setShowNotesDialog(false);setShowClientDialog(true)}}/>
           </Dialog>
           
-          {JSON.stringify(client_dialog_data)}
           <div className={modal_err_msg.visible}>
             <Message severity="error" text={modal_err_msg.msg} />
           </div>
@@ -253,7 +246,6 @@ const Clients = () => {
 
       <Dialog header="Add Client" className="add-client" visible={show_add_client_dialog} style={{ width: '50%' }} onHide={() => {setShowAddClientDialog(false);setAddClientDialogData({}) }}>
           
-          {JSON.stringify(client_dialog_data)}
           <div className={modal_err_msg.visible}>
             <Message severity="error" text={modal_err_msg.msg} />
           </div>
@@ -305,32 +297,31 @@ const Clients = () => {
 
       <Dialog header="Assign employees" className="assign-employees" visible={show_clientproduct_dialog} style={{ width: '75%' }} onHide={() => setShowClientProductDialog(false)}>
           
-          {JSON.stringify(clientproduct_dialog_data)}
           <div className={modal_err_msg.visible}>
             <Message severity="error" text={modal_err_msg.msg} />
           </div>
           <br />
           <Splitter >
               <SplitterPanel >
-                <ListBox value={selectedProduct} onChange={(e) => onClientProductSelect(e)}
-              options={products} className="w-full md:w-14rem" />
+                <Dropdown value={selected_product_id} onChange={(e) => onProductSelect(e)} placeholder="Select a product"
+              optionLabel="name" optionValue="id" options={Object.values(products)} className="w-full md:w-14rem" />
               </SplitterPanel>
               <SplitterPanel >
-                <ListBox multiple value={selectedEmployees} onChange={(e) => setSelectedEmployees(e.value)} 
-            options={employees} className="w-full md:w-14rem" />
+                <Dropdown multiple value={selected_employee_id} onChange={(e) => onEmployeeSelect(e)} placeholder="Select an employee"
+              optionLabel="username" optionValue="id" options={Object.values(productEmployees)} className="w-full md:w-14rem" />
               </SplitterPanel>
-          </Splitter>
+            </Splitter>
 
           <br />
           <Button label="Add selected" severity="success" onClick = {() => onClientProductCreate()} />
       
 
-          <DataTable loading={loading} /*value={Object.values(clientProductEmployees)}*/ value={cpe} tableStyle={{ minWidth: '50rem' }} 
-          /*TODO DELETE SELECTED onRowClick={onClickHandle}*/>
-            <Column filter={true} field="Id" header="Id"></Column>
-            <Column filter={true} field="Product" header="Product"></Column>
-            <Column filter={true} field="Employees" header="Employees"></Column>
-          </DataTable>
+          {/* {<DataTable loading={loading} /*value={Object.values(clientProductEmployees)} value={cpe} tableStyle={{ minWidth: '50rem' }}  */}
+          {/* /*TODO DELETE SELECTED onRowClick={onClickHandle}> */}
+            {/* <Column filter={true} field="Id" header="Id"></Column> */}
+            {/* <Column filter={true} field="Product" header="Product"></Column> */}
+            {/* <Column filter={true} field="Employees" header="Employee"></Column> */}
+          {/* </DataTable>} */}
 
           
           <Button label="Delete selected" severity="danger"  onClick = {() => onClientProductDelete()}/>

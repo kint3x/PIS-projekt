@@ -29,6 +29,7 @@ import { Calendar } from 'primereact/calendar';
 import { format } from "date-fns";
 import { ListBox, ListBoxChangeEvent } from 'primereact/listbox';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
 //TODO page availabe only for manager
 
@@ -42,6 +43,7 @@ const Employees = () => {
     useEffect(() => {
       dispatch(loadEmployees('all'));
       dispatch(loadProducts('all'));
+      dispatch(loadEmployeeProducts(selected_employee.id));
     }, [dispatch,show_dialog,show_add_dialog]);   
 
     const employees = useSelector((state: AppState) => state.employee.data);
@@ -64,7 +66,7 @@ const Employees = () => {
 
     function onClickHandle(event: DataTableRowClickEvent) : void{
       setSelectedEmployee(event.data);
-      dispatch(loadEmployeeProducts(event.data.id));
+      dispatch(loadEmployeeProducts(selected_employee.id));
       setShowDialog(true);
     }
 
@@ -112,7 +114,7 @@ const Employees = () => {
     const [selected_product_id, setSelectedProductId] = useState<any>({});
     const [selected_employees_product_id, setSelectedEmployeesProductId] = useState<any>({});
 
-    function onAvailableProductSelect(event: ListBoxChangeEvent){
+    function onAvailableProductSelect(event: DropdownChangeEvent){
         setSelectedProductId(event.value)
     }
     
@@ -120,15 +122,9 @@ const Employees = () => {
       dispatch(addProductEmployee(selected_product_id,selected_employee.id));
       dispatch(addEmployeeProduct(selected_employee.id,selected_product_id));
       dispatch(loadEmployeeProducts(selected_employee.id));
-      if(!error){
-        setModalErr({msg: "", visible: "hidden"});
-      }
-      else{
-        setModalErr({msg: errMsg, visible: ""})
-      }
     }
 
-    function onEmployeesProductSelect(event: ListBoxChangeEvent){
+    function onEmployeesProductSelect(event: DropdownChangeEvent){
         setSelectedEmployeesProductId(event.value)
     }
 
@@ -136,12 +132,6 @@ const Employees = () => {
       dispatch(removeProductEmployee(selected_employees_product_id,selected_employee.id));
       dispatch(removeEmployeeProduct(selected_employee.id,selected_employees_product_id));
       dispatch(loadEmployeeProducts(selected_employee.id));
-      if(!error){
-        setModalErr({msg: "", visible: "hidden"});
-      }
-      else{
-        setModalErr({msg: errMsg, visible: ""})
-      }
     }
 
     return(
@@ -235,7 +225,7 @@ const Employees = () => {
 
           <Splitter>
               <SplitterPanel >
-                <ListBox value={Object.values(products)} onChange={(e) => onAvailableProductSelect(e)}
+                <Dropdown value={selected_product_id} onChange={(e) => onAvailableProductSelect(e)} placeholder="Select a product"
                 optionLabel="name" optionValue="id" options={Object.values(products)} className="w-full md:w-14rem" />
               </SplitterPanel>
               <SplitterPanel >
@@ -243,7 +233,7 @@ const Employees = () => {
                 <Button label="Remove" severity="success" onClick = {() => removeSelectedEmployeeProduct()} />
               </SplitterPanel>
               <SplitterPanel >
-                <ListBox value={Object.values(employeeProducts)} onChange={(e) =>  onEmployeesProductSelect(e)}
+                <Dropdown value={selected_employees_product_id} onChange={(e) =>  onEmployeesProductSelect(e)} placeholder="Select a product"
                 optionLabel="name" optionValue="id" options={Object.values(employeeProducts)} className="w-full md:w-14rem" />
               </SplitterPanel>
           </Splitter>
