@@ -8,6 +8,7 @@ import cz.vut.fit.pis.xmatej55.dto.AddProduct;
 import cz.vut.fit.pis.xmatej55.dto.Error;
 import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
+import cz.vut.fit.pis.xmatej55.entities.Meeting;
 import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.services.ClientService;
 import cz.vut.fit.pis.xmatej55.services.EmployeeService;
@@ -30,6 +31,12 @@ import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.Response.Status;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @Path("/employees")
 @ApplicationScoped
@@ -66,6 +73,11 @@ public class Employees {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all employees")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of employees", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) })
+    })
     public Response getEmployees() {
         return Response.ok(employeeService.findAll()).build();
     }
@@ -73,6 +85,12 @@ public class Employees {
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get an employee by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employee found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) }),
+            @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content)
+    })
     public Response getEmployeeById(@PathParam("id") Long id) {
         Optional<Employee> e = employeeService.findById(id);
 
@@ -80,22 +98,28 @@ public class Employees {
             return Response.status(Status.NOT_FOUND)
                     .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
         }
-        
+
         return Response.ok(e.get()).build();
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Create a new employee")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Employee created", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) }),
+            @ApiResponse(responseCode = "409", description = "Employee with the provided username already exists", content = @Content)
+    })
     public Response createEmployee(Employee employee) {
         Optional<Employee> existing = employeeService.findByUsername(employee.getUsername());
 
         if (existing.isPresent()) {
             return Response.status(Status.CONFLICT)
                     .entity(
-                        new Error(
-                            String.format("Employee with username '%s' already exists.", 
-                            employee.getUsername())))
+                            new Error(
+                                    String.format("Employee with username '%s' already exists.",
+                                            employee.getUsername())))
                     .build();
         }
 
@@ -108,12 +132,18 @@ public class Employees {
     @Path("/{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Remove an employee by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employee removed", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) }),
+            @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content)
+    })
     public Response removeEmployee(@PathParam("id") Long id) {
         Optional<Employee> e = employeeService.findById(id);
 
         if (!e.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
+                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
         }
 
         employeeService.deleteById(e.get().getId());
@@ -125,7 +155,14 @@ public class Employees {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateMeeting(@PathParam("id") Long id, Employee newEmployee) {
+    @Operation(summary = "Update an employee")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employee updated", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) }),
+            @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Employee with the provided username already exists", content = @Content)
+    })
+    public Response updateEmployee(@PathParam("id") Long id, Employee newEmployee) {
         Optional<Employee> old = employeeService.findById(id);
 
         if (!old.isPresent()) {
@@ -139,10 +176,11 @@ public class Employees {
 
         if (existing.isPresent() && existing.get().getId() != oldEmployee.getId()) {
             return Response.status(Status.CONFLICT)
-                    .entity(new Error(String.format("Employee with username '%s' already exists.", newEmployee.getUsername())))
+                    .entity(new Error(
+                            String.format("Employee with username '%s' already exists.", newEmployee.getUsername())))
                     .build();
         }
-        
+
         oldEmployee.setUsername(newEmployee.getUsername());
         oldEmployee.setPassword(newEmployee.getPassword());
         oldEmployee.setType(newEmployee.getType());
@@ -160,6 +198,12 @@ public class Employees {
     @Path("/{id}/meetings")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get meetings for an employee by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of meetings", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
+            @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content)
+    })
     public Response getMeetings(@PathParam("id") Long id) {
         Optional<Employee> optEmployee = employeeService.findById(id);
 
@@ -176,6 +220,12 @@ public class Employees {
     @Path("/{id}/products")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get products for an employee by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of products", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content)
+    })
     public Response getProducts(@PathParam("id") Long id) {
         Optional<Employee> optEmployee = employeeService.findById(id);
 
@@ -192,6 +242,12 @@ public class Employees {
     @Path("/{id}/clients")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get clients for an employee by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of clients", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Client.class)) }),
+            @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content)
+    })
     public Response getClients(@PathParam("id") Long id) {
         Optional<Employee> optEmployee = employeeService.findById(id);
 
@@ -208,6 +264,12 @@ public class Employees {
     @Path("/{id}/add_client")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add a client to an employee by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client added", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Client.class)) }),
+            @ApiResponse(responseCode = "404", description = "Employee or client not found", content = @Content)
+    })
     public Response addClient(@PathParam("id") Long id, AddClient clientDTO) {
         Optional<Employee> optEmployee = employeeService.findById(id);
 
@@ -218,11 +280,12 @@ public class Employees {
 
         Optional<Client> optClient = clientService.findById(clientDTO.getClientId());
 
-        if(!optClient.isPresent()) {
+        if (!optClient.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                .entity(new Error(String.format("Client with id '%d' not found.", clientDTO.getClientId()))).build();
+                    .entity(new Error(String.format("Client with id '%d' not found.", clientDTO.getClientId())))
+                    .build();
         }
-    
+
         Employee employee = optEmployee.get();
         Client client = optClient.get();
 
@@ -235,6 +298,12 @@ public class Employees {
     @Path("/{id}/remove_client")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Remove a client from an employee by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client removed", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Client.class)) }),
+            @ApiResponse(responseCode = "404", description = "Employee or client not found", content = @Content)
+    })
     public Response removeClient(@PathParam("id") Long id, AddClient clientDTO) {
         Optional<Employee> optEmployee = employeeService.findById(id);
 
@@ -263,6 +332,12 @@ public class Employees {
     @Path("/{id}/add_product")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add a product to an employee by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product added", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            @ApiResponse(responseCode = "404", description = "Employee or product not found", content = @Content)
+    })
     public Response addProduct(@PathParam("id") Long id, AddProduct productDTO) {
         Optional<Employee> optEmployee = employeeService.findById(id);
 
@@ -291,7 +366,13 @@ public class Employees {
     @Path("/{id}/remove_product")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeClient(@PathParam("id") Long id, AddProduct productDTO) {
+    @Operation(summary = "Remove a product from an employee by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product removed", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
+            @ApiResponse(responseCode = "404", description = "Employee or product not found", content = @Content)
+    })
+    public Response removeProduct(@PathParam("id") Long id, AddProduct productDTO) {
         Optional<Employee> optEmployee = employeeService.findById(id);
 
         if (!optEmployee.isPresent()) {

@@ -28,6 +28,12 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.Response.Status;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @Path("/meetings")
 @ApplicationScoped
 public class Meetings {
@@ -60,6 +66,11 @@ public class Meetings {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all meetings")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of all meetings", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) })
+    })
     public Response getMeetings() {
         return Response.ok(meetingService.findAll()).build();
     }
@@ -67,12 +78,18 @@ public class Meetings {
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get a meeting by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Meeting found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
+            @ApiResponse(responseCode = "404", description = "Meeting not found", content = @Content)
+    })
     public Response getMeetingById(@PathParam("id") Long id) {
         Optional<Meeting> m = meetingService.findById(id);
 
         if (!m.isPresent()) {
-        return Response.status(Status.NOT_FOUND)
-            .entity(new Error(String.format("Meeting with id '%d' not found.", id))).build();
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Meeting with id '%d' not found.", id))).build();
         }
 
         return Response.ok(m.get()).build();
@@ -81,12 +98,18 @@ public class Meetings {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Create a new meeting")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Meeting created", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
+    })
     public Response createMeeting(cz.vut.fit.pis.xmatej55.dto.Meeting meetingDTO) {
         Meeting m = new Meeting();
 
         m.setAuthor(employeeService.findById(meetingDTO.getAuthorId()).get());
         m.setClient(clientService.findById(meetingDTO.getClientId()).get());
-        
+
         for (long id : meetingDTO.getEmployeeIds()) {
             m.addEmployee(employeeService.findById(id).get());
         }
@@ -105,6 +128,12 @@ public class Meetings {
     @Path("/{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Remove a meeting by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Meeting removed", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
+            @ApiResponse(responseCode = "404", description = "Meeting not found", content = @Content)
+    })
     public Response removeMeeting(@PathParam("id") Long id) {
         Optional<Meeting> m = meetingService.findById(id);
 
@@ -121,6 +150,12 @@ public class Meetings {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Update a meeting by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Meeting updated", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
+            @ApiResponse(responseCode = "404", description = "Meeting not found", content = @Content)
+    })
     public Response updateEmployee(@PathParam("id") Long id, cz.vut.fit.pis.xmatej55.dto.Meeting meetingDTO) {
         Optional<Meeting> old = meetingService.findById(id);
 
@@ -143,6 +178,12 @@ public class Meetings {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add an employee to a meeting by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employee added", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
+            @ApiResponse(responseCode = "404", description = "Meeting or employee not found", content = @Content)
+    })
     public Response addEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
         Optional<Meeting> optMeeting = meetingService.findById(id);
 
@@ -170,6 +211,12 @@ public class Meetings {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Remove an employee from a meeting by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employee removed", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
+            @ApiResponse(responseCode = "404", description = "Meeting or employee not found", content = @Content)
+    })
     public Response removeEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
         Optional<Meeting> optMeeting = meetingService.findById(id);
 
@@ -182,7 +229,8 @@ public class Meetings {
 
         if (!optEmployee.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Employee with id '%d' not found.", employeeDTO.getEmployeeId()))).build();
+                    .entity(new Error(String.format("Employee with id '%d' not found.", employeeDTO.getEmployeeId())))
+                    .build();
         }
 
         Employee employee = optEmployee.get();

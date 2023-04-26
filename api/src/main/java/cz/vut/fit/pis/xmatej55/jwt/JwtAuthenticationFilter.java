@@ -70,12 +70,16 @@ public class JwtAuthenticationFilter implements ContainerRequestFilter {
         String authHeader = requestContext.getHeaderString(AUTHORIZATION_HEADER);
         String requestedPath = requestContext.getUriInfo().getPath();
 
-        if (requestedPath.endsWith("") || requestedPath.endsWith("auth/")) {
+
+        // if (requestedPath.endsWith("") || requestedPath.endsWith("auth/")) {
+        if (requestedPath.endsWith("auth") || requestedPath.endsWith("auth/")
+                || requestContext.getMethod().equals("OPTIONS")) {
             return;
         }
 
-        if (authHeader == null || !authHeader.startsWith(BEARER)) {
+        if (authHeader == null || authHeader.isEmpty() || !authHeader.startsWith(BEARER)) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+            return;
         }
 
         String token = authHeader.substring(BEARER.length()).trim();
@@ -107,8 +111,10 @@ public class JwtAuthenticationFilter implements ContainerRequestFilter {
 
         } catch (ParseException e) {
             requestContext.abortWith(Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+            return;
         } catch (JOSEException e) {
             requestContext.abortWith(Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+            return;
         }
     }
 }

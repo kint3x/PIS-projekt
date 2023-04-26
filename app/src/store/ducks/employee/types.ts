@@ -3,6 +3,9 @@ import { MeetingModel } from "../meeting/types"
 import { ProductModel } from "../product/types"
 
 export enum EmployeeTypes {
+  AUTH_REQUEST = '@employee/AUTH_REQUEST',
+  AUTH_SUCCESS = '@employee/AUTH_SUCCESS',
+  AUTH_FAILURE = '@employee/AUTH_FAILURE',
   LOAD_REQUEST = '@employee/LOAD_REQUEST',
   LOAD_SUCCESS = '@employee/LOAD_SUCCESS',
   LOAD_FAILURE = '@employee/LOAD_FAILURE',
@@ -66,11 +69,12 @@ export interface EmployeeModel {
 }
 
 export interface EmployeeState {
-  readonly data: { [id: number]: EmployeeModel},
+  readonly token: string | null;
+  readonly data: { [id: number]: EmployeeModel },
   readonly loading: boolean,
-  readonly errMsg: string, 
+  readonly errMsg: string,
   readonly error: boolean,
-  readonly meetings: { [id: number]: MeetingModel},
-  readonly products: { [id: number]: ProductModel},
-  readonly clients: { [id: number]: ClientModel}
+  readonly meetings: { [id: number]: MeetingModel },
+  readonly products: { [id: number]: ProductModel },
+  readonly clients: { [id: number]: ClientModel }
 }

@@ -1,44 +1,56 @@
 import React from 'react'
 import { Menubar } from 'primereact/menubar';
 
-const Navbar = ({name, userType}:{name:string,userType:string}) => {
+const Navbar = ({ name, userType }: { name: string, userType: string }) => {
 
-  let menu;
+  const logout = () => {
+    localStorage.clear()
+  };
 
   let items;
-  if(userType === "worker"){
-    
+  if (userType === "worker") {
+
     items = [
-      { 
-        label : "Clients",
-        url   : "/clients"
+      {
+        label: "Clients",
+        url: "/clients"
       },
       {
-        label : "Meetings",
-        url   : "/meetings",
+        label: "Meetings",
+        url: "/meetings",
+      },
+      {
+        label: 'Logout',
+        url: "/",
+        command: logout
       }
     ]
 
   }
-  else if( userType === "manager"){
+  else if (userType === "manager") {
     items = [
-      { 
-        label : "Clients",
-        url   : "/clients"
+      {
+        label: "Clients",
+        url: "/clients"
       },
       {
-        label : "Employees",
-        url   : "/employees",
+        label: "Employees",
+        url: "/employees",
+      },
+      {
+        label: 'Logout',
+        url: "/",
+        command: logout
       }
     ]
   }
-  else{
+  else {
     items = Array()
   }
 
   return (
-    <Menubar model={items}/>
+    <Menubar model={items} />
   );
 }
-   
+
 export default Navbar;

@@ -8,6 +8,7 @@ import cz.vut.fit.pis.xmatej55.dto.AddProduct;
 import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.ClientProduct;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
+import cz.vut.fit.pis.xmatej55.entities.Meeting;
 import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.services.ClientProductService;
 import cz.vut.fit.pis.xmatej55.services.ClientService;
@@ -32,6 +33,12 @@ import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.core.Response.Status;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @Path("/clients")
 @ApplicationScoped
 public class Clients {
@@ -48,7 +55,7 @@ public class Clients {
     private EmployeeService employeeService;
 
     @Inject
-    private ClientProductService clientProductService;    
+    private ClientProductService clientProductService;
 
     @Context
     private UriInfo context;
@@ -70,6 +77,11 @@ public class Clients {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all clients")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Clients found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Client.class)) })
+    })
     public Response getClients() {
         return Response.ok(clientService.findAll()).build();
     }
@@ -77,7 +89,13 @@ public class Clients {
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEmployeeById(@PathParam("id") Long id) {
+    @Operation(summary = "Get a client by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Client.class)) }),
+            @ApiResponse(responseCode = "404", description = "Client not found", content = @Content)
+    })
+    public Response getClientById(@PathParam("id") Long id) {
         Optional<Client> c = clientService.findById(id);
 
         if (!c.isPresent()) {
@@ -90,9 +108,15 @@ public class Clients {
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createEmployee(Client client) {
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Create a new client")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Client created", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Client.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Client already exists", content = @Content) })
+    public Response createClient(Client client) {
         Client savedClient = clientService.create(client);
         final URI uri = UriBuilder.fromPath("/clients/{resourceServerId}").build(savedClient.getId());
 
@@ -102,7 +126,13 @@ public class Clients {
     @Path("/{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeEmployee(@PathParam("id") Long id) {
+    @Operation(summary = "Delete a client by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client deleted", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Client.class)) }),
+            @ApiResponse(responseCode = "404", description = "Client not found", content = @Content) })
+
+    public Response removeClient(@PathParam("id") Long id) {
         Optional<Client> c = clientService.findById(id);
 
         if (!c.isPresent()) {
@@ -118,7 +148,12 @@ public class Clients {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateEmployee(@PathParam("id") Long id, Client newClient) {
+    @Operation(summary = "Update a client by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client updated", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Client.class)) }),
+            @ApiResponse(responseCode = "404", description = "Client not found", content = @Content) })
+    public Response updateClient(@PathParam("id") Long id, Client newClient) {
         Optional<Client> old = clientService.findById(id);
 
         if (!old.isPresent()) {
@@ -143,6 +178,12 @@ public class Clients {
     @Path("/{id}/meetings")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all meetings for a client by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Meetings found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
+            @ApiResponse(responseCode = "404", description = "Client not found", content = @Content)
+    })
     public Response getMeetings(@PathParam("id") Long id) {
         Optional<Client> optClient = clientService.findById(id);
 
@@ -159,6 +200,12 @@ public class Clients {
     @Path("/{id}/employees")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Get all employees associated with a client")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of employees found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) }),
+            @ApiResponse(responseCode = "404", description = "Client not found", content = @Content)
+    })
     public Response getEmployees(@PathParam("id") Long id) {
         Optional<Client> optClient = clientService.findById(id);
 
@@ -172,24 +219,31 @@ public class Clients {
         return Response.ok(employeeService.findByClient(client)).build();
     }
 
-
     @Path("/{id}/add_employee")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add an employee to a client")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employee added", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) }),
+            @ApiResponse(responseCode = "404", description = "Client or employee not found", content = @Content)
+    })
     public Response addEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
         Optional<Client> optClient = clientService.findById(id);
-        
+
         if (!optClient.isPresent()) {
             return Response.status(Status.NOT_FOUND)
                     .entity(new Error(String.format("Client with id '%d' not found.", id)))
                     .build();
         }
-        
+
         Optional<Employee> optEmployee = employeeService.findById(employeeDTO.getEmployeeId());
-        
+
         if (!optEmployee.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-            .entity(new Error(String.format("Employee with id '%d' not found.", employeeDTO.getEmployeeId()))).build();
+                    .entity(new Error(String.format("Employee with id '%d' not found.", employeeDTO.getEmployeeId())))
+                    .build();
         }
 
         Client client = optClient.get();
@@ -197,13 +251,19 @@ public class Clients {
 
         employee.addClient(client);
         employeeService.update(employee);
-        
+
         return Response.ok(employeeService.findByClient(client)).build();
     }
 
     @Path("/{id}/remove_employee")
-    @DELETE 
+    @DELETE
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Remove an employee from a client")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employee removed", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) }),
+            @ApiResponse(responseCode = "404", description = "Client or employee not found", content = @Content)
+    })
     public Response removeEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
         Optional<Client> optClient = clientService.findById(id);
 
@@ -233,7 +293,13 @@ public class Clients {
     @Path("/{id}/client_products")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getClients(@PathParam("id") Long id) {
+    @Operation(summary = "Get all client products for a client by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client products found", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientProduct.class)) }),
+            @ApiResponse(responseCode = "404", description = "Client not found", content = @Content)
+    })
+    public Response getClientProducts(@PathParam("id") Long id) {
         Optional<Client> optClient = clientService.findById(id);
 
         if (!optClient.isPresent()) {
@@ -249,12 +315,19 @@ public class Clients {
     @Path("/{id}/add_product")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Add a product to a client")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product added", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientProduct.class)) }),
+            @ApiResponse(responseCode = "404", description = "Client or product not found", content = @Content)
+    })
     public Response addProduct(@PathParam("id") Long id, AddProduct productDTO) {
         Optional<Product> optProduct = productService.findById(productDTO.getProductId());
 
         if (!optProduct.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Product with id '%d' not found.", productDTO.getProductId()))).build();
+                    .entity(new Error(String.format("Product with id '%d' not found.", productDTO.getProductId())))
+                    .build();
         }
 
         Optional<Client> optClient = clientService.findById(id);
@@ -290,12 +363,19 @@ public class Clients {
     @Path("/{id}/remove_product")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Remove a product from a client")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product removed", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientProduct.class)) }),
+            @ApiResponse(responseCode = "404", description = "Client or product not found", content = @Content)
+    })
     public Response removeProduct(@PathParam("id") Long id, AddProduct productDTO) {
         Optional<Product> optProduct = productService.findById(productDTO.getProductId());
 
         if (!optProduct.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Product with id '%d' not found.", productDTO.getProductId()))).build();
+                    .entity(new Error(String.format("Product with id '%d' not found.", productDTO.getProductId())))
+                    .build();
         }
 
         Optional<Client> optClient = clientService.findById(id);

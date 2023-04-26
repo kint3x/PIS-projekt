@@ -4,6 +4,17 @@ import { MeetingModel } from '../meeting/types';
 import { ProductModel } from '../product/types';
 import { ClientModel } from '../client/types';
 
+export const authRequest = (
+  username: string,
+  password: string
+) => action(EmployeeTypes.AUTH_REQUEST, { username, password });
+
+export const authSuccess = (
+  token: string
+) => action(EmployeeTypes.AUTH_SUCCESS, { token });
+
+export const authFailure = (err: any) => action(EmployeeTypes.AUTH_FAILURE, err);
+
 export const loadRequest = (
   id: number | 'all',
 ) => action(EmployeeTypes.LOAD_REQUEST, { id });
@@ -42,7 +53,7 @@ export const removeRequest = (
 
 export const removeSuccess = (
   id: number
-) => action(EmployeeTypes.REMOVE_SUCCESS,{ id });
+) => action(EmployeeTypes.REMOVE_SUCCESS, { id });
 
 export const removeFailure = (err: any) => action(EmployeeTypes.REMOVE_FAILURE, err);
 
