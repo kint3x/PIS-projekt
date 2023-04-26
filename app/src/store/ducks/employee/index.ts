@@ -5,6 +5,7 @@ import { clientModelToState } from '../client';
 import { productModelToState } from '../product';
 
 export const INITIAL_STATE: EmployeeState = {
+  token: null,
   data: {},
   loading: false,
   errMsg: '',
@@ -38,6 +39,12 @@ export const employeeModelToState = (
 
 const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyAction) => {
   switch (action.type) {
+    case EmployeeTypes.AUTH_REQUEST:
+      return { ...state, loading: true };
+    case EmployeeTypes.AUTH_SUCCESS:
+      return { ...state, loading: false, error: false, token: action.payload.token };
+    case EmployeeTypes.AUTH_FAILURE:
+      return { ...state, loading: false, error: true, errMsg: action.payload };
     case EmployeeTypes.CREATE_REQUEST:
     case EmployeeTypes.UPDATE_REQUEST:
     case EmployeeTypes.REMOVE_REQUEST:

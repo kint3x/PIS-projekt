@@ -8,6 +8,7 @@ import cz.vut.fit.pis.xmatej55.jwt.JwtTokenGenerator;
 import cz.vut.fit.pis.xmatej55.services.AuthenticationService;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.OPTIONS;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -19,6 +20,11 @@ import jakarta.ws.rs.core.MediaType;
 public class Authentication {
     @Inject
     AuthenticationService authenticationService;
+
+    @OPTIONS
+    public Response options() {
+        return Response.ok("").build();
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -35,7 +41,9 @@ public class Authentication {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
             }
         } else {
-            return Response.status(Status.FORBIDDEN).entity("invalid login").build();
+            return Response.status(Status.FORBIDDEN)
+                    .entity(new Error(String.format("Invalid login.")))
+                    .build();
         }
     }
 }

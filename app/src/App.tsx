@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
 
 import Navbar from './Navbar';
 import Home from './pages/Home/Home';
@@ -13,46 +15,33 @@ import MeetingDetail from './pages/Meetings/MeetingDetail';
 import './App.css';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";  
+import "primeicons/primeicons.css";
 
 import store from "../src/store";
 
 function App() {
 
-  const[name,setName]= useState(localStorage.getItem("name") || "");
-  const[userType, setUserType] = useState(localStorage.getItem("userType") || "");
+  const [name, setName] = useState(localStorage.getItem("name") || "");
+  const [userType, setUserType] = useState(localStorage.getItem("userType") || "");
 
-  const handleLogin = (userName:string, userType:string) => {
-      setName(userName)
-      setUserType(userType)
-  } 
+  const handleLogin = (userName: string, userType: string) => {
+    setName(userName)
+    setUserType(userType)
+  }
 
   return (
     <Provider store={store}>
       <Router>
         <div className="App">
-        <Navbar name= {name} userType={userType}/>
+          <Navbar name={name} userType={userType} />
           <div className="app-content">
             <Switch>
-              <Route exact path="/">
-                <Home method={handleLogin}/>
-              </Route>
-              <Route exact path="/clients">
-                <Clients />
-              </Route>
-              <Route exact path="/meetings">
-                <Meetings />
-              </Route>
-              <Route exact path="/clients/:id">
-                <ClientDetail />
-              </Route>
-              <Route exact path="/meetings/:id">
-                <MeetingDetail />
-              </Route>
-              <Route exact path="/employees">
-                <Employees />
-              </Route>
-              
+              <PublicRoute exact path="/" component={Home} method={handleLogin} />
+              <PrivateRoute exact path="/clients" component={Clients} />
+              <PrivateRoute exact path="/meetings" component={Meetings} />
+              <PrivateRoute exact path="/clients/:id" component={ClientDetail} />
+              <PrivateRoute exact path="/meetings/:id" component={MeetingDetail} />
+              <PrivateRoute exact path="/employees" component={Employees} />
             </Switch>
           </div>
         </div>

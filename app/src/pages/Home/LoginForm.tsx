@@ -3,36 +3,55 @@ import './LoginForm.css';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { useHistory } from "react-router-dom";
 import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { authRequest } from '../../store/ducks/employee/actions';
+import { AppState } from '../../store';
+import jwtDecode, { JwtPayload } from "jwt-decode";
 
-const LoginForm = ({method}:any) => {
+interface DecodedToken extends JwtPayload {
+  groups: string[]
+  upn: string
+}
+
+const LoginForm = ({ method }: any) => {
+  const dispatch = useDispatch();
 
   const history = useHistory();
   const [errorMessage, setErrorMessage] = React.useState("");
-  
+
+  const token = useSelector((state: AppState) => state.employee.token);
+  const error = useSelector((state: AppState) => state.employee.error);
+  const errMsg = useSelector((state: AppState) => state.employee.errMsg);
+
+  useEffect(() => {
+    if (error) {
+      console.log(errMsg) //TODO correct error msg
+      setErrorMessage("Ivalid login!")
+    }
+    if (token) {
+      const decodedToken = jwtDecode<DecodedToken>(token);
+
+      let userType: string
+      if (decodedToken.groups.includes("owner")) {
+        userType = "owner"
+      } else if (decodedToken.groups.includes("manager")) {
+        userType = "manager"
+      } else {
+        userType = "worker"
+      }
+
+      localStorage.setItem("userType", userType)
+      localStorage.setItem('jwtToken', token)
+      localStorage.setItem("name", decodedToken.upn);
+
+      method(userType, decodedToken.upn)
+      history.push("/clients")
+    }
+  }, [token, error, errMsg]);
 
   const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (username === "worker" || username === ""){
-        localStorage.setItem("name", "worker");
-        localStorage.setItem("userType", "worker")
-        method("worker","worker")
-        history.push("/clients")
-    }
-    else if (username === "manager") {
-        localStorage.setItem("name", "manager");
-        localStorage.setItem("userType", "manager")
-        method("manager","manager")
-        history.push("/clients")
-    }
-    else if (username === "customer-department") {
-        localStorage.setItem("name", "customer-department");
-        localStorage.setItem("userType", "customer-department")
-        method("customer-department","customer-department")
-        history.push("/clients")
-    }
-    else{
-      setErrorMessage("Invalid username or password!")
-    }
+    dispatch(authRequest(username, password));
   }
 
   const [username, setUsername] = useState("")
@@ -49,7 +68,7 @@ const LoginForm = ({method}:any) => {
               type="username"
               className="form-control mt-1"
               placeholder="Enter username"
-              value = {username}
+              value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
@@ -59,7 +78,7 @@ const LoginForm = ({method}:any) => {
               type="password"
               className="form-control mt-1"
               placeholder="Enter password"
-              value = {password}
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>

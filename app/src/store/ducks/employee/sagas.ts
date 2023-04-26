@@ -1,16 +1,27 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import api from '../../../services/api';
-import * as actions from './actions'; 
+import * as actions from './actions';
 import { AnyAction } from 'redux';
 import { EmployeeTypes } from './types';
 
 const endpoint = 'employees';
 
+function* auth(action: AnyAction) {
+  const { username, password } = action.payload;
+  try {
+    const response: { [key: string]: any } = yield call(api.post, `/auth`, { "username": username, "password": password });
+    const token = response.data
+    yield put(actions.authSuccess(token));
+  } catch (err) {
+    yield put(actions.createFailure(err as any));
+  }
+}
+
 function* load(action: AnyAction) {
   const { id } = action.payload;
   const queryString = `/${endpoint}${id === 'all' ? '' : `/${id}`}`;
   try {
-    const response: { [key: string] : any } = yield call(api.get, queryString);
+    const response: { [key: string]: any } = yield call(api.get, queryString);
     const data = response.data;
     yield put(actions.loadSuccess(id, data));
   } catch (err) {
@@ -21,7 +32,7 @@ function* load(action: AnyAction) {
 function* create(action: AnyAction) {
   const { payload } = action.payload;
   try {
-    const response: { [key: string] : any } = yield call(api.post, `/${endpoint}`, payload);
+    const response: { [key: string]: any } = yield call(api.post, `/${endpoint}`, payload);
     const data = response.data
     yield put(actions.createSuccess(data));
   } catch (err) {
@@ -32,7 +43,7 @@ function* create(action: AnyAction) {
 function* update(action: AnyAction) {
   const { id, payload } = action.payload;
   try {
-    const response: { [key: string] : any } = yield call(api.put, `/${endpoint}/${id}`, payload);
+    const response: { [key: string]: any } = yield call(api.put, `/${endpoint}/${id}`, payload);
     const data = response.data
     yield put(actions.updateSuccess(data));
   } catch (err) {
@@ -53,7 +64,7 @@ function* remove(action: AnyAction) {
 function* loadMeetings(action: AnyAction) {
   const { id } = action.payload;
   try {
-    const response: { [key: string] : any } = yield call(api.get, `/${endpoint}/${id}/meetings`);
+    const response: { [key: string]: any } = yield call(api.get, `/${endpoint}/${id}/meetings`);
     const data = response.data;
     yield put(actions.loadMeetingsSuccess(id, data));
   } catch (err) {
@@ -64,7 +75,7 @@ function* loadMeetings(action: AnyAction) {
 function* loadProducts(action: AnyAction) {
   const { id } = action.payload;
   try {
-    const response: { [key: string] : any } = yield call(api.get, `/${endpoint}/${id}/products`);
+    const response: { [key: string]: any } = yield call(api.get, `/${endpoint}/${id}/products`);
     const data = response.data;
     yield put(actions.loadProductsSuccess(id, data));
   } catch (err) {
@@ -75,7 +86,7 @@ function* loadProducts(action: AnyAction) {
 function* loadClients(action: AnyAction) {
   const { id } = action.payload;
   try {
-    const response: { [key: string] : any } = yield call(api.get, `/${endpoint}/${id}/clients`);
+    const response: { [key: string]: any } = yield call(api.get, `/${endpoint}/${id}/clients`);
     const data = response.data;
     yield put(actions.loadClientSuccess(id, data));
   } catch (err) {
@@ -86,7 +97,7 @@ function* loadClients(action: AnyAction) {
 function* addClient(action: AnyAction) {
   const { employee_id, client_id } = action.payload;
   try {
-    const response: { [key: string] : any } = yield call(
+    const response: { [key: string]: any } = yield call(
       api.post, `/${endpoint}/${employee_id}/add_client`,
       { "clientId": client_id }
     );
@@ -100,7 +111,7 @@ function* addClient(action: AnyAction) {
 function* removeClient(action: AnyAction) {
   const { employee_id, client_id } = action.payload;
   try {
-    yield call(api.delete, `/${endpoint}/${employee_id}/remove_client`, { "data": {"clientId": client_id }});
+    yield call(api.delete, `/${endpoint}/${employee_id}/remove_client`, { "data": { "clientId": client_id } });
     yield put(actions.removeClientSuccess(client_id));
   } catch (err) {
     yield put(actions.addClientFailure(err as any));
@@ -110,7 +121,7 @@ function* removeClient(action: AnyAction) {
 function* addProduct(action: AnyAction) {
   const { employee_id, product_id } = action.payload;
   try {
-    const response: { [key: string] : any } = yield call(api.post, `/${endpoint}/${employee_id}/add_product`, { "productId": product_id });
+    const response: { [key: string]: any } = yield call(api.post, `/${endpoint}/${employee_id}/add_product`, { "productId": product_id });
     const data = response.data;
     yield put(actions.addProductSuccess(data));
   } catch (err) {
@@ -121,7 +132,7 @@ function* addProduct(action: AnyAction) {
 function* removeProduct(action: AnyAction) {
   const { employee_id, product_id } = action.payload;
   try {
-    yield call(api.delete, `/${endpoint}/${employee_id}/remove_product`, { "data": {"productId": product_id }});
+    yield call(api.delete, `/${endpoint}/${employee_id}/remove_product`, { "data": { "productId": product_id } });
     yield put(actions.removeProductSuccess(product_id));
   } catch (err) {
     yield put(actions.removeProductFailure(err as any));
@@ -129,6 +140,7 @@ function* removeProduct(action: AnyAction) {
 }
 
 const employeeSagas = [
+  takeLatest(EmployeeTypes.AUTH_REQUEST, auth),
   takeLatest(EmployeeTypes.LOAD_REQUEST, load),
   takeLatest(EmployeeTypes.CREATE_REQUEST, create),
   takeLatest(EmployeeTypes.UPDATE_REQUEST, update),
