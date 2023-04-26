@@ -1,8 +1,10 @@
 import React from 'react'
 import { Menubar } from 'primereact/menubar';
 
-const Navbar = ({ name, userType }: { name: string, userType: string }) => {
+const Navbar = () => {
 
+  const userType = localStorage.getItem('userType')
+  
   const logout = () => {
     localStorage.clear()
   };

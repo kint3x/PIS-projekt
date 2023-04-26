@@ -33,7 +33,6 @@ import { Calendar } from 'primereact/calendar';
 import { format } from "date-fns";
 
 // TODD page available for every user, but for "worker" it only shows their own clients
-// TODO disable editing for "worker"
 
 const Clients = () => {
     const dispatch = useDispatch();

@@ -2,14 +2,13 @@ import React from 'react'
 import LoginForm from "./LoginForm"
 
 
-const Home = ({ method }: any) => {
+const Home = () => {
 
   localStorage.clear()
-  method("", "")
 
   return (
     <div className="home">
-      <LoginForm method={method} />
+      <LoginForm />
     </div>
   );
 }

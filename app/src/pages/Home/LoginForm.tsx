@@ -13,7 +13,7 @@ interface DecodedToken extends JwtPayload {
   upn: string
 }
 
-const LoginForm = ({ method }: any) => {
+const LoginForm = () => {
   const dispatch = useDispatch();
 
   const history = useHistory();
@@ -26,7 +26,7 @@ const LoginForm = ({ method }: any) => {
   useEffect(() => {
     if (error) {
       console.log(errMsg) //TODO correct error msg
-      setErrorMessage("Ivalid login!")
+      setErrorMessage("Invalid login!")
     }
     if (token) {
       const decodedToken = jwtDecode<DecodedToken>(token);
@@ -44,7 +44,7 @@ const LoginForm = ({ method }: any) => {
       localStorage.setItem('jwtToken', token)
       localStorage.setItem("name", decodedToken.upn);
 
-      method(userType, decodedToken.upn)
+
       history.push("/clients")
     }
   }, [token, error, errMsg]);
