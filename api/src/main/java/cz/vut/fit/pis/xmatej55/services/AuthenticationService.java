@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.mindrot.jbcrypt.BCrypt;
 
 import cz.vut.fit.pis.xmatej55.entities.Employee;
-import cz.vut.fit.pis.xmatej55.entities.Employee.EmployeeType;
 import cz.vut.fit.pis.xmatej55.managers.EmployeeManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -16,14 +15,14 @@ public class AuthenticationService {
     @Inject
     private EmployeeManager employeeManager;
 
-    public Optional<EmployeeType> isValidUser(String username, String password) {
+    public Optional<Employee> isValidUser(String username, String password) {
         Optional<Employee> employee = employeeManager.findByUsername(username);
 
         if (employee.isPresent()) {
             String hashedPassword = employee.get().getPassword();
 
             if (BCrypt.checkpw(password, hashedPassword)) {
-                return Optional.of(employee.get().getType());
+                return Optional.of(employee.get());
             }
         }
 
