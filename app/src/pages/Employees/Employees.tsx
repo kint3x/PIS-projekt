@@ -39,20 +39,24 @@ const Employees = () => {
     const [show_dialog,setShowDialog] = useState(false);
     const [show_add_dialog,setShowAddDialog] = useState(false);
     const [selected_employee, setSelectedEmployee] = useState<any>({});
+    const [selectProducts, setSelectedProducts] = useState<any>({add: 0, remove: 0});
 
     useEffect(() => {
       dispatch(loadEmployees('all'));
       dispatch(loadProducts('all'));
-      dispatch(loadEmployeeProducts(selected_employee.id));
-    }, [dispatch,show_dialog,show_add_dialog]);   
+    }, [dispatch,setShowDialog,setShowAddDialog]);   
 
     const employees = useSelector((state: AppState) => state.employee.data);
     const loading = useSelector((state: AppState) => state.employee.loading);
     const error = useSelector((state: AppState) => state.employee.error);
     const errMsg = useSelector((state: AppState) => state.employee.errMsg);
+
+    const products = useSelector((state: AppState) => state.product.data);
+    const employeeProducts = useSelector((state: AppState) => state.employee.products);
         
     const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
     const [new_employee, setNewEmployee] = useState<any>({});
+
 
     var password_change = "";
     
@@ -66,8 +70,11 @@ const Employees = () => {
 
     function onClickHandle(event: DataTableRowClickEvent) : void{
       setSelectedEmployee(event.data);
-      dispatch(loadEmployeeProducts(selected_employee.id));
-      setShowDialog(true);
+      dispatch(loadEmployeeProducts(event.data.id));
+      if(!loading){
+        setShowDialog(true);
+      }
+      
     }
 
     function onUserEdit() : void{
@@ -108,30 +115,12 @@ const Employees = () => {
       }
     }
     
-    const products = useSelector((state: AppState) => state.product.data);
-    const employeeProducts = useSelector((state: AppState) => state.employee.products);
-
-    const [selected_product_id, setSelectedProductId] = useState<any>({});
-    const [selected_employees_product_id, setSelectedEmployeesProductId] = useState<any>({});
-
-    function onAvailableProductSelect(event: DropdownChangeEvent){
-        setSelectedProductId(event.value)
-    }
-    
-    function addSelectedProduct(){
-      dispatch(addProductEmployee(selected_product_id,selected_employee.id));
-      dispatch(addEmployeeProduct(selected_employee.id,selected_product_id));
+    function onAddSelectedProducts(){
+      dispatch(addEmployeeProduct(selected_employee.id,selectProducts.add));
       dispatch(loadEmployeeProducts(selected_employee.id));
     }
+    function onRemoveSelectedProducts(){
 
-    function onEmployeesProductSelect(event: DropdownChangeEvent){
-        setSelectedEmployeesProductId(event.value)
-    }
-
-    function removeSelectedEmployeeProduct(){
-      dispatch(removeProductEmployee(selected_employees_product_id,selected_employee.id));
-      dispatch(removeEmployeeProduct(selected_employee.id,selected_employees_product_id));
-      dispatch(loadEmployeeProducts(selected_employee.id));
     }
 
     return(
@@ -147,7 +136,8 @@ const Employees = () => {
           <Column filter={true}  field="username" header="Username"></Column>
         </DataTable>
 
-        <Dialog header="Edit User" className="edit-user" visible={show_dialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
+        <Dialog header="Edit User" className="edit-user" visible={show_dialog} style={{ width: '50vw' }} 
+        onHide={() => {setShowDialog(false); setSelectedProducts({add:0, remove:0})}}>
           <div className={modal_err_msg.visible}>
             <Message severity="error" text={modal_err_msg.msg} />
           </div>
@@ -222,21 +212,20 @@ const Employees = () => {
             onChange={(e) => onInputChange(e, 'address')} />
           </div>
 
-
-          <Splitter>
-              <SplitterPanel >
-                <Dropdown value={selected_product_id} onChange={(e) => onAvailableProductSelect(e)} placeholder="Select a product"
-                optionLabel="name" optionValue="id" options={Object.values(products)} className="w-full md:w-14rem" />
-              </SplitterPanel>
-              <SplitterPanel >
-                <Button label="Add" severity="success" onClick = {() => addSelectedProduct()} />
-                <Button label="Remove" severity="success" onClick = {() => removeSelectedEmployeeProduct()} />
-              </SplitterPanel>
-              <SplitterPanel >
-                <Dropdown value={selected_employees_product_id} onChange={(e) =>  onEmployeesProductSelect(e)} placeholder="Select a product"
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Add product</span>
+            <Dropdown value={selectProducts.add} onChange={(e) => setSelectedProducts({...selectProducts, add: e.value})} placeholder="Select a product"
+                optionLabel="name" optionValue="id" 
+                options={Object.values(products).filter(it => !((Object.values(employeeProducts)).map(item => item.id)).includes(it.id) )} className="w-full md:w-14rem" />
+            <Button label="Add" severity="success" 
+            onClick={()=> onAddSelectedProducts() } />
+          </div>
+          <div className="p-inputgroup">
+            <span className="p-inputgroup-addon">Remove product</span>
+            <Dropdown value={selectProducts.remove} onChange={(e) => setSelectedProducts({...selectProducts, remove: e.value})} placeholder="Select a product"
                 optionLabel="name" optionValue="id" options={Object.values(employeeProducts)} className="w-full md:w-14rem" />
-              </SplitterPanel>
-          </Splitter>
+            <Button label="Remove" severity="success"  />
+          </div>
 
           <Button label="Submit" severity="success" onClick = {() => onUserEdit()} />
           <Button label="Delete" severity="danger"  onClick = {() => onUserDelete()} className="float-right"/>

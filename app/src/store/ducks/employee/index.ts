@@ -49,7 +49,6 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
     case EmployeeTypes.UPDATE_REQUEST:
     case EmployeeTypes.REMOVE_REQUEST:
     case EmployeeTypes.LOAD_MEETINGS_REQUEST:
-    case EmployeeTypes.LOAD_PRODUCTS_REQUEST:
     case EmployeeTypes.LOAD_CLIENTS_REQUEST:
     case EmployeeTypes.ADD_CLIENT_REQUEST:
     case EmployeeTypes.ADD_PRODUCT_REQUEST:
@@ -57,6 +56,8 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
     case EmployeeTypes.REMOVE_CLIENT_REQUEST:
     case EmployeeTypes.LOAD_REQUEST:
       return { ...state, loading: true }
+    case EmployeeTypes.LOAD_PRODUCTS_REQUEST:
+      return { ...state, loading: true, products: [] }
     case EmployeeTypes.ADD_CLIENT_SUCCESS:
     case EmployeeTypes.LOAD_CLIENTS_SUCCESS:
       var clients = action.payload.data;
