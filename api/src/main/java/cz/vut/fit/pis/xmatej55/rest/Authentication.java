@@ -2,7 +2,7 @@ package cz.vut.fit.pis.xmatej55.rest;
 
 import java.util.Optional;
 
-import cz.vut.fit.pis.xmatej55.entities.Employee.EmployeeType;
+import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.jwt.Credentials;
 import cz.vut.fit.pis.xmatej55.jwt.JwtTokenGenerator;
 import cz.vut.fit.pis.xmatej55.services.AuthenticationService;
@@ -43,12 +43,11 @@ public class Authentication {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     public Response authenticateUser(Credentials credentials) {
-        Optional<EmployeeType> employeeType = authenticationService.isValidUser(credentials.getUsername(),
+        Optional<Employee> employee = authenticationService.isValidUser(credentials.getUsername(),
                 credentials.getPassword());
-        if (employeeType.isPresent()) {
+        if (employee.isPresent()) {
             try {
-                String token = JwtTokenGenerator.generateJWTString(credentials.getUsername(),
-                        employeeType.get());
+                String token = JwtTokenGenerator.generateJWTString(employee.get());
                 return Response.ok(token).build();
             } catch (Exception e) {
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();

@@ -11,6 +11,7 @@ import jwtDecode, { JwtPayload } from "jwt-decode";
 interface DecodedToken extends JwtPayload {
   groups: string[]
   upn: string
+  employee_id: number
 }
 
 const LoginForm = ({ method }: any) => {
@@ -30,7 +31,6 @@ const LoginForm = ({ method }: any) => {
     }
     if (token) {
       const decodedToken = jwtDecode<DecodedToken>(token);
-
       let userType: string
       if (decodedToken.groups.includes("owner")) {
         userType = "owner"
@@ -43,6 +43,7 @@ const LoginForm = ({ method }: any) => {
       localStorage.setItem("userType", userType)
       localStorage.setItem('jwtToken', token)
       localStorage.setItem("name", decodedToken.upn);
+      localStorage.setItem("employeeId", decodedToken.employee_id.toString());
 
       method(userType, decodedToken.upn)
       history.push("/clients")

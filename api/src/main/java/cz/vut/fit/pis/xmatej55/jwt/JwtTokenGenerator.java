@@ -18,17 +18,17 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import cz.vut.fit.pis.xmatej55.entities.Employee.EmployeeType;
+import cz.vut.fit.pis.xmatej55.entities.Employee;
 
 public class JwtTokenGenerator {
 
-    public static String generateJWTString(String username, EmployeeType employeeType)
+    public static String generateJWTString(Employee employee)
             throws Exception {
         long currentTimeMillis = System.currentTimeMillis();
         long expirationTimeMillis = currentTimeMillis + (120 * 60 * 1000); // + 2 hours
 
         List<String> groups = new ArrayList<>();
-        switch (employeeType) {
+        switch (employee.getType()) {
             case Owner:
                 groups.add("owner");
             case Manager:
@@ -42,9 +42,10 @@ public class JwtTokenGenerator {
                 .issuer("fit_pis_prj")
                 .issueTime(new Date(currentTimeMillis))
                 .expirationTime(new Date(expirationTimeMillis))
-                .subject(username)
-                .claim(Claims.upn.name(), username)
+                .subject(employee.getUsername())
+                .claim(Claims.upn.name(), employee.getUsername())
                 .claim(Claims.groups.name(), groups)
+                .claim("employee_id", employee.getId())
                 .build();
 
         String privateKeyPath = "/privateKey.pem";
