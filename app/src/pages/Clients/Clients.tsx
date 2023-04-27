@@ -2,6 +2,7 @@ import React from 'react'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState} from 'react';
+import { useHistory } from "react-router-dom";
 
 import { loadRequest as loadClients } from '../../store/ducks/client/actions';
 import { updateRequest as updateClient } from '../../store/ducks/client/actions';
@@ -35,6 +36,13 @@ import { format } from "date-fns";
 // TODD page available for every user, but for "worker" it only shows their own clients
 
 const Clients = () => {
+
+    // const userType = localStorage.getItem('userType')
+    // const history = useHistory();
+    // let query = 'all'
+    // if (userType === 'worker')
+    //   query = localStorage.getItem('employeeId')
+
     const dispatch = useDispatch();
     
     const [show_client_dialog,setShowClientDialog] = useState(false);

@@ -2,6 +2,7 @@ import React from 'react'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState} from 'react';
+import { useHistory } from "react-router-dom";
 
 import { loadRequest as loadEmployees } from '../../store/ducks/employee/actions';
 import { updateRequest as updateEmployee } from '../../store/ducks/employee/actions';
@@ -34,6 +35,13 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 //TODO page availabe only for manager
 
 const Employees = () => {
+
+    // const userType = localStorage.getItem('userType')
+    // const history = useHistory();
+    // if (userType !== 'owner')
+    //   console.log(userType)
+    //   history.push("/")
+
     const dispatch = useDispatch();
     
     const [show_dialog,setShowDialog] = useState(false);
@@ -52,6 +60,7 @@ const Employees = () => {
     const errMsg = useSelector((state: AppState) => state.employee.errMsg);
 
     const products = useSelector((state: AppState) => state.product.data);
+    const productsLoading = useSelector((state: AppState) => state.product.loading);
     const employeeProducts = useSelector((state: AppState) => state.employee.products);
         
     const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
@@ -71,7 +80,7 @@ const Employees = () => {
     function onClickHandle(event: DataTableRowClickEvent) : void{
       setSelectedEmployee(event.data);
       dispatch(loadEmployeeProducts(event.data.id));
-      if(!loading){
+      if(!loading && !productsLoading){
         setShowDialog(true);
       }
       
@@ -115,12 +124,14 @@ const Employees = () => {
       }
     }
     
-    function onAddSelectedProducts(){
+    function onAddSelectedProduct(){
       dispatch(addEmployeeProduct(selected_employee.id,selectProducts.add));
       dispatch(loadEmployeeProducts(selected_employee.id));
     }
-    function onRemoveSelectedProducts(){
 
+    function onRemoveSelectedProduct(){
+      dispatch(removeEmployeeProduct(selected_employee.id,selectProducts.remove))
+      dispatch(loadEmployeeProducts(selected_employee.id));
     }
 
     return(
@@ -218,13 +229,14 @@ const Employees = () => {
                 optionLabel="name" optionValue="id" 
                 options={Object.values(products).filter(it => !((Object.values(employeeProducts)).map(item => item.id)).includes(it.id) )} className="w-full md:w-14rem" />
             <Button label="Add" severity="success" 
-            onClick={()=> onAddSelectedProducts() } />
+            onClick={()=> onAddSelectedProduct() } />
           </div>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Remove product</span>
             <Dropdown value={selectProducts.remove} onChange={(e) => setSelectedProducts({...selectProducts, remove: e.value})} placeholder="Select a product"
                 optionLabel="name" optionValue="id" options={Object.values(employeeProducts)} className="w-full md:w-14rem" />
-            <Button label="Remove" severity="success"  />
+            <Button label="Remove" severity="success" 
+             onClick={()=> onRemoveSelectedProduct()}/>
           </div>
 
           <Button label="Submit" severity="success" onClick = {() => onUserEdit()} />

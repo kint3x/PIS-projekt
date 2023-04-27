@@ -2,6 +2,7 @@ import React from 'react'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState} from 'react';
+import { useHistory } from "react-router-dom";
 
 import { loadRequest as loadProducts } from '../../store/ducks/product/actions';
 import { updateRequest as updateProduct } from '../../store/ducks/product/actions';
@@ -24,6 +25,12 @@ import { format } from "date-fns";
 //#TODO page availabe only for "manager"
 
 const Products = () => {
+
+    // const userType = localStorage.getItem('userType')
+    // const history = useHistory();
+    // if (userType !== 'owner')
+    //   history.push("/")
+
     const dispatch = useDispatch();
     
     const [show_dialog,setShowDialog] = useState(false);
