@@ -5,7 +5,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 
 import Navbar from './Navbar';
-import Home from './pages/Home/Home';
+import LoginForm from './pages/Home/LoginForm';
 import Clients from './pages/Clients/Clients';
 import Employees from './pages/Employees/Employees';
 import Products from './pages/Products/Products';
@@ -27,7 +27,7 @@ function App() {
           <Navbar/>
           <div className="app-content">
             <Switch>
-              <PublicRoute exact path="/" component={Home} />
+              <PublicRoute exact path="/" component={LoginForm} />
               <PrivateRoute exact path="/clients" component={Clients} />
               <PrivateRoute exact path="/products" component={Products} />
               <PrivateRoute exact path="/employees" component={Employees} />
