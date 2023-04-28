@@ -27,11 +27,11 @@ function App() {
           <Navbar/>
           <div className="app-content">
             <Switch>
-              <PublicRoute exact path="/" component={LoginForm} />
-              <PrivateRoute exact path="/clients" component={Clients} />
-              <PrivateRoute exact path="/products" component={Products} />
-              <PrivateRoute exact path="/employees" component={Employees} />
-              <PrivateRoute exact path="/meetings" component={Meetings} />
+              <PublicRoute exact path="/" component={LoginForm}/>
+              <PrivateRoute exact path="/clients" component={Clients} allowedUsers="worker,manager,owner"/>
+              <PrivateRoute exact path="/products" component={Products} allowedUsers="owner"/>
+              <PrivateRoute exact path="/employees" component={Employees} allowedUsers="manager,owner"/>
+              <PrivateRoute exact path="/meetings" component={Meetings} allowedUsers="worker,owner"/>
             </Switch>
           </div>
         </div>

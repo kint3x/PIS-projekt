@@ -1,15 +1,20 @@
-import React from 'react'
+import React, { useState, useEffect} from 'react';
 import { Menubar } from 'primereact/menubar';
 
 const Navbar = () => {
 
-  const userType = localStorage.getItem('userType')
+  // const[userType, setUserType] = useState(localStorage.getItem("userType"));
+  let userType = localStorage.getItem('userType')
+
+  // useEffect(() => {
+  //   this.forceUpdate()
+  // }, [userType]);   
   
   const logout = () => {
     localStorage.clear()
   };
 
-  let items;
+  let items = Array()
   if (userType === "worker") {
 
     items = [
@@ -46,8 +51,30 @@ const Navbar = () => {
       }
     ]
   }
-  else {
-    items = Array()
+  else if (userType === "owner"){
+    items = [
+      {
+        label: "Clients",
+        url: "/clients"
+      },
+      {
+        label: "Employees",
+        url: "/employees",
+      },
+      {
+        label: "Products",
+        url: "/products",
+      },
+      {
+        label: "Meetings",
+        url: "/meeetings",
+      },
+      {
+        label: 'Logout',
+        url: "/",
+        command: logout
+      }
+    ]
   }
 
   return (
