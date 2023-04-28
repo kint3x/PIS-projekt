@@ -32,15 +32,7 @@ import { ListBox, ListBoxChangeEvent } from 'primereact/listbox';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 
-//TODO page availabe only for manager
-
 const Employees = () => {
-
-    // const userType = localStorage.getItem('userType')
-    // const history = useHistory();
-    // if (userType !== 'owner')
-    //   console.log(userType)
-    //   history.push("/")
 
     const dispatch = useDispatch();
     
@@ -126,12 +118,12 @@ const Employees = () => {
     
     function onAddSelectedProduct(){
       dispatch(addEmployeeProduct(selected_employee.id,selectProducts.add));
-      dispatch(loadEmployeeProducts(selected_employee.id));
+      // dispatch(loadEmployeeProducts(selected_employee.id));
     }
 
     function onRemoveSelectedProduct(){
       dispatch(removeEmployeeProduct(selected_employee.id,selectProducts.remove))
-      dispatch(loadEmployeeProducts(selected_employee.id));
+      // dispatch(loadEmployeeProducts(selected_employee.id));
     }
 
     return(

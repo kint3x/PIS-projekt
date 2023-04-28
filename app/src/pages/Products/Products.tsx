@@ -22,14 +22,7 @@ import { RadioButton } from 'primereact/radiobutton';
 import { Calendar } from 'primereact/calendar';
 import { format } from "date-fns";
 
-//#TODO page availabe only for "manager"
-
 const Products = () => {
-
-    // const userType = localStorage.getItem('userType')
-    // const history = useHistory();
-    // if (userType !== 'owner')
-    //   history.push("/")
 
     const dispatch = useDispatch();
     
