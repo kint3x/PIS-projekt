@@ -101,3 +101,11 @@ textarea {
   color:red;
   margin-top: 5px;
 }
+
+.error{
+  width: 100%;
+}
+.error div{
+  width: 100%;
+  margin-bottom: 5px;
+}

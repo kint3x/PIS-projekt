@@ -157,6 +157,9 @@ const Meetings = () => {
     return (
         <>
         <div className='page-heading'><h1>Meetings</h1><br /></div>
+        <div className={error ? "error visible" : "hidden"}>
+            <Message severity="error" text={errMsg.toString()} />
+        </div>
         <FullCalendar
 
             plugins={[ dayGridPlugin, interactionPlugin]}

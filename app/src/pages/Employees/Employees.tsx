@@ -65,7 +65,6 @@ const Employees = () => {
     const productsLoading = useSelector((state: AppState) => state.product.loading);
     const employeeProducts = useSelector((state: AppState) => state.employee.products);
         
-    const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
     const [new_employee, setNewEmployee] = useState<any>({});
 
 
@@ -95,40 +94,17 @@ const Employees = () => {
 
     function onUserEdit() : void{
       dispatch(updateEmployee(selected_employee.id, {...selected_employee, password: (password_change == "") ? selected_employee.password : password_change }));
-
-      if(!error){
-        setShowDialog(false);
-        setModalErr({msg: "", visible: "hidden"})
-      }
-      else{
-        setModalErr({msg: errMsg, visible: ""})
-        setShowDialog(true);
-      }
-
+      setShowDialog(false);
     }
 
     function onUserDelete() : void{
         dispatch(removeEmployee(selected_employee.id));
-        if(!error){
-          setShowDialog(false);
-          setModalErr({msg: "", visible: "hidden"})
-        }
-        else{
-          setModalErr({msg: errMsg, visible: ""})
-          setShowDialog(true);
-        }
+        setShowDialog(false);
     }
 
     function AddUserSubmit(){
       dispatch(addEmployee(new_employee));
-      if(!error){
-        setShowAddDialog(false);
-        setModalErr({msg: "", visible: "hidden"});
-      }
-      else{
-        setModalErr({msg: errMsg, visible: ""})
-        setShowAddDialog(true);
-      }
+      setShowAddDialog(false);
     }
     
     function onAddSelectedProduct(){
@@ -153,6 +129,12 @@ const Employees = () => {
     return(
       <>
         <div className='page-heading'><h1>Employees</h1><br /></div>
+
+  
+        <div className={error ? "error visible" : "hidden"}>
+            <Message severity="error" text={errMsg.toString()} />
+        </div>
+        
         <Button label="Add" severity="success" onClick={()=>setShowAddDialog(true)}/>
         <DataTable loading={loading} value={Object.values(employees)} tableStyle={{ minWidth: '50rem' }} 
         onRowClick={onClickHandle}
@@ -165,9 +147,6 @@ const Employees = () => {
 
         <Dialog header="Edit User" className="edit-user" visible={show_dialog} style={{ width: '50vw' }} 
         onHide={() => {setShowDialog(false); setSelectedProducts({...selectProducts, add:0, remove:0})}}>
-          <div className={modal_err_msg.visible}>
-            <Message severity="error" text={modal_err_msg.msg} />
-          </div>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Username</span>
             <InputText placeholder="Username" value={selected_employee.username} 
@@ -260,9 +239,6 @@ const Employees = () => {
       </Dialog>
 
       <Dialog header="Add User" className="add-user" visible={show_add_dialog} style={{ width: '50vw' }} onHide={() => setShowAddDialog(false) }>
-          <div className={modal_err_msg.visible}>
-            <Message severity="error" text={modal_err_msg.msg} />
-          </div>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Username</span>
             <InputText placeholder="Username" onChange={(e)=>setNewEmployee({...new_employee, username: e.target.value})}/>

@@ -60,7 +60,6 @@ const Clients = () => {
     const error = useSelector((state: AppState) => state.client.error);
     const errMsg = useSelector((state: AppState) => state.client.errMsg);
 
-    const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
     const [client_dialog_data, setClientDialogData] = useState<any>({});
     const [add_client_dialog_data, setAddClientDialogData] = useState<any>({});
 
@@ -80,41 +79,18 @@ const Clients = () => {
 
     function onClientEdit() : void{
       dispatch(updateClient(client_dialog_data.id, {...client_dialog_data}))
-
-      if(!error){
-        setShowClientDialog(false);
-        setModalErr({msg: "", visible: "hidden"})
-      }
-      else{
-        setModalErr({msg: errMsg, visible: ""})
-        setShowClientDialog(true);
-      }
-
+      setShowClientDialog(false);
     }
 
     function onClientDelete() : void{
         // TODO should cascade delete on ClientProducts
         dispatch(removeClient(client_dialog_data.id));
-        if(!error){
-          setShowClientDialog(false);
-          setModalErr({msg: "", visible: "hidden"})
-        }
-        else{
-          setModalErr({msg: errMsg, visible: ""})
-          setShowClientDialog(true);
-        }
+        setShowClientDialog(false);
     }
 
     function AddClientSubmit(){
       dispatch(addClient(add_client_dialog_data));
-      if(!error){
-        setShowAddClientDialog(false);
-        setModalErr({msg: "", visible: "hidden"});
-      }
-      else{
-        setModalErr({msg: errMsg, visible: ""})
-        setShowAddClientDialog(true);
-      }
+      setShowAddClientDialog(false);
     }
 
     //temporary solution till authentification works
@@ -169,6 +145,10 @@ const Clients = () => {
     return(
       <>
         <div className='page-heading'><h1>Clients</h1><br /></div>
+        
+        <div className={error ? "error visible" : "hidden"}>
+            <Message severity="error" text={errMsg.toString()} />
+        </div>
 
         {loggedUser !== "Worker" && <Button label="Add client" severity="success" className="float-left" onClick={()=>setShowAddClientDialog(true)} />}
         <Button label="Change user" severity="danger"  onClick = {() => changeUser()} className="float-right" />
@@ -191,10 +171,6 @@ const Clients = () => {
             onChange={(e) => onInputChange(e, 'notes')} />
             <Button label="Submit" severity="success" onClick = {() => {onClientEdit();setShowNotesDialog(false);setShowClientDialog(true)}}/>
           </Dialog>
-          
-          <div className={modal_err_msg.visible}>
-            <Message severity="error" text={modal_err_msg.msg} />
-          </div>
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Email</span>
@@ -252,10 +228,6 @@ const Clients = () => {
 
       <Dialog header="Add Client" className="add-client" visible={show_add_client_dialog} style={{ width: '50%' }} onHide={() => {setShowAddClientDialog(false);setAddClientDialogData({}) }}>
           
-          <div className={modal_err_msg.visible}>
-            <Message severity="error" text={modal_err_msg.msg} />
-          </div>
-
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Email</span>
             <InputText placeholder="Email" onChange={(e)=>setAddClientDialogData({...add_client_dialog_data, email: e.target.value})} />
@@ -303,9 +275,6 @@ const Clients = () => {
 
       <Dialog header="Assign employees" className="assign-employees" visible={show_clientproduct_dialog} style={{ width: '75%' }} onHide={() => setShowClientProductDialog(false)}>
           
-          <div className={modal_err_msg.visible}>
-            <Message severity="error" text={modal_err_msg.msg} />
-          </div>
           <br />
           <Splitter >
               <SplitterPanel >
