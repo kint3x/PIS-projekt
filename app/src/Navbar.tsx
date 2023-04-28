@@ -67,7 +67,7 @@ const Navbar = () => {
       },
       {
         label: "Meetings",
-        url: "/meeetings",
+        url: "/meetings",
       },
       {
         label: 'Logout',
