@@ -33,15 +33,7 @@ import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { Password } from 'primereact/password';
 
-//TODO page availabe only for manager
-
 const Employees = () => {
-
-    // const userType = localStorage.getItem('userType')
-    // const history = useHistory();
-    // if (userType !== 'owner')
-    //   console.log(userType)
-    //   history.push("/")
 
     const dispatch = useDispatch();
     
@@ -94,17 +86,14 @@ const Employees = () => {
 
     function onUserEdit() : void{
       dispatch(updateEmployee(selected_employee.id, {...selected_employee, password: (password_change == "") ? selected_employee.password : password_change }));
-      setShowDialog(false);
     }
 
     function onUserDelete() : void{
         dispatch(removeEmployee(selected_employee.id));
-        setShowDialog(false);
     }
 
     function AddUserSubmit(){
       dispatch(addEmployee(new_employee));
-      setShowAddDialog(false);
     }
     
     function onAddSelectedProduct(){

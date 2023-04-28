@@ -9,8 +9,8 @@ import { updateRequest as updateClient } from '../../store/ducks/client/actions'
 import { removeRequest as removeClient } from '../../store/ducks/client/actions';
 import { createRequest as addClient } from '../../store/ducks/client/actions'
 import { loadClientProductsRequest as loadClientProducts } from '../../store/ducks/client/actions'
-import { addProductRequest as addClientProducts } from '../../store/ducks/client/actions'
-import { removeProductRequest as removeClientProducts } from '../../store/ducks/client/actions'
+import { addProductRequest as addClientProduct } from '../../store/ducks/client/actions'
+import { removeProductRequest as removeClientProduct } from '../../store/ducks/client/actions'
 import { loadEmployeesRequest as loadProductEmployees} from '../../store/ducks/product/actions'
 import { loadRequest as loadProducts } from '../../store/ducks/product/actions';
 import { addClientRequest as addEmployeeClient} from '../../store/ducks/employee/actions'
@@ -37,23 +37,12 @@ import { format } from "date-fns";
 
 const Clients = () => {
 
-    // const userType = localStorage.getItem('userType')
-    // const history = useHistory();
-    // let query = 'all'
-    // if (userType === 'worker')
-    //   query = localStorage.getItem('employeeId')
-
     const dispatch = useDispatch();
     
     const [show_client_dialog,setShowClientDialog] = useState(false);
     const [show_add_client_dialog,setShowAddClientDialog] = useState(false);
     const [show_notes_dialog,setShowNotesDialog] = useState(false)
-    const [show_clientproduct_dialog,setShowClientProductDialog] = useState(false);
-
-    useEffect(() => {
-      dispatch(loadClients('all'));
-      dispatch(loadProducts('all'));
-    }, [dispatch,show_client_dialog,show_add_client_dialog,show_clientproduct_dialog]);   
+    const [show_clientproduct_dialog,setShowClientProductDialog] = useState(false); 
 
     const clients = useSelector((state: AppState) => state.client.data);
     const loading = useSelector((state: AppState) => state.client.loading);
@@ -63,7 +52,27 @@ const Clients = () => {
     const [client_dialog_data, setClientDialogData] = useState<any>({});
     const [add_client_dialog_data, setAddClientDialogData] = useState<any>({});
 
-    
+    const products = useSelector((state: AppState) => state.product.data);
+    const productEmployees = useSelector((state: AppState) => state.product.employees);
+
+    const [selected_product_id, setSelectedProductId] = useState(0);
+    const [selected_employee_id, setSelectedEmployeeId] = useState(0);
+
+    const cps = useSelector((state: AppState) => state.client.clientProducts);
+
+    useEffect(() => {
+      dispatch(loadProducts('all'));
+    }, [dispatch])
+
+    useEffect(() => {
+      dispatch(loadClients('all'));
+    }, [dispatch,show_client_dialog,show_add_client_dialog]);  
+
+    useEffect(() => {
+      dispatch(loadProductEmployees(selected_product_id));
+    }, [dispatch,selected_product_id]);  
+
+
     function onInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) {
       const { value } = event.target;
       setClientDialogData((prevState: any) => ({
@@ -83,14 +92,17 @@ const Clients = () => {
     }
 
     function onClientDelete() : void{
-        // TODO should cascade delete on ClientProducts
         dispatch(removeClient(client_dialog_data.id));
-        setShowClientDialog(false);
     }
 
     function AddClientSubmit(){
       dispatch(addClient(add_client_dialog_data));
-      setShowAddClientDialog(false);
+    }
+
+    function onNotesSubmit(): void{
+      onClientEdit();
+      setShowNotesDialog(false);
+      setShowClientDialog(true);
     }
 
     //temporary solution till authentification works
@@ -111,44 +123,41 @@ const Clients = () => {
           setReadOnly(true)
         }
         console.log(loggedUser)
+    } 
+
+    function onClientProductDialogOpen() : void{
+      setShowClientProductDialog(true)
+      dispatch(loadClientProducts(client_dialog_data.id));
     }
-
-    const products = useSelector((state: AppState) => state.product.data);
-    const productEmployees = useSelector((state: AppState) => state.product.employees);
-
-    const [selected_product_id, setSelectedProductId] = useState<any>({});
-    const [selected_employee_id, setSelectedEmployeeId] = useState<any>({});
-
    
     function onProductSelect(event: DropdownChangeEvent) : void{
+      // TODO nacitavaju sa zle
+      dispatch(loadProductEmployees(selected_product_id));
       setSelectedProductId(event.value)
-      dispatch(loadProductEmployees(selected_product_id))
-      console.log(selected_product_id)
-      console.log(productEmployees)
+      setSelectedEmployeeId(0)
   }
 
   function onEmployeeSelect(event: DropdownChangeEvent) : void{
-    setSelectedEmployeeId(event.value)
-    console.log(selected_employee_id)
-
-}
+      setSelectedEmployeeId(event.value)
+  }
 
     function onClientProductCreate() : void{
-      // TODO create ClientProduct object
-      // Assign ClientProduct to employees
+      dispatch(addClientProduct(client_dialog_data.id,selected_product_id));
+      dispatch(addClientEmployee(client_dialog_data.id,selected_employee_id));
+      setSelectedEmployeeId(0)
+      setSelectedProductId(0)
     }
 
     function onClientProductDelete() : void{
-        // TODO delete ClientProduct object, cascade to delete assigned employees
+      dispatch(removeClientProduct(client_dialog_data.id,selected_product_id));
+      dispatch(removeClientEmployee(client_dialog_data.id,selected_employee_id));
+      setSelectedEmployeeId(0)
+      setSelectedProductId(0)
     }
 
     return(
       <>
         <div className='page-heading'><h1>Clients</h1><br /></div>
-        
-        <div className={error ? "error visible" : "hidden"}>
-            <Message severity="error" text={errMsg.toString()} />
-        </div>
 
         {loggedUser !== "Worker" && <Button label="Add client" severity="success" className="float-left" onClick={()=>setShowAddClientDialog(true)} />}
         <Button label="Change user" severity="danger"  onClick = {() => changeUser()} className="float-right" />
@@ -169,7 +178,7 @@ const Clients = () => {
           <Dialog header="Notes" visible={show_notes_dialog} style={{ width: '50%' }} onHide={() => setShowNotesDialog(false)}>
             <InputTextarea style={{ width: '100%' }} placeholder="Notes" value={client_dialog_data.notes}
             onChange={(e) => onInputChange(e, 'notes')} />
-            <Button label="Submit" severity="success" onClick = {() => {onClientEdit();setShowNotesDialog(false);setShowClientDialog(true)}}/>
+            <Button label="Submit" severity="success" onClick = {() => onNotesSubmit()}/>
           </Dialog>
 
           <div className="p-inputgroup">
@@ -219,7 +228,7 @@ const Clients = () => {
 
           {loggedUser !== "Worker" && <Button label="Submit" severity="success" onClick = {() => onClientEdit()} />}
           {loggedUser !== "Manager" && <Button label="View notes" severity="success" onClick = {() => setShowNotesDialog(true)} />}
-          {loggedUser !== "Worker" && <Button label="Assign employees" severity="success"  onClick = {() => setShowClientProductDialog(true)}/>}
+          {loggedUser !== "Worker" && <Button label="Assign employees" severity="success"  onClick = {() => onClientProductDialogOpen()}/>}
           {loggedUser !== "Worker" && <Button label="Delete" severity="danger"  onClick = {() => onClientDelete()} className="float-right"/>}
       </Dialog>
 
@@ -267,7 +276,7 @@ const Clients = () => {
           </div>
 
           <Button label="Submit" severity="success" onClick = {() => AddClientSubmit()} />
-          <Button label="Sumbit and Assign employees" severity="success"  onClick = {() => {AddClientSubmit();setShowClientProductDialog(true)}}/>
+          <Button label="Sumbit and Assign employees" severity="success"  onClick = {() => {AddClientSubmit();onClientProductDialogOpen()}}/>
       </Dialog>
 
 
@@ -282,7 +291,7 @@ const Clients = () => {
               optionLabel="name" optionValue="id" options={Object.values(products)} className="w-full md:w-14rem" />
               </SplitterPanel>
               <SplitterPanel >
-                <Dropdown multiple value={selected_employee_id} onChange={(e) => onEmployeeSelect(e)} placeholder="Select an employee"
+                <Dropdown value={selected_employee_id} onChange={(e) => onEmployeeSelect(e)} placeholder="Select an employee"
               optionLabel="username" optionValue="id" options={Object.values(productEmployees)} className="w-full md:w-14rem" />
               </SplitterPanel>
             </Splitter>
@@ -291,12 +300,11 @@ const Clients = () => {
           <Button label="Add selected" severity="success" onClick = {() => onClientProductCreate()} />
       
 
-          {/* {<DataTable loading={loading} /*value={Object.values(clientProductEmployees)} value={cpe} tableStyle={{ minWidth: '50rem' }}  */}
-          {/* /*TODO DELETE SELECTED onRowClick={onClickHandle}> */}
-            {/* <Column filter={true} field="Id" header="Id"></Column> */}
-            {/* <Column filter={true} field="Product" header="Product"></Column> */}
-            {/* <Column filter={true} field="Employees" header="Employee"></Column> */}
-          {/* </DataTable>} */}
+         <DataTable loading={loading} value={Object.values(cps)} tableStyle={{ minWidth: '50rem' }}>
+            <Column filter={true} field="product.name" header="Product"></Column>
+            <Column filter={true} field="active" header="Status"></Column>
+            <Column filter={true} field="employee.name" header="Employee"></Column>
+          </DataTable>
 
           
           <Button label="Delete selected" severity="danger"  onClick = {() => onClientProductDelete()}/>
