@@ -1,5 +1,4 @@
 import React from "react"
-import './LoginForm.css';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { useHistory } from "react-router-dom";
 import { useState, useEffect } from 'react'
@@ -14,7 +13,7 @@ interface DecodedToken extends JwtPayload {
   employee_id: number
 }
 
-const LoginForm = ({ method }: any) => {
+const LoginForm = () => {
   const dispatch = useDispatch();
 
   const history = useHistory();
@@ -27,7 +26,7 @@ const LoginForm = ({ method }: any) => {
   useEffect(() => {
     if (error) {
       console.log(errMsg) //TODO correct error msg
-      setErrorMessage("Ivalid login!")
+      setErrorMessage("Invalid login!")
     }
     if (token) {
       const decodedToken = jwtDecode<DecodedToken>(token);
@@ -45,7 +44,7 @@ const LoginForm = ({ method }: any) => {
       localStorage.setItem("name", decodedToken.upn);
       localStorage.setItem("employeeId", decodedToken.employee_id.toString());
 
-      method(userType, decodedToken.upn)
+
       history.push("/clients")
     }
   }, [token, error, errMsg]);

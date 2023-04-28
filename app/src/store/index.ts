@@ -6,10 +6,14 @@ import rootSaga from './ducks/rootSaga';
 
 import { EmployeeState } from './ducks/employee/types';
 import { ClientState } from './ducks/client/types';
+import { ProductState } from './ducks/product/types';
+import { MeetingState } from './ducks/meeting/types';
 
 export interface AppState {
   employee: EmployeeState;
   client: ClientState;
+  product: ProductState;
+  meeting: MeetingState;
 };
 
 const sagaMiddleware = createSagaMiddleware();

@@ -1,0 +1,5 @@
+package-lock.json
+package.json
+node_modules
+../api/.mvn/wrapper/maven-wrapper.properties:Zone.Identifier
+docker-compose.yml
