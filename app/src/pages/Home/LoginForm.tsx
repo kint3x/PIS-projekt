@@ -45,7 +45,7 @@ const LoginForm = () => {
       localStorage.setItem("name", decodedToken.upn);
       localStorage.setItem("employeeId", decodedToken.employee_id.toString());
 
-      history.push("/clients")
+      window.location.reload();
     }
   }, [token, error, errMsg]);
 

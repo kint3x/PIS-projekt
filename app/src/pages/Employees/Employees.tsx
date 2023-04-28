@@ -31,6 +31,7 @@ import { format } from "date-fns";
 import { ListBox, ListBoxChangeEvent } from 'primereact/listbox';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import { Password } from 'primereact/password';
 
 //TODO page availabe only for manager
 
@@ -47,7 +48,7 @@ const Employees = () => {
     const [show_dialog,setShowDialog] = useState(false);
     const [show_add_dialog,setShowAddDialog] = useState(false);
     const [selected_employee, setSelectedEmployee] = useState<any>({});
-    const [selectProducts, setSelectedProducts] = useState<any>({add: 0, remove: 0});
+    const [selectProducts, setSelectedProducts] = useState<any>({add: 0, remove: 0, remove_opt: [], add_opt: []});
 
     useEffect(() => {
       dispatch(loadEmployees('all'));
@@ -59,12 +60,18 @@ const Employees = () => {
     const error = useSelector((state: AppState) => state.employee.error);
     const errMsg = useSelector((state: AppState) => state.employee.errMsg);
 
+
     const products = useSelector((state: AppState) => state.product.data);
     const productsLoading = useSelector((state: AppState) => state.product.loading);
     const employeeProducts = useSelector((state: AppState) => state.employee.products);
         
     const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
     const [new_employee, setNewEmployee] = useState<any>({});
+
+
+    useEffect(() => {
+      calculateAddRemoveItems();
+    },[productsLoading, loading]);
 
 
     var password_change = "";
@@ -125,13 +132,22 @@ const Employees = () => {
     }
     
     function onAddSelectedProduct(){
-      dispatch(addEmployeeProduct(selected_employee.id,selectProducts.add));
-      dispatch(loadEmployeeProducts(selected_employee.id));
+      const empl_id = selected_employee.id;
+      const product_id = selectProducts.add;
+      dispatch(addEmployeeProduct(empl_id,product_id));
     }
 
     function onRemoveSelectedProduct(){
       dispatch(removeEmployeeProduct(selected_employee.id,selectProducts.remove))
-      dispatch(loadEmployeeProducts(selected_employee.id));
+    }
+
+    function calculateAddRemoveItems(){
+      setSelectedProducts({...selectProducts, 
+        remove_opt: Object.values(employeeProducts),
+        add_opt: 
+        Object.values(products).filter(it => !((Object.values(employeeProducts)).map(item => item.id)).includes(it.id) )
+      });
+      
     }
 
     return(
@@ -148,7 +164,7 @@ const Employees = () => {
         </DataTable>
 
         <Dialog header="Edit User" className="edit-user" visible={show_dialog} style={{ width: '50vw' }} 
-        onHide={() => {setShowDialog(false); setSelectedProducts({add:0, remove:0})}}>
+        onHide={() => {setShowDialog(false); setSelectedProducts({...selectProducts, add:0, remove:0})}}>
           <div className={modal_err_msg.visible}>
             <Message severity="error" text={modal_err_msg.msg} />
           </div>
@@ -227,14 +243,14 @@ const Employees = () => {
             <span className="p-inputgroup-addon">Add product</span>
             <Dropdown value={selectProducts.add} onChange={(e) => setSelectedProducts({...selectProducts, add: e.value})} placeholder="Select a product"
                 optionLabel="name" optionValue="id" 
-                options={Object.values(products).filter(it => !((Object.values(employeeProducts)).map(item => item.id)).includes(it.id) )} className="w-full md:w-14rem" />
+                options={selectProducts.add_opt} className="w-full md:w-14rem" />
             <Button label="Add" severity="success" 
             onClick={()=> onAddSelectedProduct() } />
           </div>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Remove product</span>
             <Dropdown value={selectProducts.remove} onChange={(e) => setSelectedProducts({...selectProducts, remove: e.value})} placeholder="Select a product"
-                optionLabel="name" optionValue="id" options={Object.values(employeeProducts)} className="w-full md:w-14rem" />
+                optionLabel="name" optionValue="id" options={selectProducts.remove_opt} className="w-full md:w-14rem" />
             <Button label="Remove" severity="success" 
              onClick={()=> onRemoveSelectedProduct()}/>
           </div>
@@ -254,7 +270,7 @@ const Employees = () => {
           
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Password</span>
-            <InputText placeholder="Password" onChange={(e)=>setNewEmployee({...new_employee, password: e.target.value})}/>
+            <Password placeholder="Password" onChange={(e)=>setNewEmployee({...new_employee, password: e.target.value})}/>
           </div>
 
           <div className="flex flex-wrap gap-3">
