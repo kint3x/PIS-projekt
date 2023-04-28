@@ -31,18 +31,23 @@ const Meetings = () => {
 
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(loadMeetings('all'));
-        dispatch(loadClients('all'));
-        
-      }, [dispatch]);   
-
+    
     const meetings = useSelector((state: AppState) => state.meeting.data );
     const clients = useSelector((state: AppState) => state.client.data );
-
     const loading = useSelector((state: AppState) => state.meeting.loading);
     const error = useSelector((state: AppState) => state.meeting.error);
     const errMsg = useSelector((state: AppState) => state.meeting.errMsg);
+
+    useEffect(() => {
+        dispatch(loadMeetings('all'));
+        dispatch(loadClients('all'));
+      }, [dispatch]);   
+
+      
+    useEffect(()=>{
+        renderMeetings();
+    },[loading]);
+
 
     const [events,setEvents] = useState<any>([]);
     const [show_add_dialog,setShowAddDialog] = useState<any>(false);
@@ -59,13 +64,20 @@ const Meetings = () => {
 
     const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
 
+
+    function renderMeetings(){
+        const meet_arr =  Object.values(meetings);
+        const fin_arr : any = [];
+        for (const val of meet_arr) {
+            fin_arr.push({ title: val.subject, date: val.start });
+            }
+        setEvents(fin_arr);  
+    }
+
     function handleDateClick(info: any) {
         const clickedDate = info.dateStr;
-        setAddDialogData({...add_dialog_data,date: clickedDate})
+        setAddDialogData({...add_dialog_data,date: clickedDate, heading: "Add meeting"})
         setShowAddDialog(true);
-        // You can do anything with the clicked date here
-        console.log('Clicked on: ', clickedDate);
-        setEvents([{title: "Test", date:"2023-04-28"}])
       }
 
 
@@ -91,6 +103,11 @@ const Meetings = () => {
         
         dispatch(addMeeting(DataToSend));
         setShowAddDialog(false);
+        setAddDialogData(initialState);
+    }
+
+    function handleTimeClick(ev: any){
+        console.log(ev);
     }
 
     return (
@@ -102,10 +119,11 @@ const Meetings = () => {
             initialView="dayGridMonth"
             events={events}
             dateClick={handleDateClick}
+            //eventClick={handleTimeClick}
             
         />
         
-        <Dialog header={"Add meeting "+add_dialog_data.date} className="add-product" visible={show_add_dialog} style={{ width: '50vw' }} 
+        <Dialog header={add_dialog_data.heading+" "+add_dialog_data.date} className="add-product" visible={show_add_dialog} style={{ width: '50vw' }} 
         onHide={() => {setShowAddDialog(false); setAddDialogData(initialState)}}>
           <div className={modal_err_msg.visible}>
             <Message severity="error" text={modal_err_msg.msg} />
