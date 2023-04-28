@@ -53,7 +53,6 @@ const Clients = () => {
     useEffect(() => {
       dispatch(loadClients('all'));
       dispatch(loadProducts('all'));
-      dispatch(loadProductEmployees(selected_product_id))
     }, [dispatch,show_client_dialog,show_add_client_dialog,show_clientproduct_dialog]);   
 
     const clients = useSelector((state: AppState) => state.client.data);

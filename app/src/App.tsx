@@ -9,7 +9,6 @@ import LoginForm from './pages/Home/LoginForm';
 import Clients from './pages/Clients/Clients';
 import Employees from './pages/Employees/Employees';
 import Products from './pages/Products/Products';
-import Meetings  from './pages/Meetings/Meetings'
 
 import './App.css';
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -17,6 +16,7 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
 import store from "../src/store";
+import Meetings from './pages/Meetings/Meetings';
 
 function App() {
 
@@ -31,7 +31,7 @@ function App() {
               <PrivateRoute exact path="/clients" component={Clients} />
               <PrivateRoute exact path="/products" component={Products} />
               <PrivateRoute exact path="/employees" component={Employees} />
-              <PrivateRoute exact path="/meetings" component={Employees} />
+              <PrivateRoute exact path="/meetings" component={Meetings} />
             </Switch>
           </div>
         </div>
