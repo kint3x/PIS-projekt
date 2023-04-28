@@ -5,7 +5,6 @@ import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import interactionPlugin from '@fullcalendar/interaction';
 
 
-
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState} from 'react';
 import { useHistory } from "react-router-dom";
@@ -69,11 +68,21 @@ const Meetings = () => {
     const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
 
 
+    function stringToColor(str: string): string {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const hex = Math.abs(hash).toString(16).substring(0, 6);
+      return `#${'0'.repeat(6 - hex.length)}${hex}`;
+    }
+
     function renderMeetings(){
         const meet_arr =  Object.values(meetings);
         const fin_arr : any = [];
         for (const val of meet_arr) {
-            fin_arr.push({ title: val.subject, date: val.start , meeting_id: val.id});
+            console.log(val);
+            fin_arr.push({ title: val.subject, color: stringToColor(val.client.name) , date: val.start , meeting_id: val.id});
             }
         setEvents(fin_arr);  
     }
