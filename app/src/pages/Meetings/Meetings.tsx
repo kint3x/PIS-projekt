@@ -9,7 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState} from 'react';
 import { useHistory } from "react-router-dom";
 
-import { loadRequest as loadMeetings } from '../../store/ducks/meeting/actions';
+import { loadRequest as loadAllMeetings } from '../../store/ducks/meeting/actions';
+import {loadMeetingsRequest as loadMeetings} from '../../store/ducks/employee/actions';
+
 import { createRequest as addMeeting } from '../../store/ducks/meeting/actions';
 
 import { updateRequest as updateMeeting } from '../../store/ducks/meeting/actions';
@@ -26,28 +28,41 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { format } from "date-fns";
-
+import { InputSwitch } from 'primereact/inputswitch';
 
 const Meetings = () => {
 
     const dispatch = useDispatch();
 
     
-    const meetings = useSelector((state: AppState) => state.meeting.data );
+    const meetings_all = useSelector((state: AppState) => state.meeting.data );
+    const meetings = useSelector((state: AppState) => state.employee.meetings);
+    const loading = useSelector((state: AppState) => state.employee.loading);
     const clients = useSelector((state: AppState) => state.client.data );
-    const loading = useSelector((state: AppState) => state.meeting.loading);
+    const loading_all = useSelector((state: AppState) => state.meeting.loading);
     const error = useSelector((state: AppState) => state.meeting.error);
     const errMsg = useSelector((state: AppState) => state.meeting.errMsg);
 
+    const [adminMode,setAdminMode] = useState(false);
+
     useEffect(() => {
-        dispatch(loadMeetings('all'));
+      const employeeId = localStorage.getItem('employeeId');
+      const authorId = employeeId ? parseInt(employeeId) : 0; // default to 0 if employeeId is null
+      if(authorId == 0) return;
+
+        dispatch(loadMeetings(authorId));
+
+        if(localStorage.getItem("userType") === "owner"){
+          dispatch(loadAllMeetings("all"));
+        }
+
         dispatch(loadClients('all'));
       }, [dispatch]);   
 
 
     useEffect(()=>{
         renderMeetings();
-    },[loading]);
+    },[loading,loading_all, adminMode]);
 
 
     const [events,setEvents] = useState<any>([]);
@@ -78,7 +93,15 @@ const Meetings = () => {
     }
 
     function renderMeetings(){
-        const meet_arr =  Object.values(meetings);
+        var meet_arr : any = [];
+        if(!adminMode){
+           meet_arr=  Object.values(meetings);
+        }
+        else{
+           meet_arr =  Object.values(meetings_all);
+        }
+        console.log(meet_arr);
+        
         const fin_arr : any = [];
         for (const val of meet_arr) {
             console.log(val);
@@ -147,7 +170,12 @@ const Meetings = () => {
 
     function handleTimeClick(ev: any){
         const meeting_id = ev.event._def.extendedProps.meeting_id;
-        const sel_meeting = meetings[meeting_id];
+        var sel_meeting : any;
+        if(adminMode)
+          sel_meeting = meetings_all[meeting_id];
+        else
+          sel_meeting = meetings[meeting_id];
+
         const g_date = format((new Date(sel_meeting.start)),"yyyy-MM-dd");
 
         setAddDialogData({...add_dialog_data, heading: "Edit Meeting", adding: false,
@@ -168,6 +196,10 @@ const Meetings = () => {
         <div className='page-heading'><h1>Meetings</h1><br /></div>
         <div className={error ? "error visible" : "hidden"}>
             <Message severity="error" text={errMsg.toString()} />
+        </div>
+        <div className={localStorage.getItem("userType") === "owner" ? "" : "hidden"}>
+          <span style={{margin:"15px"}}>Admin View:</span>
+          <InputSwitch checked={adminMode} onChange={(e) => {if(e.value == true) setAdminMode(true); else setAdminMode(false)}} />
         </div>
         <FullCalendar
 
