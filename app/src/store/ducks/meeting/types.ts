@@ -1,4 +1,4 @@
-import { ClientData } from "../client/types"
+import { ClientData, ClientModel } from "../client/types"
 import { EmployeeData } from "../employee/types"
 
 export enum MeetingTypes {
@@ -39,7 +39,7 @@ export interface MeetingModel {
   end: string,
   notes: string,
   employees: EmployeeData[],
-  client: ClientData,
+  client: ClientModel,
   author: EmployeeData
 }
 
