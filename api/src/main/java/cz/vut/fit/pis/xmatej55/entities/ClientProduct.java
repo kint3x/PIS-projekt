@@ -36,7 +36,7 @@ public class ClientProduct {
     private Boolean active;
 
     @Column(name = "date")
-    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")
+    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")
     @Temporal(TemporalType.DATE)
     private Date date;
 
