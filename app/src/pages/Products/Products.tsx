@@ -138,7 +138,7 @@ const Products = () => {
           </div>
 
           <Button label="Submit" severity="success" onClick = {() => AddProductSubmit()} />
-        </Dialog>
+      </Dialog>
 
       </>
     );

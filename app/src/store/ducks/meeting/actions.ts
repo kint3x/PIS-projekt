@@ -14,11 +14,11 @@ export const loadSuccess = (
 export const loadFailure = (err: any) => action(MeetingTypes.LOAD_FAILURE, err);
 
 export const createRequest = (
-  payload: MeetingModel
+  payload: MeetingData
 ) => action(MeetingTypes.CREATE_REQUEST, { payload });
 
 export const createSuccess = (
-  data: MeetingModel
+  data: MeetingData
 ) => action(MeetingTypes.CREATE_SUCCESS, { data });
 
 export const createFailure = (err: any) => action(MeetingTypes.CREATE_FAILURE, err);

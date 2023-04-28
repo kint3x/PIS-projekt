@@ -31,12 +31,12 @@ public class Meeting {
     private String subject;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")
+    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")
     @Column(name = "meeting_start")
     private Date start;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonbDateFormat(value = "dd-MM-yyyy'T'HH:mm:ss", locale = "Locale.ENGLISH")
+    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")
     @Column(name = "meeting_end")
     private Date end;
 
