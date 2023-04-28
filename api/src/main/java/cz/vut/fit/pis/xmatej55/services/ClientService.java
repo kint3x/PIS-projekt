@@ -6,6 +6,7 @@ import cz.vut.fit.pis.xmatej55.managers.ClientManager;
 import cz.vut.fit.pis.xmatej55.services.ClientService;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -38,5 +39,17 @@ public class ClientService {
 
     public List<Client> findByEmployee(Employee employee) {
         return clientManager.findByEmployee(employee);
+    }
+    
+    public Boolean isClientManagedByEmployee(Client client, Employee employee) {
+        Set<Client> managedClients = employee.getClients();
+
+        for (Client managedClient : managedClients) {
+            if (managedClient.getId() == client.getId()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

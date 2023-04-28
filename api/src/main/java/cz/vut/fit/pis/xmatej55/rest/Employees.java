@@ -3,13 +3,15 @@ package cz.vut.fit.pis.xmatej55.rest;
 import java.net.URI;
 import java.util.Optional;
 
-import cz.vut.fit.pis.xmatej55.dto.AddClient;
-import cz.vut.fit.pis.xmatej55.dto.AddProduct;
+import cz.vut.fit.pis.xmatej55.dto.ClientDTO;
+import cz.vut.fit.pis.xmatej55.dto.ProductDTO;
 import cz.vut.fit.pis.xmatej55.dto.Error;
 import cz.vut.fit.pis.xmatej55.entities.Client;
+import cz.vut.fit.pis.xmatej55.entities.ClientProduct;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.entities.Meeting;
 import cz.vut.fit.pis.xmatej55.entities.Product;
+import cz.vut.fit.pis.xmatej55.services.ClientProductService;
 import cz.vut.fit.pis.xmatej55.services.ClientService;
 import cz.vut.fit.pis.xmatej55.services.EmployeeService;
 import cz.vut.fit.pis.xmatej55.services.MeetingService;
@@ -52,6 +54,9 @@ public class Employees {
 
     @Inject
     private ProductService productService;
+
+    @Inject
+    private ClientProductService clientProductService;
 
     @Context
     private UriInfo context;
@@ -270,7 +275,7 @@ public class Employees {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Client.class)) }),
             @ApiResponse(responseCode = "404", description = "Employee or client not found", content = @Content)
     })
-    public Response addClient(@PathParam("id") Long id, AddClient clientDTO) {
+    public Response addClient(@PathParam("id") Long id, ClientDTO clientDTO) {
         Optional<Employee> optEmployee = employeeService.findById(id);
 
         if (!optEmployee.isPresent()) {
@@ -304,7 +309,7 @@ public class Employees {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Client.class)) }),
             @ApiResponse(responseCode = "404", description = "Employee or client not found", content = @Content)
     })
-    public Response removeClient(@PathParam("id") Long id, AddClient clientDTO) {
+    public Response removeClient(@PathParam("id") Long id, ClientDTO clientDTO) {
         Optional<Employee> optEmployee = employeeService.findById(id);
 
         if (!optEmployee.isPresent()) {
@@ -329,71 +334,25 @@ public class Employees {
         return Response.ok().build();
     }
 
-    @Path("/{id}/add_product")
-    @POST
+    @Path("/{id}/client_products")
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Add a product to an employee by ID")
+    @Operation(summary = "Get all client products for an employee by ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product added", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
-            @ApiResponse(responseCode = "404", description = "Employee or product not found", content = @Content)
+                    @ApiResponse(responseCode = "200", description = "Client products found", content = {
+                                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientProduct.class)) }),
+                    @ApiResponse(responseCode = "404", description = "Client not found", content = @Content)
     })
-    public Response addProduct(@PathParam("id") Long id, AddProduct productDTO) {
-        Optional<Employee> optEmployee = employeeService.findById(id);
+    public Response getClientProducts(@PathParam("id") Long id) {
+            Optional<Employee> optEmployee = employeeService.findById(id);
 
-        if (!optEmployee.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
-        }
+            if (!optEmployee.isPresent()) {
+                    return Response.status(Status.NOT_FOUND)
+                                    .entity(new Error(String.format("Client with id '%d' not found.", id))).build();
+            }
 
-        Optional<Product> optProduct = productService.findById(productDTO.getProductId());
+            Employee employee = optEmployee.get();
 
-        if (!optProduct.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", productDTO.getProductId())))
-                    .build();
-        }
-
-        Employee employee = optEmployee.get();
-        Product product = optProduct.get();
-
-        employee.addProduct(product);
-        employeeService.update(employee);
-
-        return Response.ok(productService.findByEmployee(employee)).build();
-    }
-
-    @Path("/{id}/remove_product")
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Remove a product from an employee by ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product removed", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) }),
-            @ApiResponse(responseCode = "404", description = "Employee or product not found", content = @Content)
-    })
-    public Response removeProduct(@PathParam("id") Long id, AddProduct productDTO) {
-        Optional<Employee> optEmployee = employeeService.findById(id);
-
-        if (!optEmployee.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
-        }
-
-        Optional<Product> optProduct = productService.findById(productDTO.getProductId());
-
-        if (!optProduct.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", productDTO.getProductId())))
-                    .build();
-        }
-
-        Employee employee = optEmployee.get();
-        Product product = optProduct.get();
-
-        employee.removeProduct(product);
-        employeeService.update(employee);
-
-        return Response.ok().build();
+            return Response.ok(clientProductService.findByEmployee(employee)).build();
     }
 }

@@ -6,6 +6,7 @@ import cz.vut.fit.pis.xmatej55.managers.ProductManager;
 import cz.vut.fit.pis.xmatej55.services.ProductService;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -38,5 +39,17 @@ public class ProductService {
 
     public List<Product> findByEmployee(Employee employee) {
         return productManager.findByEmployee(employee);
+    }
+
+    public Boolean isProductManagedByEmployee(Product product, Employee employee) {
+        Set<Product> managedProducts = employee.getProducts();
+
+        for (Product managedProduct : managedProducts) {
+            if (managedProduct.getId() == product.getId()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

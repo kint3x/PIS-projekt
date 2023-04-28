@@ -1,9 +1,9 @@
 package cz.vut.fit.pis.xmatej55.dto;
 
-public class AddEmployee {
+public class EmployeeDTO {
   private Long employeeId;
 
-  public AddEmployee () {
+  public EmployeeDTO () {
 
   }
 

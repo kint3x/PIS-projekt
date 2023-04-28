@@ -3,13 +3,11 @@ package cz.vut.fit.pis.xmatej55.rest;
 import java.net.URI;
 import java.util.Optional;
 
-import cz.vut.fit.pis.xmatej55.dto.AddEmployee;
-import cz.vut.fit.pis.xmatej55.dto.AddProduct;
+import cz.vut.fit.pis.xmatej55.dto.EmployeeDTO;
 import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.ClientProduct;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.entities.Meeting;
-import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.services.ClientProductService;
 import cz.vut.fit.pis.xmatej55.services.ClientService;
 import cz.vut.fit.pis.xmatej55.services.EmployeeService;
@@ -229,7 +227,7 @@ public class Clients {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) }),
             @ApiResponse(responseCode = "404", description = "Client or employee not found", content = @Content)
     })
-    public Response addEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
+    public Response addEmployee(@PathParam("id") Long id, EmployeeDTO employeeDTO) {
         Optional<Client> optClient = clientService.findById(id);
 
         if (!optClient.isPresent()) {
@@ -264,7 +262,7 @@ public class Clients {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class)) }),
             @ApiResponse(responseCode = "404", description = "Client or employee not found", content = @Content)
     })
-    public Response removeEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
+    public Response removeEmployee(@PathParam("id") Long id, EmployeeDTO employeeDTO) {
         Optional<Client> optClient = clientService.findById(id);
 
         if (!optClient.isPresent()) {
@@ -310,95 +308,5 @@ public class Clients {
         Client client = optClient.get();
 
         return Response.ok(clientProductService.findByClient(client)).build();
-    }
-
-    @Path("/{id}/add_product")
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Add a product to a client")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product added", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientProduct.class)) }),
-            @ApiResponse(responseCode = "404", description = "Client or product not found", content = @Content)
-    })
-    public Response addProduct(@PathParam("id") Long id, AddProduct productDTO) {
-        Optional<Product> optProduct = productService.findById(productDTO.getProductId());
-
-        if (!optProduct.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Product with id '%d' not found.", productDTO.getProductId())))
-                    .build();
-        }
-
-        Optional<Client> optClient = clientService.findById(id);
-
-        if (!optClient.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id)))
-                    .build();
-        }
-
-        Client client = optClient.get();
-        Product product = optProduct.get();
-
-        Optional<ClientProduct> optClientProduct = clientProductService.findByClientAndProduct(client, product);
-
-        if (optClientProduct.isPresent()) {
-            ClientProduct clientProduct = optClientProduct.get();
-            clientProduct.setActivateWithDate(true);
-
-            return Response.ok(clientProductService.update(clientProduct)).build();
-        }
-
-        ClientProduct clientProduct = new ClientProduct();
-        clientProduct.setActivateWithDate(true);
-        clientProduct.setClient(client);
-        clientProduct.setProduct(product);
-
-        ClientProduct savedClientProduct = clientProductService.create(clientProduct);
-
-        return Response.ok(savedClientProduct).build();
-    }
-
-    @Path("/{id}/remove_product")
-    @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Remove a product from a client")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product removed", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientProduct.class)) }),
-            @ApiResponse(responseCode = "404", description = "Client or product not found", content = @Content)
-    })
-    public Response removeProduct(@PathParam("id") Long id, AddProduct productDTO) {
-        Optional<Product> optProduct = productService.findById(productDTO.getProductId());
-
-        if (!optProduct.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Product with id '%d' not found.", productDTO.getProductId())))
-                    .build();
-        }
-
-        Optional<Client> optClient = clientService.findById(id);
-
-        if (!optClient.isPresent()) {
-            return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Client with id '%d' not found.", id)))
-                    .build();
-        }
-
-        Client client = optClient.get();
-        Product product = optProduct.get();
-
-        Optional<ClientProduct> optClientProduct = clientProductService.findByClientAndProduct(client, product);
-
-        if (!optClientProduct.isPresent()) {
-            return Response.ok().build();
-        }
-
-        ClientProduct clientProduct = optClientProduct.get();
-
-        clientProduct.setActivateWithDate(false);
-
-        return Response.ok(clientProductService.update(clientProduct)).build();
     }
 }

@@ -1,9 +1,9 @@
 package cz.vut.fit.pis.xmatej55.dto;
 
-public class AddClient {
+public class ClientDTO {
   private Long clientId;
 
-  public AddClient () {
+  public ClientDTO () {
 
   }
 

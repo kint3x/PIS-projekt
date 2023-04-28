@@ -1,9 +1,9 @@
 package cz.vut.fit.pis.xmatej55.dto;
 
-public class AddProduct {
+public class ProductDTO {
   private Long productId;
 
-  public AddProduct () {
+  public ProductDTO () {
 
   }
 

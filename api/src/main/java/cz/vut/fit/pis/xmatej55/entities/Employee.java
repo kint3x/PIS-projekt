@@ -39,6 +39,10 @@ public class Employee extends Person {
     @Enumerated(EnumType.STRING)
     private EmployeeType type;
 
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonbTransient
+    private Set<ClientProduct> clientProducts = new HashSet<ClientProduct>();
+
     @ManyToMany(mappedBy = "employees", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonbTransient
     private Set<Meeting> meetings = new HashSet<Meeting>();
@@ -128,6 +132,14 @@ public class Employee extends Person {
         if (res != null) {
             this.clients.remove(res);
         }
+    }
+
+    public Set<ClientProduct> getClientProducts() {
+        return clientProducts;
+    }
+
+    public void setClientProducts(Set<ClientProduct> clientProducts) {
+        this.clientProducts = clientProducts;
     }
 
     public void addProduct(Product product) {

@@ -3,7 +3,7 @@ package cz.vut.fit.pis.xmatej55.rest;
 import java.net.URI;
 import java.util.Optional;
 
-import cz.vut.fit.pis.xmatej55.dto.AddEmployee;
+import cz.vut.fit.pis.xmatej55.dto.EmployeeDTO;
 import cz.vut.fit.pis.xmatej55.dto.Error;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.entities.Meeting;
@@ -104,7 +104,7 @@ public class Meetings {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     })
-    public Response createMeeting(cz.vut.fit.pis.xmatej55.dto.Meeting meetingDTO) {
+    public Response createMeeting(cz.vut.fit.pis.xmatej55.dto.MeetingDTO meetingDTO) {
         Meeting m = new Meeting();
 
         m.setAuthor(employeeService.findById(meetingDTO.getAuthorId()).get());
@@ -156,7 +156,7 @@ public class Meetings {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
             @ApiResponse(responseCode = "404", description = "Meeting not found", content = @Content)
     })
-    public Response updateEmployee(@PathParam("id") Long id, cz.vut.fit.pis.xmatej55.dto.Meeting meetingDTO) {
+    public Response updateEmployee(@PathParam("id") Long id, cz.vut.fit.pis.xmatej55.dto.MeetingDTO meetingDTO) {
         Optional<Meeting> old = meetingService.findById(id);
 
         if (!old.isPresent()) {
@@ -184,7 +184,7 @@ public class Meetings {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
             @ApiResponse(responseCode = "404", description = "Meeting or employee not found", content = @Content)
     })
-    public Response addEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
+    public Response addEmployee(@PathParam("id") Long id, EmployeeDTO employeeDTO) {
         Optional<Meeting> optMeeting = meetingService.findById(id);
 
         if (!optMeeting.isPresent()) {
@@ -217,7 +217,7 @@ public class Meetings {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Meeting.class)) }),
             @ApiResponse(responseCode = "404", description = "Meeting or employee not found", content = @Content)
     })
-    public Response removeEmployee(@PathParam("id") Long id, AddEmployee employeeDTO) {
+    public Response removeEmployee(@PathParam("id") Long id, EmployeeDTO employeeDTO) {
         Optional<Meeting> optMeeting = meetingService.findById(id);
 
         if (!optMeeting.isPresent()) {

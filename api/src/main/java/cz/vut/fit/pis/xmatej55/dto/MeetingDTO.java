@@ -6,7 +6,7 @@ import java.util.Set;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
 
-public class Meeting {
+public class MeetingDTO {
     private String subject;
 
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")
@@ -23,7 +23,7 @@ public class Meeting {
 
     private Long authorId;
 
-    public Meeting() {
+    public MeetingDTO() {
 
     }
 
