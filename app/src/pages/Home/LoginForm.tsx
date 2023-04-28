@@ -14,6 +14,7 @@ interface DecodedToken extends JwtPayload {
 }
 
 const LoginForm = () => {
+
   const dispatch = useDispatch();
 
   const history = useHistory();
@@ -43,7 +44,6 @@ const LoginForm = () => {
       localStorage.setItem('jwtToken', token)
       localStorage.setItem("name", decodedToken.upn);
       localStorage.setItem("employeeId", decodedToken.employee_id.toString());
-
 
       history.push("/clients")
     }
