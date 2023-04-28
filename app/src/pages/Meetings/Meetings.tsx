@@ -13,6 +13,8 @@ import { useHistory } from "react-router-dom";
 import { loadRequest as loadMeetings } from '../../store/ducks/meeting/actions';
 import { createRequest as addMeeting } from '../../store/ducks/meeting/actions';
 
+import { updateRequest as updateMeeting } from '../../store/ducks/meeting/actions';
+
 import { loadRequest as loadClients } from '../../store/ducks/client/actions';
 import { MeetingData } from "../../store/ducks/meeting/types";
 import { AppState } from '../../store';
@@ -43,7 +45,7 @@ const Meetings = () => {
         dispatch(loadClients('all'));
       }, [dispatch]);   
 
-      
+
     useEffect(()=>{
         renderMeetings();
     },[loading]);
@@ -53,6 +55,8 @@ const Meetings = () => {
     const [show_add_dialog,setShowAddDialog] = useState<any>(false);
 
     const initialState = {
+        heading: "",
+        date: "",
         subject: "",
         start: null,
         end: null,
@@ -69,14 +73,14 @@ const Meetings = () => {
         const meet_arr =  Object.values(meetings);
         const fin_arr : any = [];
         for (const val of meet_arr) {
-            fin_arr.push({ title: val.subject, date: val.start });
+            fin_arr.push({ title: val.subject, date: val.start , meeting_id: val.id});
             }
         setEvents(fin_arr);  
     }
 
     function handleDateClick(info: any) {
         const clickedDate = info.dateStr;
-        setAddDialogData({...add_dialog_data,date: clickedDate, heading: "Add meeting"})
+        setAddDialogData({...add_dialog_data,date: clickedDate, heading: "Add meeting", adding: true})
         setShowAddDialog(true);
       }
 
@@ -88,13 +92,13 @@ const Meetings = () => {
         if(authorId == 0) return;
 
         const date_sel = add_dialog_data.date;
-        const time_from = format(add_dialog_data.time_from,"HH:mm:00");
-        const time_to = format(add_dialog_data.time_to,"HH:mm:00");
+        const start = format(add_dialog_data.start,"HH:mm:00");
+        const end = format(add_dialog_data.end,"HH:mm:00");
 
         const DataToSend : MeetingData = {
             subject: add_dialog_data.subject,
-            start: date_sel+"T"+time_from,
-            end: date_sel+"T"+time_to,
+            start: date_sel+"T"+start,
+            end: date_sel+"T"+end,
             notes: add_dialog_data.notes,
             employeeIds: [],
             clientId: add_dialog_data.client,
@@ -106,8 +110,48 @@ const Meetings = () => {
         setAddDialogData(initialState);
     }
 
+    function onEditMeeting(){
+        const employeeId = localStorage.getItem('employeeId');
+        const authorId = employeeId ? parseInt(employeeId) : 0; // default to 0 if employeeId is null
+        if(authorId == 0) return;
+
+        const date_sel = add_dialog_data.date;
+        const start = format(add_dialog_data.start,"HH:mm:00");
+        const end = format(add_dialog_data.end,"HH:mm:00");
+
+        const DataToSend : MeetingData = {
+            subject: add_dialog_data.subject,
+            start: date_sel+"T"+start,
+            end: date_sel+"T"+end,
+            notes: add_dialog_data.notes,
+            employeeIds: [],
+            clientId: add_dialog_data.client,
+            authorId: authorId
+        }
+
+        dispatch(updateMeeting(add_dialog_data.meeting_id,DataToSend))
+        if(!loading && !error){
+            setShowAddDialog(false);
+            setAddDialogData(initialState);
+        }
+    }
+
     function handleTimeClick(ev: any){
-        console.log(ev);
+        const meeting_id = ev.event._def.extendedProps.meeting_id;
+        const sel_meeting = meetings[meeting_id];
+        const g_date = format((new Date(sel_meeting.start)),"yyyy-MM-dd");
+
+        setAddDialogData({...add_dialog_data, heading: "Edit Meeting", adding: false,
+        subject: sel_meeting.subject,
+        start: new Date(sel_meeting.start),
+        end: new Date(sel_meeting.end),
+        date: g_date,
+        notes : sel_meeting.notes,
+        client: sel_meeting.client.id,
+        meeting_id : meeting_id
+        });
+        
+        setShowAddDialog(true);
     }
 
     return (
@@ -119,7 +163,7 @@ const Meetings = () => {
             initialView="dayGridMonth"
             events={events}
             dateClick={handleDateClick}
-            //eventClick={handleTimeClick}
+            eventClick={handleTimeClick}
             
         />
         
@@ -134,9 +178,9 @@ const Meetings = () => {
           </div>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Time from:</span>
-            <Calendar  timeOnly={true} value={add_dialog_data.time_from} onChange={(e) => setAddDialogData({...add_dialog_data,time_from: e.value})}/>
+            <Calendar  timeOnly={true} value={add_dialog_data.start} onChange={(e) => setAddDialogData({...add_dialog_data,start: e.value})}/>
             <span className="p-inputgroup-addon">Time to:</span>
-            <Calendar  timeOnly={true} value={add_dialog_data.time_to} onChange={(e) => setAddDialogData({...add_dialog_data,time_to: e.value})} />
+            <Calendar  timeOnly={true} value={add_dialog_data.end} onChange={(e) => setAddDialogData({...add_dialog_data,end: e.value})} />
           </div>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Client:</span>
@@ -149,7 +193,7 @@ const Meetings = () => {
             <InputTextarea value={add_dialog_data.notes} onChange={(e) => setAddDialogData({...add_dialog_data, notes: e.target.value})} placeholder="Notes ..."/>
           </div>
 
-          <Button label="Submit" severity="success" onClick={onAddMeeting} />
+          <Button label="Submit" severity="success" onClick={ add_dialog_data.adding ? onAddMeeting : onEditMeeting} />
         </Dialog>
         </>
     );
