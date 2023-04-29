@@ -139,6 +139,17 @@ function* removeProduct(action: AnyAction) {
   }
 }
 
+function* loadClientProducts(action: AnyAction) {
+  const { id } = action.payload;
+  try {
+    const response: { [key: string]: any } = yield call(api.get, `/${id}/client_products`);
+    const data = response.data;
+    yield put(actions.loadClientProductsSuccess(id, data));
+  } catch (err) {
+    yield put(actions.loadClientProductFailure(err as any));
+  }
+}
+
 const employeeSagas = [
   takeLatest(EmployeeTypes.AUTH_REQUEST, auth),
   takeLatest(EmployeeTypes.LOAD_REQUEST, load),
@@ -151,7 +162,8 @@ const employeeSagas = [
   takeLatest(EmployeeTypes.ADD_CLIENT_REQUEST, addClient),
   takeLatest(EmployeeTypes.REMOVE_CLIENT_REQUEST, removeClient),
   takeLatest(EmployeeTypes.ADD_PRODUCT_REQUEST, addProduct),
-  takeLatest(EmployeeTypes.REMOVE_PRODUCT_REQUEST, removeProduct)
+  takeLatest(EmployeeTypes.REMOVE_PRODUCT_REQUEST, removeProduct),
+  takeLatest(EmployeeTypes.LOAD_CLIENTS_REQUEST, loadClientProducts)
 ];
 
 export default employeeSagas;

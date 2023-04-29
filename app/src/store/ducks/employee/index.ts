@@ -3,6 +3,7 @@ import { EmployeeModel, EmployeeState, EmployeeTypes } from './types';
 import { meetingsModelToState } from '../meeting';
 import { clientModelToState } from '../client';
 import { productModelToState } from '../product';
+import { clientProductToState } from '../clientProduct';
 
 export const INITIAL_STATE: EmployeeState = {
   token: null,
@@ -13,6 +14,7 @@ export const INITIAL_STATE: EmployeeState = {
   meetings: {},
   products: {},
   clients: {},
+  clientProducts: {}
 };
 
 export const employeeModelToState = (
@@ -58,6 +60,8 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
       return { ...state, loading: true }
     case EmployeeTypes.LOAD_PRODUCTS_REQUEST:
       return { ...state, loading: true, products: [] }
+    case EmployeeTypes.LOAD_CLIENT_PRODUCTS_REQUEST:
+      return { ...state, loading: true , clientProducts: {}}
     case EmployeeTypes.ADD_CLIENT_SUCCESS:
     case EmployeeTypes.LOAD_CLIENTS_SUCCESS:
       var clients = action.payload.data;
@@ -84,6 +88,14 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
         error: false,
         meetings: meetings.reduce(meetingsModelToState, state.meetings)
       }
+    case EmployeeTypes.LOAD_CLIENT_PRODUCTS_SUCCESS:
+      const clientProducts = action.payload.data;
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        clientProducts: clientProducts.reduce(clientProductToState, state.clientProducts)
+      };
     case EmployeeTypes.LOAD_SUCCESS:
       if (action.payload.id === 'all') {
         const employees = action.payload.data;
@@ -133,6 +145,7 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
         error: false,
         data: employeeModelToState(state.data, action.payload.data)
       };
+    case EmployeeTypes.LOAD_CLIENT_PRODUCTS_FAILURE:
     case EmployeeTypes.LOAD_PRODUCTS_FAILURE:
     case EmployeeTypes.REMOVE_FAILURE:
     case EmployeeTypes.ADD_PRODUCT_FAILURE:

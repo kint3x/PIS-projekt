@@ -2,6 +2,7 @@ package cz.vut.fit.pis.xmatej55.managers;
 
 import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.ClientProduct;
+import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.managers.ClientProductManager;
 import java.util.List;
@@ -52,6 +53,12 @@ public class ClientProductManager {
     public List<ClientProduct> findByClient(Client client) {
         return em.createQuery("SELECT cp FROM ClientProduct cp WHERE cp.client = :client", ClientProduct.class)
                 .setParameter("client", client)
+                .getResultList();
+    }
+
+    public List<ClientProduct> findByEmployee(Employee employee) {
+        return em.createQuery("SELECT cp FROM ClientProduct cp WHERE cp.employee = :employee", ClientProduct.class)
+                .setParameter("employee", employee)
                 .getResultList();
     }
 

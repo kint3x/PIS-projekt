@@ -3,6 +3,7 @@ import { EmployeeTypes, EmployeeModel, EmployeeData } from './types';
 import { MeetingModel } from '../meeting/types';
 import { ProductModel } from '../product/types';
 import { ClientModel } from '../client/types';
+import { ClientProductModel } from '../clientProduct';
 
 export const authRequest = (
   username: string,
@@ -123,3 +124,12 @@ export const removeProductRequest = (
 export const removeProductSuccess = (id: number) => action(EmployeeTypes.REMOVE_PRODUCT_SUCCESS, { id });
 
 export const removeProductFailure = (err: any) => action(EmployeeTypes.REMOVE_PRODUCT_FAILURE, err);
+
+export const loadClientProductsRequest = (id: number) => action(EmployeeTypes.LOAD_CLIENT_PRODUCTS_REQUEST, { id });
+
+export const loadClientProductsSuccess = (
+  id: number,
+  data: ClientProductModel[]
+) => action(EmployeeTypes.LOAD_CLIENT_PRODUCTS_SUCCESS, { id, data });
+
+export const loadClientProductFailure = (err: any) => action(EmployeeTypes.LOAD_CLIENT_PRODUCTS_FAILURE, err);

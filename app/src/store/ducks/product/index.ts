@@ -36,6 +36,7 @@ const reducer: Reducer<ProductState> = (state = INITIAL_STATE, action: AnyAction
     case ProductTypes.REMOVE_CLIENT_REQUEST:
     case ProductTypes.ADD_EMPLOYEE_REQUEST:
     case ProductTypes.REMOVE_EMPLOYEE_REQUEST:
+    case ProductTypes.CHANGE_CLIENT_EMPLOYEE_REQUEST:
       return { ...state, loading: true };
     case ProductTypes.LOAD_SUCCESS:
       if (action.payload.id === 'all') {
@@ -90,6 +91,7 @@ const reducer: Reducer<ProductState> = (state = INITIAL_STATE, action: AnyAction
         error: false
       };
     case ProductTypes.ADD_CLIENT_SUCCESS:
+    case ProductTypes.CHANGE_CLIENT_EMPLOYEE_SUCCESS:
     case ProductTypes.REMOVE_CLIENT_SUCCESS:
       return {
         ...state,
@@ -115,6 +117,7 @@ const reducer: Reducer<ProductState> = (state = INITIAL_STATE, action: AnyAction
     case ProductTypes.LOAD_EMPLOYEES_FAILURE:
     case ProductTypes.ADD_EMPLOYEE_FAILURE:
     case ProductTypes.REMOVE_EMPLOYEE_FAILURE:
+    case ProductTypes.CHANGE_CLIENT_EMPLOYEE_FAILURE:
       return {
         ...state,
         loading: false,

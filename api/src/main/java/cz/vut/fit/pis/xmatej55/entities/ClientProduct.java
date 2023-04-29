@@ -29,6 +29,10 @@ public class ClientProduct {
     private Client client;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "employee")
+    private Employee employee;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product")
     private Product product;
 
@@ -82,6 +86,14 @@ public class ClientProduct {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public void setActivateWithDate(Boolean active) {

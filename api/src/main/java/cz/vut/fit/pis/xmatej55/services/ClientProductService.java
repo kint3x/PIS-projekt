@@ -2,6 +2,7 @@ package cz.vut.fit.pis.xmatej55.services;
 
 import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.ClientProduct;
+import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.managers.ClientProductManager;
 import cz.vut.fit.pis.xmatej55.services.ClientProductService;
@@ -39,6 +40,10 @@ public class ClientProductService {
 
     public List<ClientProduct> findByClient(Client client) {
         return clientProductManager.findByClient(client);
+    }
+
+    public List<ClientProduct> findByEmployee(Employee employee) {
+        return clientProductManager.findByEmployee(employee);
     }
 
     public List<ClientProduct> findByProduct(Product product) {
