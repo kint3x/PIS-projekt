@@ -13,6 +13,7 @@ import cz.vut.fit.pis.xmatej55.services.ClientService;
 import cz.vut.fit.pis.xmatej55.services.EmployeeService;
 import cz.vut.fit.pis.xmatej55.services.MeetingService;
 import cz.vut.fit.pis.xmatej55.services.ProductService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.PathParam;
@@ -106,6 +107,7 @@ public class Clients {
     }
 
     @POST
+    @RolesAllowed({ "manager" })
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Create a new client")
@@ -123,6 +125,7 @@ public class Clients {
 
     @Path("/{id}")
     @DELETE
+    @RolesAllowed({ "manager" })
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Delete a client by ID")
     @ApiResponses(value = {
@@ -144,6 +147,7 @@ public class Clients {
 
     @Path("/{id}")
     @PUT
+    @RolesAllowed({ "manager" })
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update a client by ID")
@@ -219,6 +223,7 @@ public class Clients {
 
     @Path("/{id}/add_employee")
     @POST
+    @RolesAllowed({ "manager" })
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add an employee to a client")
@@ -255,6 +260,7 @@ public class Clients {
 
     @Path("/{id}/remove_employee")
     @DELETE
+    @RolesAllowed({ "manager" })
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Remove an employee from a client")
     @ApiResponses(value = {
