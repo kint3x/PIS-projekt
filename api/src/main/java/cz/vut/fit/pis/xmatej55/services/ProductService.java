@@ -4,6 +4,8 @@ import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.entities.Product;
 import cz.vut.fit.pis.xmatej55.managers.ProductManager;
 import cz.vut.fit.pis.xmatej55.services.ProductService;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -18,10 +20,18 @@ public class ProductService {
     private ProductManager productManager;
 
     public Product create(Product product) {
+        List<String> errors = validateProduct(product);
+        if (!errors.isEmpty()) {
+            throw new IllegalArgumentException(String.join(", ", errors));
+        }
         return productManager.create(product);
     }
 
     public Product update(Product product) {
+        List<String> errors = validateProduct(product);
+        if (!errors.isEmpty()) {
+            throw new IllegalArgumentException(String.join(", ", errors));
+        }
         return productManager.update(product);
     }
 
@@ -51,5 +61,15 @@ public class ProductService {
         }
 
         return false;
+    }
+
+    private List<String> validateProduct(Product product) {
+        List<String> errors = new ArrayList<>();
+
+        if (product.getName() == null || product.getName().trim().isEmpty()) {
+            errors.add("Product name is empty");
+        }
+
+        return errors;
     }
 }

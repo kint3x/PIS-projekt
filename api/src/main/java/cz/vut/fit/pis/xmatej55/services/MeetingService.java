@@ -5,6 +5,8 @@ import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.entities.Meeting;
 import cz.vut.fit.pis.xmatej55.managers.MeetingManager;
 import cz.vut.fit.pis.xmatej55.services.MeetingService;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,10 +20,18 @@ public class MeetingService {
     private MeetingManager meetingManager;
 
     public Meeting create(Meeting meeting) {
+        List<String> errors = validateMeeting(meeting);
+        if (!errors.isEmpty()) {
+            throw new IllegalArgumentException(String.join(", ", errors));
+        }
         return meetingManager.create(meeting);
     }
 
     public Meeting update(Meeting meeting) {
+        List<String> errors = validateMeeting(meeting);
+        if (!errors.isEmpty()) {
+            throw new IllegalArgumentException(String.join(", ", errors));
+        }
         return meetingManager.update(meeting);
     }
 
@@ -43,5 +53,24 @@ public class MeetingService {
 
     public List<Meeting> findAllByEmployee(Employee employee) {
         return meetingManager.findAllByEmployee(employee);
+    }
+
+    private List<String> validateMeeting(Meeting meeting) {
+        List<String> errors = new ArrayList<>();
+
+        if (meeting.getClient() == null) {
+            errors.add("Client have to be set");
+        }
+        if (meeting.getEmployees().isEmpty()) {
+            errors.add("Employee have to be set");
+        }
+        if (meeting.getStart() == null || meeting.getEnd() == null || !meeting.getStart().before(meeting.getEnd())) {
+            errors.add("Invalid meeting date range");
+        }
+        if (meeting.getSubject() == null || meeting.getSubject().trim().isEmpty()) {
+            errors.add("Subject is empty");
+        }
+
+        return errors;
     }
 }
