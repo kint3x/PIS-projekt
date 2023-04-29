@@ -24,7 +24,7 @@ public class DataSeeder {
             admin.setEmail("admin@admin.com");
             admin.setAddress("adminAddress");
             admin.setDob(new Date());
-            admin.setPhone("123456789");
+            admin.setPhone("+421918420420");
             admin.setName("John");
             admin.setSurname("Doe");
             admin.setImage("image.png");
