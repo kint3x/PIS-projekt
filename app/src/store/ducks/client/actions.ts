@@ -21,7 +21,7 @@ export const createRequest = (
 
 export const createSuccess = (
   data: ClientModel
-) => action(ClientTypes.CREATE_SUCCESS);
+) => action(ClientTypes.CREATE_SUCCESS, { data });
 
 export const createFailure = (err: any) => action(ClientTypes.CREATE_FAILURE, err);
 
@@ -32,7 +32,7 @@ export const updateRequest = (
 
 export const updateSuccess = (
   data: ClientModel
-) => action(ClientTypes.UPDATE_SUCCESS);
+) => action(ClientTypes.UPDATE_SUCCESS, { data });
 
 export const updateFailure = (err: any) => action(ClientTypes.UPDATE_FAILURE, err);
 
@@ -93,8 +93,9 @@ export const loadClientProductFailure = (err: any) => action(ClientTypes.LOAD_CL
 
 export const addProductRequest = (
   client_id: number,
+  employee_id: number,
   product_id: number
-) => action(ClientTypes.ADD_PRODUCT_REQUEST, { product_id, client_id });
+) => action(ClientTypes.ADD_PRODUCT_REQUEST, { employee_id, product_id, client_id });
 
 export const addProductSuccess = (
   data: ClientProductModel

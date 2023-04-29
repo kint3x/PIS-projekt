@@ -83,8 +83,9 @@ export const loadClientProductFailure = (err: any) => action(ProductTypes.LOAD_C
 
 export const addClientRequest = (
   product_id: number,
-  client_id: number
-) => action(ProductTypes.ADD_CLIENT_REQUEST, { product_id, client_id });
+  client_id: number,
+  employee_id: number
+) => action(ProductTypes.ADD_CLIENT_REQUEST, { product_id, client_id, employee_id });
 
 export const addClientSuccess = (
   data: ClientProductModel
@@ -102,3 +103,15 @@ export const removeClientSuccess = (
 ) => action(ProductTypes.REMOVE_CLIENT_SUCCESS, { data });
 
 export const removeClientFailure = (err: any) => action(ProductTypes.REMOVE_CLIENT_FAILURE, err);
+
+export const changeClientEmployeeRequest = (
+  product_id: number,
+  client_id: number,
+  employee_id: number
+) => action(ProductTypes.CHANGE_CLIENT_EMPLOYEE_REQUEST, { product_id, client_id, employee_id });
+
+export const changeClientEmployeeSuccess = (
+  data: ClientProductModel
+) => action(ProductTypes.CHANGE_CLIENT_EMPLOYEE_SUCCESS, { data });
+
+export const changeClientEmployeeFailure = (err: any) => action(ProductTypes.CHANGE_CLIENT_EMPLOYEE_FAILURE, err);

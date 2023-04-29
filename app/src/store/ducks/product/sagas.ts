@@ -94,9 +94,9 @@ function* loadClientProducts(action: AnyAction) {
 }
 
 function* addClient(action: AnyAction) {
-  const { product_id, client_id } = action.payload;
+  const { product_id, client_id, employee_id } = action.payload;
   try {
-    const response: { [key: string] : any } = yield call(api.post, `/${endpoint}/${product_id}/add_client`, { "clientId": client_id });
+    const response: { [key: string] : any } = yield call(api.post, `/${endpoint}/${product_id}/add_client`, { "clientId": client_id, "employeeId": employee_id });
     const data = response.data;
     yield put(actions.addClientSuccess(data));
   } catch (err) {
@@ -107,10 +107,22 @@ function* addClient(action: AnyAction) {
 function* removeClient(action: AnyAction) {
   const { product_id, client_id } = action.payload;
   try {
-    yield call(api.delete, `/${endpoint}/${product_id}/remove_client`, { "data": {"clientId": client_id }});
-    yield put(actions.removeClientSuccess(client_id));
+    const response: { [key: string]: any } = yield call(api.delete, `/${endpoint}/${product_id}/remove_client`, { "data": {"clientId": client_id }});
+    const data = response.data;
+    yield put(actions.removeClientSuccess(data));
   } catch (err) {
     yield put(actions.addClientFailure(err as any));
+  }
+}
+
+function* changeClientEmployee(action: AnyAction) {
+  const { product_id, client_id, employee_id } = action.payload;
+  try {
+    const response: { [key: string] : any } = yield call(api.post, `/${endpoint}/${product_id}/change_client_employee`, { "clientId": client_id, "employeeId": employee_id });
+    const data = response.data;
+    yield put(actions.changeClientEmployeeSuccess(data));
+  } catch (err) {
+    yield put(actions.changeClientEmployeeFailure(err as any));
   }
 }
 
@@ -124,7 +136,8 @@ const productSagas = [
   takeLatest(ProductTypes.REMOVE_EMPLOYEE_REQUEST, removeEmployee),
   takeLatest(ProductTypes.LOAD_CLIENT_PRODUCTS_REQUEST, loadClientProducts),
   takeLatest(ProductTypes.ADD_CLIENT_REQUEST, addClient),
-  takeLatest(ProductTypes.REMOVE_CLIENT_REQUEST, removeClient)
+  takeLatest(ProductTypes.REMOVE_CLIENT_REQUEST, removeClient),
+  takeLatest(ProductTypes.CHANGE_CLIENT_EMPLOYEE_REQUEST, changeClientEmployee)
 ]
 
 export default productSagas;

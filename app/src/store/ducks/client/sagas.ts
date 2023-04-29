@@ -105,9 +105,9 @@ function* loadClientProducts(action: AnyAction) {
 }
 
 function* addProduct(action: AnyAction) {
-  const { product_id, client_id } = action.payload;
+  const { product_id, client_id, employee_id } = action.payload;
   try {
-    const response: { [key: string] : any } = yield call(api.post, `/${endpoint}/${client_id}/add_product`, { "productId": product_id });
+    const response: { [key: string] : any } = yield call(api.post, `/${endpoint}/${product_id}/add_client`, { "clientId": client_id, "employeeId": employee_id });
     const data = response.data
     yield put(actions.addProductSuccess(data));
   } catch (err) {
@@ -118,8 +118,9 @@ function* addProduct(action: AnyAction) {
 function* removeProduct(action: AnyAction) {
   const { product_id, client_id } = action.payload;
   try {
-    yield call(api.delete, `/${endpoint}/${client_id}/remove_product`, { "data": {"productId": product_id }});
-    yield put(actions.removeProductSuccess(product_id));
+    const response: { [key: string]: any } = yield call(api.delete, `/${endpoint}/${product_id}/remove_client`, { "data": {"clientId": client_id }});
+    const data = response.data;
+    yield put(actions.removeProductSuccess(data));
   } catch (err) {
     yield put(actions.removeProductFailure(err as any));
   }

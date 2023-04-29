@@ -1,4 +1,5 @@
 import { ClientModel } from "../client/types"
+import { ClientProductModel } from "../clientProduct"
 import { MeetingModel } from "../meeting/types"
 import { ProductModel } from "../product/types"
 
@@ -39,6 +40,9 @@ export enum EmployeeTypes {
   REMOVE_PRODUCT_REQUEST = '@employee/REMOVE_PRODUCT_REQUEST',
   REMOVE_PRODUCT_SUCCESS = '@employee/REMOVE_PRODUCT_SUCCESS',
   REMOVE_PRODUCT_FAILURE = '@employee/REMOVE_PRODUCT_FAILURE',
+  LOAD_CLIENT_PRODUCTS_REQUEST = '@employee/LOAD_CLIENT_PRODUCTS_REQUEST',
+  LOAD_CLIENT_PRODUCTS_SUCCESS = '@employee/LOAD_CLIENT_PRODUCTS_SUCCESS',
+  LOAD_CLIENT_PRODUCTS_FAILURE = '@employee/LOAD_CLIENT_PRODUCTS_FAILURE',
 }
 
 export interface EmployeeData {
@@ -76,5 +80,6 @@ export interface EmployeeState {
   readonly error: boolean,
   readonly meetings: { [id: number]: MeetingModel },
   readonly products: { [id: number]: ProductModel },
-  readonly clients: { [id: number]: ClientModel }
+  readonly clients: { [id: number]: ClientModel },
+  readonly clientProducts: { [id: number]: ClientProductModel }
 }

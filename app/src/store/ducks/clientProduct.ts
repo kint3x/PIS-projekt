@@ -1,4 +1,5 @@
 import { ClientModel } from "./client/types";
+import { EmployeeModel } from "./employee/types";
 import { ProductModel } from "./product/types";
 
 export const clientProductToState = (
@@ -13,14 +14,16 @@ export const clientProductToState = (
       product: item.product,
       active: item.active,
       date: item.date,
+      employee: item.employee
     }
   }
-}
+};
 
 export interface ClientProductModel {
   id: number,
   client: ClientModel,
+  employee: EmployeeModel,
   product: ProductModel,
   active: boolean,
   date: string
-}
+};
