@@ -14,8 +14,9 @@
 }
 
 .hidden {
-  display:none;
+  display:none !important;
 }
+
 .App-link {
   color: #61dafb;
 }
@@ -42,7 +43,7 @@
 
 .p-datatable tr:hover{
   cursor: pointer;
-  background: rgba(148,232,249,0.4) !important;
+  background: rgba(206, 255, 216, 0.4) !important;
 }
 
 .edit-user .p-dialog-content div{
@@ -108,4 +109,81 @@ textarea {
 .error div{
   width: 100%;
   margin-bottom: 5px;
+}
+
+.page-heading{
+    margin: 15px;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-content: end;
+  align-items: center;
+}
+
+.page-heading button{
+  padding:5px;
+}
+
+.page-heading h1{
+  margin-left:-25px;
+  margin-right: 15px;
+}
+
+.p-menubar{
+  justify-content: center;
+}
+
+.customAdd{
+  background: #fefefe !important;
+  border: 1px solid #1bc015 !important;
+}
+
+.customSubmit:hover{
+  background: #1bc01542 !important;
+}
+.p-dialog-header{
+  padding-bottom: 0px !important;
+}
+.image-profile {
+  width: 70px;
+  height: 70px;
+  margin-right: 30px;
+  border-radius: 50%;
+
+  object-fit: cover;
+  object-position: center right;
+}
+
+
+/** EMPLOYEE CARDS **/
+.img-thumbnail {
+  padding: .25rem;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: .25rem;
+  max-width: 100%;
+  height: auto;
+  min-height: 100px;
+  
+}
+.cards{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.card {
+  text-align: center;
+  width: 19%;
+
+  margin-right: 5px;
+}
+.card-icons {
+  position: absolute;
+  bottom: 10px;
+  display: flex;
+  justify-content: space-around;;
+  width: 100%;
+}
+.card-icons i{
+  cursor: pointer;
 }

@@ -1,24 +1,21 @@
-import React from 'react'
+import React, { useRef } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState} from 'react';
-import { useHistory } from "react-router-dom";
 
 import { loadRequest as loadEmployees } from '../../store/ducks/employee/actions';
+import { createRequest as addEmployee } from '../../store/ducks/employee/actions';
 import { updateRequest as updateEmployee } from '../../store/ducks/employee/actions';
-import { removeRequest as removeEmployee } from '../../store/ducks/employee/actions';
-import { createRequest as addEmployee } from '../../store/ducks/employee/actions'
+
 
 import { loadRequest as loadProducts } from '../../store/ducks/product/actions';
-import { addEmployeeRequest as addProductEmployee } from '../../store/ducks/product/actions';
-import { removeEmployeeRequest as removeProductEmployee } from '../../store/ducks/product/actions';
-import { loadProductsRequest as loadEmployeeProducts } from '../../store/ducks/employee/actions';
-import { addProductRequest as addEmployeeProduct } from '../../store/ducks/employee/actions';
-import { removeProductRequest as removeEmployeeProduct } from '../../store/ducks/employee/actions';
+
 
 import { AppState } from '../../store';
 
 import { DataTable, DataTableValueArray , DataTableRowClickEvent } from 'primereact/datatable';
+import "primeicons/primeicons.css";
+
 import { Column } from 'primereact/column';
 import { Message } from 'primereact/message';
 import { Dialog } from 'primereact/dialog';
@@ -33,273 +30,228 @@ import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { Password } from 'primereact/password';
 
+import { FileUpload , FileUploadUploadEvent} from 'primereact/fileupload';
+import { ProgressSpinner } from 'primereact/progressspinner';
+
+import employeeCard from './EmployeeCard';
+import { EmployeeModel } from '../../store/ducks/employee/types';
+
 const Employees = () => {
 
     const dispatch = useDispatch();
     
+    const dialogInitialData={
+      addMode: false,
+      username: "",
+      password: "",
+      type: "Worker",
+      email: "",
+      name: "",
+      surname: "",
+      dob: "",
+      phone: "",
+      address: "",
+      image: "",
+      UpLoading: false,
+      UpLoaded: false
+    };
+
     const [show_dialog,setShowDialog] = useState(false);
-    const [show_add_dialog,setShowAddDialog] = useState(false);
-    const [selected_employee, setSelectedEmployee] = useState<any>({});
-    const [selectProducts, setSelectedProducts] = useState<any>({add: 0, remove: 0, remove_opt: [], add_opt: []});
+    const [dialog_data, setDialogData] = useState<any>(dialogInitialData);
 
     useEffect(() => {
       dispatch(loadEmployees('all'));
+    }, [dispatch,show_dialog]);   
+
+    useEffect(() => {
       dispatch(loadProducts('all'));
-    }, [dispatch,setShowDialog,setShowAddDialog]);   
+    },[dispatch])
 
-    const employees = useSelector((state: AppState) => state.employee.data);
-    const loading = useSelector((state: AppState) => state.employee.loading);
-    const error = useSelector((state: AppState) => state.employee.error);
-    const errMsg = useSelector((state: AppState) => state.employee.errMsg);
-
+    const employee = useSelector((state: AppState) => state.employee.data);
+    const employeeLoading = useSelector((state: AppState) => state.employee.loading);
+    const employeeError = useSelector((state: AppState) => state.employee.error);
+    const employeeErrMsg = useSelector((state: AppState) => state.employee.errMsg);
 
     const products = useSelector((state: AppState) => state.product.data);
     const productsLoading = useSelector((state: AppState) => state.product.loading);
-    const employeeProducts = useSelector((state: AppState) => state.employee.products);
-        
-    const [new_employee, setNewEmployee] = useState<any>({});
+    const productsError  = useSelector((state: AppState) => state.product.error);
+    const productsErrMsg  = useSelector((state: AppState) => state.product.errMsg);
 
-
-    useEffect(() => {
-      calculateAddRemoveItems();
-    },[productsLoading, loading]);
-
-
-    var password_change = "";
+    function onEmployeeClick(id : number){
+      console.log(employee[id]);
+      setDialogData({...employee[id],addMode: false,UpLoading:false,UpLoaded: false, password: ""});
+      setShowDialog(true);
+    }
     
-    function onInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) {
-      const { value } = event.target;
-      setSelectedEmployee((prevState: any) => ({
-        ...prevState,
-        [key]: value
-      }));
+    function addClick(){
+      setDialogData({...dialogInitialData, addMode: true});
+      setShowDialog(true);
     }
 
-    function onClickHandle(event: DataTableRowClickEvent) : void{
-      setSelectedEmployee(event.data);
-      dispatch(loadEmployeeProducts(event.data.id));
-      if(!loading && !productsLoading){
-        setShowDialog(true);
+    function addUser(){
+      dispatch(addEmployee(dialog_data));
+      setShowDialog(false);
+    }
+
+    function editUser(){
+      dispatch(updateEmployee(dialog_data.id,dialog_data));
+      setShowDialog(false);
+    }
+
+    const onUpload = (event:FileUploadUploadEvent  ) => {
+      setDialogData({...dialog_data, UpLoading: false, UpLoaded: true, image: event.xhr.responseText});
+    };
+
+    const onUplError = () => {
+      setDialogData({...dialog_data, UpLoading: false, UpLoaded: false});
+    };
+    const dialogHeader = () =>{
+      return(
+        <>
+        <div className="p-dialog-title">
+        <img src={" "+dialog_data.image} className={(dialog_data.image != "") ? "image-profile" : "hidden"} alt="Image" width="250" />
+        {dialog_data.addMode ?  "Add Employee" : "Edit Employee"}
+        </div>
+        </>
+      );
+    };
+
+    const employeeCards = () => {
+      const cards = [];
+      var key : any = 0;
+      for( key of Object.keys(employee)) {
+       cards.push(employeeCard(employee[key],onEmployeeClick));
       }
+
+      return(
+        <>
+        <div className="container py-5 flex cards">
+        {cards}
+        </div>
+        </>
+      );
       
-    }
-
-    function onUserEdit() : void{
-      dispatch(updateEmployee(selected_employee.id, {...selected_employee, password: (password_change == "") ? selected_employee.password : password_change }));
-    }
-
-    function onUserDelete() : void{
-        dispatch(removeEmployee(selected_employee.id));
-    }
-
-    function AddUserSubmit(){
-      dispatch(addEmployee(new_employee));
-      setShowAddDialog(false);
-    }
-    
-    function onAddSelectedProduct(){
-      const empl_id = selected_employee.id;
-      const product_id = selectProducts.add;
-      dispatch(addEmployeeProduct(empl_id,product_id));
-    }
-
-    function onRemoveSelectedProduct(){
-      dispatch(removeEmployeeProduct(selected_employee.id,selectProducts.remove))
-    }
-
-    function calculateAddRemoveItems(){
-      setSelectedProducts({...selectProducts, 
-        remove_opt: Object.values(employeeProducts),
-        add_opt: 
-        Object.values(products).filter(it => !((Object.values(employeeProducts)).map(item => item.id)).includes(it.id) )
-      });
-      
-    }
+    };
 
     return(
       <>
-        <div className='page-heading'><h1>Employees</h1><br /></div>
+        <div className='page-heading'>
+          <h1>Employees</h1>        
+          <Button className="customAdd" severity="success" onClick={()=>addClick()} rounded>
+            <i className="pi pi-plus" style={{ color: 'green' }}></i></Button>
+        </div>
 
   
-        <div className={error ? "error visible" : "hidden"}>
-            <Message severity="error" text={errMsg.toString()} />
+        <div className={(employeeError || productsError)  ? "error visible" : "hidden"}>
+            <Message severity="error" 
+            text={(employeeError ? employeeErrMsg.toString(): "") + (productsError ? productsErrMsg.toString(): "")} />
         </div>
         
-        <Button label="Add" severity="success" onClick={()=>setShowAddDialog(true)}/>
-        <DataTable loading={loading} value={Object.values(employees)} tableStyle={{ minWidth: '50rem' }} 
-        onRowClick={onClickHandle}
+        {employeeCards()}
+
+        {/* <DataTable loading={employeeLoading} value={Object.values(employee)} tableStyle={{ minWidth: '50rem' }} 
+        onRowClick={onEmployeeClick}
         >
           <Column field="id" header="ID"></Column>
           <Column filter={true} field="name" header="Name"></Column>
           <Column filter={true} field="surname" header="Surname"></Column>
           <Column filter={true}  field="username" header="Username"></Column>
-        </DataTable>
+        </DataTable> */}
+      
+        {JSON.stringify(employee)}
+        <Dialog header={dialogHeader} className="edit-user" visible={show_dialog} style={{ width: '50vw' }} 
+        onHide={() => setShowDialog(false)}>
 
-        <Dialog header="Edit User" className="edit-user" visible={show_dialog} style={{ width: '50vw' }} 
-        onHide={() => {setShowDialog(false); setSelectedProducts({...selectProducts, add:0, remove:0})}}>
+          <div className="flex flex-wrap gap-3 justify-content-center">
+            <div className="flex align-items-center gap-2">
+                <RadioButton inputId="Worker" name="type" value="Worker" onChange={(e)=>setDialogData({...dialog_data, type: "Worker"})} 
+                checked={dialog_data.type == "Worker"} />
+                <label htmlFor="Worker" className="ml-2">Worker</label>
+            </div>
+            <div className="flex align-items-center gap-2">
+                <RadioButton inputId="Manager" name="type" value="Manager" onChange={(e)=>setDialogData({...dialog_data, type: "Manager"})} 
+                checked={dialog_data.type == "Manager"} />
+                <label htmlFor="Manager" className="ml-2">Manager</label>
+            </div>
+            <div className="flex align-items-center gap-2">
+                <RadioButton inputId="Owner" name="type" value="Owner" onChange={(e)=>setDialogData({...dialog_data, type: "Owner"})}
+                 checked={dialog_data.type  == "Owner"} />
+                <label htmlFor="Owner" className="ml-2">Owner</label>
+            </div>
+            <FileUpload mode="basic" name="image" 
+              url="http://matejka.xyz/api/"
+              accept="image/*" maxFileSize={1000000} auto chooseLabel={dialog_data.UpLoaded ? "Uploaded" : "Image" } 
+              className={dialog_data.UpLoaded ? "uploaded-btn" : "" }
+              onBeforeUpload={()=> { setDialogData({...dialog_data, UpLoading: true})}}
+              onUpload={onUpload}
+              onError={onUplError}
+              />
+            <ProgressSpinner className={dialog_data.UpLoading ? "" : "hidden"} style={{width: '30px', height: '30px' , margin: "0", marginTop: "auto", marginBottom: "auto"}} 
+            strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" />
+          </div>
+
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Username</span>
-            <InputText placeholder="Username" value={selected_employee.username} 
-            onChange={(e) => onInputChange(e, 'username')} />
+            <InputText placeholder="Username" value={dialog_data.username} 
+            onChange={(e) => setDialogData({...dialog_data, username: e.target.value})} />
           </div>
           
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Password</span>
-            <InputText placeholder="Password" onChange={(e) => {password_change = e.target.value}}/>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <div className="flex align-items-center">
-                <RadioButton inputId="Worker" name="type" value="Worker" onChange={(e)=>setSelectedEmployee({...selected_employee, type: "Worker"})} 
-                checked={selected_employee.type == "Worker"} />
-                <label htmlFor="Worker" className="ml-2">Worker</label>
-            </div>
-            <div className="flex align-items-center">
-                <RadioButton inputId="Manager" name="type" value="Manager" onChange={(e)=>setSelectedEmployee({...selected_employee, type: "Manager"})} checked={selected_employee.type == "Manager"} />
-                <label htmlFor="Manager" className="ml-2">Manager</label>
-            </div>
-            <div className="flex align-items-center">
-                <RadioButton inputId="Owner" name="type" value="Owner" onChange={(e)=>setSelectedEmployee({...selected_employee, type: "Owner"})} checked={selected_employee.type == "Owner"} />
-                <label htmlFor="Owner" className="ml-2">Owner</label>
-            </div>
+            <Password placeholder="Password" value={dialog_data.password} 
+            onChange={(e) => setDialogData({...dialog_data, password: e.target.value})}/>
           </div>
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Email</span>
-            <InputText placeholder="Email"  value={selected_employee.email} 
-            onChange={(e) => onInputChange(e, 'email')} />
+            <InputText placeholder="Email"  value={dialog_data.email} 
+              onChange={(e) => setDialogData({...dialog_data, email: e.target.value})} />
           </div>
-
+          
+      
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Name</span>
-            <InputText placeholder="Name" value={selected_employee.name}
-            onChange={(e) => onInputChange(e, 'name')} />
+            <InputText placeholder="Name" value={dialog_data.name}
+             onChange={(e) => setDialogData({...dialog_data, name: e.target.value})} />
           </div>
           
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Surname</span>
-            <InputText placeholder="Surname" value={selected_employee.surname}
-            onChange={(e) => onInputChange(e, 'surname')} />
+            <InputText placeholder="Surname" value={dialog_data.surname}
+            onChange={(e) => setDialogData({...dialog_data, surname: e.target.value})} />
           </div>
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">DOB</span>
             <Calendar
               showIcon={true}
-              value={new Date(selected_employee.dob)}
+              value={new Date(dialog_data.dob)}
               onChange={(e) => 
                 {
-                  if(e.value instanceof Date) setSelectedEmployee({...selected_employee, dob: format(e.value, "yyyy-MM-dd")+"T00:00:00"})
+                  if(e.value instanceof Date) setDialogData({...dialog_data, dob: format(e.value, "yyyy-MM-dd")+"T00:00:00"})
                 }
               }
               dateFormat="yy-mm-dd"
                   />
           </div>
           
-
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Phone</span>
-            <InputText placeholder="Phone" value={selected_employee.phone}
-            onChange={(e) => onInputChange(e, 'phone')} />
+            <InputText placeholder="Phone" value={dialog_data.phone}
+            onChange={(e) => setDialogData({...dialog_data, phone: e.target.value})}  />
           </div>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Address</span>
-            <InputTextarea style={{ height: '50px' }} placeholder="Address" value={selected_employee.address}
-            onChange={(e) => onInputChange(e, 'address')} />
+            <InputTextarea style={{ height: '50px' }} placeholder="Address" value={dialog_data.address}
+            onChange={(e) => setDialogData({...dialog_data, address: e.target.value})} />
           </div>
 
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Add product</span>
-            <Dropdown value={selectProducts.add} onChange={(e) => setSelectedProducts({...selectProducts, add: e.value})} placeholder="Select a product"
-                optionLabel="name" optionValue="id" 
-                options={selectProducts.add_opt} className="w-full md:w-14rem" />
-            <Button label="Add" severity="success" 
-            onClick={()=> onAddSelectedProduct() } />
-          </div>
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Remove product</span>
-            <Dropdown value={selectProducts.remove} onChange={(e) => setSelectedProducts({...selectProducts, remove: e.value})} placeholder="Select a product"
-                optionLabel="name" optionValue="id" options={selectProducts.remove_opt} className="w-full md:w-14rem" />
-            <Button label="Remove" severity="success" 
-             onClick={()=> onRemoveSelectedProduct()}/>
-          </div>
 
-          <Button label="Submit" severity="success" onClick = {() => onUserEdit()} />
-          <Button label="Delete" severity="danger"  onClick = {() => onUserDelete()} className="float-right"/>
+          <Button onClick={dialog_data.addMode ?  addUser : editUser }  label={dialog_data.addMode ?  "Submit" : "Edit"} severity="success" className="customAdd customSubmit" style={{width: "100%"}}/>
+          <Button  className={dialog_data.addMode ? "hidden" : ""} label="Delete" severity="danger"/>
       </Dialog>
+      
 
-      <Dialog header="Add User" className="add-user" visible={show_add_dialog} style={{ width: '50vw' }} onHide={() => setShowAddDialog(false) }>
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Username</span>
-            <InputText placeholder="Username" onChange={(e)=>setNewEmployee({...new_employee, username: e.target.value})}/>
-          </div>
-          
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Password</span>
-            <Password placeholder="Password" onChange={(e)=>setNewEmployee({...new_employee, password: e.target.value})}/>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <div className="flex align-items-center">
-                <RadioButton inputId="Worker" name="type" value="Worker" 
-                onChange={(e)=>setNewEmployee({...new_employee, type: "Worker"})}
-                checked={new_employee.type == "Worker"}/>
-                <label htmlFor="Worker" className="ml-2">Worker</label>
-            </div>
-            <div className="flex align-items-center">
-                <RadioButton inputId="Manager" name="type" value="Manager" 
-                onChange={(e)=>setNewEmployee({...new_employee, type: "Manager"})}
-                checked={new_employee.type == "Manager"}/>
-                <label htmlFor="Manager" className="ml-2">Manager</label>
-            </div>
-            <div className="flex align-items-center">
-                <RadioButton inputId="Owner" name="type" value="Owner" 
-                onChange={(e)=>setNewEmployee({...new_employee, type: "Owner"})}
-                checked={new_employee.type == "Owner"}/>
-                <label htmlFor="Owner" className="ml-2">Owner</label>
-            </div>
-          </div>
-
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Email</span>
-            <InputText placeholder="Email" onChange={(e)=>setNewEmployee({...new_employee, email: e.target.value})}/>
-          </div>
-
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Name</span>
-            <InputText placeholder="Name" onChange={(e)=>setNewEmployee({...new_employee, name: e.target.value})}/>
-          </div>
-          
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Surname</span>
-            <InputText placeholder="Surname" onChange={(e)=>setNewEmployee({...new_employee, surname: e.target.value})}/>
-          </div>
-
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">DOB</span>
-            <Calendar
-              showIcon={true}
-              onChange={(e) => 
-                {
-                  if(e.value instanceof Date) setNewEmployee({...new_employee, dob: format(e.value, "yyyy-MM-dd")+"T00:00:00"})
-                }
-              }
-              dateFormat="yy-mm-dd"
-                  />
-          </div>
-          
-
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Phone</span>
-            <InputText placeholder="Phone" onChange={(e)=>setNewEmployee({...new_employee, phone: e.target.value})}/>
-          </div>
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Address</span>
-            <InputTextarea style={{ height: '50px' }} placeholder="Address" onChange={(e)=>setNewEmployee({...new_employee, address: e.target.value})}/>
-          </div>
-
-          <Button label="Submit" severity="success" onClick = {() => AddUserSubmit()} />
-        </Dialog>
       </>
     );
 
