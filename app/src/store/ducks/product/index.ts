@@ -34,7 +34,6 @@ const reducer: Reducer<ProductState> = (state = INITIAL_STATE, action: AnyAction
     case ProductTypes.LOAD_CLIENT_PRODUCTS_REQUEST:
     case ProductTypes.ADD_CLIENT_REQUEST:
     case ProductTypes.REMOVE_CLIENT_REQUEST:
-    case ProductTypes.LOAD_EMPLOYEES_REQUEST:
     case ProductTypes.ADD_EMPLOYEE_REQUEST:
     case ProductTypes.REMOVE_EMPLOYEE_REQUEST:
       return { ...state, loading: true };
@@ -55,6 +54,8 @@ const reducer: Reducer<ProductState> = (state = INITIAL_STATE, action: AnyAction
           data: productModelToState(state.data, action.payload.data)
         };
       }
+    case ProductTypes.LOAD_EMPLOYEES_REQUEST:
+      return { ...state, employees: {}, loading: true };
     case ProductTypes.LOAD_CLIENT_PRODUCTS_SUCCESS:
       const clientProducts = action.payload.data;
       return {

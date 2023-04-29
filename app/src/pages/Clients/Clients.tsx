@@ -53,10 +53,13 @@ const Clients = () => {
     const [add_client_dialog_data, setAddClientDialogData] = useState<any>({});
 
     const products = useSelector((state: AppState) => state.product.data);
+    const products_loading = useSelector((state: AppState) => state.product.loading);
     const productEmployees = useSelector((state: AppState) => state.product.employees);
 
     const [selected_product_id, setSelectedProductId] = useState(0);
     const [selected_employee_id, setSelectedEmployeeId] = useState(0);
+
+    const [assign_values, setAssignValues] = useState<any>([]);
 
     const cps = useSelector((state: AppState) => state.client.clientProducts);
 
@@ -66,11 +69,16 @@ const Clients = () => {
 
     useEffect(() => {
       dispatch(loadClients('all'));
-    }, [dispatch,show_client_dialog,show_add_client_dialog]);  
+    }, [dispatch,add_client_dialog_data]);  
 
     useEffect(() => {
+      if(selected_product_id == 0) return;
       dispatch(loadProductEmployees(selected_product_id));
     }, [dispatch,selected_product_id]);  
+
+    useEffect(() => {
+      getAssignValues();
+    },[products_loading]);
 
 
     function onInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) {
@@ -132,7 +140,6 @@ const Clients = () => {
    
     function onProductSelect(event: DropdownChangeEvent) : void{
       // TODO nacitavaju sa zle
-      dispatch(loadProductEmployees(selected_product_id));
       setSelectedProductId(event.value)
       setSelectedEmployeeId(0)
   }
@@ -141,19 +148,23 @@ const Clients = () => {
       setSelectedEmployeeId(event.value)
   }
 
-    function onClientProductCreate() : void{
-      dispatch(addClientProduct(client_dialog_data.id,selected_product_id));
-      dispatch(addClientEmployee(client_dialog_data.id,selected_employee_id));
-      setSelectedEmployeeId(0)
-      setSelectedProductId(0)
-    }
+  function onClientProductCreate() : void{
+    dispatch(addClientProduct(client_dialog_data.id,selected_product_id));
+    dispatch(addClientEmployee(client_dialog_data.id,selected_employee_id));
+    setSelectedEmployeeId(0)
+    setSelectedProductId(0)
+  }
 
-    function onClientProductDelete() : void{
-      dispatch(removeClientProduct(client_dialog_data.id,selected_product_id));
-      dispatch(removeClientEmployee(client_dialog_data.id,selected_employee_id));
-      setSelectedEmployeeId(0)
-      setSelectedProductId(0)
-    }
+  function onClientProductDelete() : void{
+    dispatch(removeClientProduct(client_dialog_data.id,selected_product_id));
+    dispatch(removeClientEmployee(client_dialog_data.id,selected_employee_id));
+    setSelectedEmployeeId(0)
+    setSelectedProductId(0)
+  }
+
+  function getAssignValues(){
+    setAssignValues(Object.values(productEmployees));
+  }
 
     return(
       <>
@@ -283,7 +294,6 @@ const Clients = () => {
 
 
       <Dialog header="Assign employees" className="assign-employees" visible={show_clientproduct_dialog} style={{ width: '75%' }} onHide={() => setShowClientProductDialog(false)}>
-          
           <br />
           <Splitter >
               <SplitterPanel >
@@ -292,7 +302,7 @@ const Clients = () => {
               </SplitterPanel>
               <SplitterPanel >
                 <Dropdown value={selected_employee_id} onChange={(e) => onEmployeeSelect(e)} placeholder="Select an employee"
-              optionLabel="username" optionValue="id" options={Object.values(productEmployees)} className="w-full md:w-14rem" />
+              optionLabel="username" optionValue="id" options={assign_values} className="w-full md:w-14rem" />
               </SplitterPanel>
             </Splitter>
 
