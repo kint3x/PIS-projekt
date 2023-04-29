@@ -59,10 +59,15 @@ const Meetings = () => {
         dispatch(loadClients('all'));
       }, [dispatch]);   
 
+    useEffect(()=>{
+      const employeeId = localStorage.getItem('employeeId');
+      const authorId = employeeId ? parseInt(employeeId) : 0; // default to 0 if employeeId is null
+      dispatch(loadMeetings(authorId));
+    },[dispatch, meetings_all]);
 
     useEffect(()=>{
         renderMeetings();
-    },[loading,loading_all, adminMode]);
+    },[loading,loading_all, adminMode, meetings]);
 
 
     const [events,setEvents] = useState<any>([]);
@@ -124,15 +129,21 @@ const Meetings = () => {
         if(authorId == 0) return;
 
         const date_sel = add_dialog_data.date;
-        const start = format(add_dialog_data.start,"HH:mm:00");
-        const end = format(add_dialog_data.end,"HH:mm:00");
+        try{
+          var start = format(add_dialog_data.start,"HH:mm:00");
+          var end = format(add_dialog_data.end,"HH:mm:00");
+        }
+        catch(e){
+          return;
+        }
+        
 
         const DataToSend : MeetingData = {
             subject: add_dialog_data.subject,
             start: date_sel+"T"+start,
             end: date_sel+"T"+end,
             notes: add_dialog_data.notes,
-            employeeIds: [],
+            employeeIds: [authorId],
             clientId: add_dialog_data.client,
             authorId: authorId
         }

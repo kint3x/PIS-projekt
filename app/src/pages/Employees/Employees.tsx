@@ -94,6 +94,7 @@ const Employees = () => {
 
     function AddUserSubmit(){
       dispatch(addEmployee(new_employee));
+      setShowAddDialog(false);
     }
     
     function onAddSelectedProduct(){

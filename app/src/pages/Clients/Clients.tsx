@@ -70,7 +70,7 @@ const Clients = () => {
 
     useEffect(() => {
       dispatch(loadClients('all'));
-    }, [dispatch,add_client_dialog_data]);  
+    }, [dispatch,show_add_client_dialog]);  
 
     useEffect(() => {
       if(selected_product_id == 0) return;
@@ -107,6 +107,7 @@ const Clients = () => {
 
     function onClientDelete() : void{
         dispatch(removeClient(client_dialog_data.id));
+        setShowClientDialog(false);
     }
 
     function AddClientSubmit(){
