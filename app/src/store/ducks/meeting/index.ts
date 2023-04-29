@@ -79,12 +79,20 @@ const reducer: Reducer<MeetingState> = (state=INITIAL_STATE, action: AnyAction) 
     case MeetingTypes.REMOVE_FAILURE:
     case MeetingTypes.ADD_EMPLOYEE_FAILURE:
     case MeetingTypes.REMOVE_EMPLOYEE_FAILURE:
+      var errMsg = action.payload;
+
+      if ( action.payload.response !== undefined 
+        && action.payload.response.data !== undefined
+        && action.payload.response.data.message !== undefined ) {
+        errMsg = action.payload.response.data.message;
+      }
+
       return {
         ...state,
         loading: false,
         error: true,
-        errMsg: action.payload
-      }
+        errMsg: errMsg
+      };
     default:
       return state;
   }

@@ -135,12 +135,20 @@ const reducer: Reducer<ClientState> = (state = INITIAL_STATE, action: AnyAction)
     case ClientTypes.ADD_PRODUCT_FAILURE:
     case ClientTypes.REMOVE_PRODUCT_FAILURE:
     case ClientTypes.LOAD_CLIENT_PRODUCTS_FAILURE:
+      var errMsg = action.payload;
+
+      if ( action.payload.response !== undefined 
+        && action.payload.response.data !== undefined
+        && action.payload.response.data.message !== undefined ) {
+        errMsg = action.payload.response.data.message;
+      }
+
       return {
         ...state,
         loading: false,
         error: true,
-        errMsg: action.payload
-      }
+        errMsg: errMsg
+      };
     default:
       return state;
   }
