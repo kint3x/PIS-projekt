@@ -112,10 +112,14 @@ public class Products {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Product.class)) })
     })
     public Response createProduct(Product product) {
-        Product savedProduct = productService.create(product);
-        final URI uri = UriBuilder.fromPath("/products/{resourceServerId}").build(savedProduct.getId());
+        try {
+            Product savedProduct = productService.create(product);
+            final URI uri = UriBuilder.fromPath("/products/{resourceServerId}").build(savedProduct.getId());
 
-        return Response.created(uri).entity(savedProduct).build();
+            return Response.created(uri).entity(savedProduct).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}")
@@ -160,8 +164,11 @@ public class Products {
         Product oldProduct = optProduct.get();
 
         oldProduct.setName(newProduct.getName());
-
-        return Response.ok(productService.update(oldProduct)).build();
+        try {
+            return Response.ok(productService.update(oldProduct)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/employees")
@@ -215,10 +222,14 @@ public class Products {
         Product product = optProduct.get();
         Employee employee = optEmployee.get();
 
-        employee.addProduct(product);
-        employeeService.update(employee);
+        try {
+            employee.addProduct(product);
+            employeeService.update(employee);
 
-        return Response.ok(employeeService.findByProduct(product)).build();
+            return Response.ok(employeeService.findByProduct(product)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/remove_employee")
@@ -249,11 +260,14 @@ public class Products {
 
         Product product = optProduct.get();
         Employee employee = optEmployee.get();
+        try {
+            employee.removeProduct(product);
+            employeeService.update(employee);
 
-        employee.removeProduct(product);
-        employeeService.update(employee);
-
-        return Response.ok().build();
+            return Response.ok().build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/client_products")
@@ -306,10 +320,10 @@ public class Products {
         Optional<Employee> optEmployee = employeeService.findById(clientProductDTO.getEmployeeId());
 
         if (!optEmployee.isPresent()) {
-                return Response.status(Status.NOT_FOUND)
-                                .entity(new Error(String.format("Employee with id '%d' not found.",
-                                                clientProductDTO.getEmployeeId())))
-                                .build();
+            return Response.status(Status.NOT_FOUND)
+                    .entity(new Error(String.format("Employee with id '%d' not found.",
+                            clientProductDTO.getEmployeeId())))
+                    .build();
         }
 
         Employee employee = optEmployee.get();
@@ -318,8 +332,8 @@ public class Products {
 
         if (!productService.isProductManagedByEmployee(product, employee)) {
             return Response.status(Status.NOT_FOUND)
-                    .entity(new Error(String.format("Product with id '%d' isn't managed by an employee with id '%d'.", 
-                        id, employee.getId())))
+                    .entity(new Error(String.format("Product with id '%d' isn't managed by an employee with id '%d'.",
+                            id, employee.getId())))
                     .build();
         }
 
@@ -335,8 +349,12 @@ public class Products {
         if (optClientProduct.isPresent()) {
             ClientProduct clientProduct = optClientProduct.get();
             clientProduct.setActivateWithDate(true);
-
-            return Response.ok(clientProductService.update(clientProduct)).build();
+            try {
+                ClientProduct createdClientProduct = clientProductService.update(clientProduct);
+                return Response.ok(createdClientProduct).build();
+            } catch (IllegalArgumentException e) {
+                return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+            }
         }
 
         ClientProduct clientProduct = new ClientProduct();
@@ -345,9 +363,12 @@ public class Products {
         clientProduct.setProduct(product);
         clientProduct.setEmployee(employee);
 
-        ClientProduct savedClientProduct = clientProductService.create(clientProduct);
-
-        return Response.ok(savedClientProduct).build();
+        try {
+            ClientProduct savedClientProduct = clientProductService.create(clientProduct);
+            return Response.ok(savedClientProduct).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/change_client_employee")
@@ -355,36 +376,36 @@ public class Products {
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Assign the product with a given ID to a new employee")
     @ApiResponses(value = {
-                    @ApiResponse(responseCode = "200", description = "Employee changed", content = {
-                                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientProduct.class)) }),
-                    @ApiResponse(responseCode = "404", description = "Product, client or employee not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Employee changed", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = ClientProduct.class)) }),
+            @ApiResponse(responseCode = "404", description = "Product, client or employee not found", content = @Content)
     })
     public Response changeEmployee(@PathParam("id") Long id, ClientProductDTO clientProductDTO) {
         Optional<Product> optProduct = productService.findById(id);
 
         if (!optProduct.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                .entity(new Error(String.format("Product with id '%d' not found.", id))).build();
+                    .entity(new Error(String.format("Product with id '%d' not found.", id))).build();
         }
 
         Optional<Client> optClient = clientService.findById(clientProductDTO.getClientId());
 
         if (!optClient.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                .entity(new Error(String.format("Client with id '%d' not found.",
-                                                clientProductDTO.getClientId())))
-                .build();
+                    .entity(new Error(String.format("Client with id '%d' not found.",
+                            clientProductDTO.getClientId())))
+                    .build();
         }
 
         Optional<Employee> optEmployee = employeeService.findById(clientProductDTO.getEmployeeId());
 
         if (!optEmployee.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                .entity(new Error(String.format("Employee with id '%d' not found.",
-                                                clientProductDTO.getEmployeeId())))
-                .build();
+                    .entity(new Error(String.format("Employee with id '%d' not found.",
+                            clientProductDTO.getEmployeeId())))
+                    .build();
         }
-        
+
         Client client = optClient.get();
         Product product = optProduct.get();
         Employee employee = optEmployee.get();
@@ -404,19 +425,23 @@ public class Products {
         }
 
         Optional<ClientProduct> optClientProduct = clientProductService.findByClientAndProduct(client, product);
-        
+
         if (!optClientProduct.isPresent()) {
             return Response.status(Status.NOT_FOUND)
-                .entity(new Error(String.format("Client with id '%d' doesn't have a product with id '%d'.",
-                    clientProductDTO.getClientId(), id)))
-                .build();
+                    .entity(new Error(String.format("Client with id '%d' doesn't have a product with id '%d'.",
+                            clientProductDTO.getClientId(), id)))
+                    .build();
         }
-        
+
         ClientProduct clientProduct = optClientProduct.get();
-        
+
         clientProduct.setEmployee(employee);
-        
-        return Response.ok(clientProductService.update(clientProduct)).build();
+        try {
+            ClientProduct createdClientProduct = clientProductService.update(clientProduct);
+            return Response.ok(createdClientProduct).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/remove_client")
@@ -457,6 +482,11 @@ public class Products {
 
         clientProduct.setActivateWithDate(false);
 
-        return Response.ok(clientProductService.update(clientProduct)).build();
+        try {
+            ClientProduct createdClientProduct = clientProductService.update(clientProduct);
+            return Response.ok(createdClientProduct).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 }
