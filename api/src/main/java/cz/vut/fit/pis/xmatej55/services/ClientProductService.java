@@ -71,7 +71,7 @@ public class ClientProductService {
             errors.add("active not set");
         }
 
-        if (clientProduct.getDate() != null) {
+        if (clientProduct.getDate() == null) {
             errors.add("Date have to be set");
         }
 
