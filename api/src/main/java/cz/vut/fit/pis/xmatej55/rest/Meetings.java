@@ -118,11 +118,14 @@ public class Meetings {
         m.setNotes(meetingDTO.getNotes());
         m.setStart(meetingDTO.getStart());
         m.setSubject(meetingDTO.getSubject());
+        try {
+            Meeting savedMeeting = meetingService.create(m);
+            final URI uri = UriBuilder.fromPath("/meetings/{resourceServerId}").build(savedMeeting.getId());
 
-        Meeting savedMeeting = meetingService.create(m);
-        final URI uri = UriBuilder.fromPath("/meetings/{resourceServerId}").build(savedMeeting.getId());
-
-        return Response.created(uri).entity(savedMeeting).build();
+            return Response.created(uri).entity(savedMeeting).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}")
@@ -170,8 +173,11 @@ public class Meetings {
         oldMeeting.setStart(meetingDTO.getStart());
         oldMeeting.setNotes(meetingDTO.getNotes());
         oldMeeting.setSubject(meetingDTO.getSubject());
-
-        return Response.ok(meetingService.update(oldMeeting)).build();
+        try {
+            return Response.ok(meetingService.update(oldMeeting)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/add_employee")
@@ -203,8 +209,11 @@ public class Meetings {
         Meeting meeting = optMeeting.get();
 
         meeting.addEmployee(employee);
-
-        return Response.ok(meetingService.update(meeting)).build();
+        try {
+            return Response.ok(meetingService.update(meeting)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/remove_employee")
@@ -237,7 +246,10 @@ public class Meetings {
         Meeting meeting = optMeeting.get();
 
         meeting.removeEmployee(employee);
-
-        return Response.ok(meetingService.update(meeting)).build();
+        try {
+            return Response.ok(meetingService.update(meeting)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 }

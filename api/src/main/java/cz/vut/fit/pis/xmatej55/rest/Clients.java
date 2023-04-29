@@ -117,10 +117,14 @@ public class Clients {
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
             @ApiResponse(responseCode = "409", description = "Client already exists", content = @Content) })
     public Response createClient(Client client) {
-        Client savedClient = clientService.create(client);
-        final URI uri = UriBuilder.fromPath("/clients/{resourceServerId}").build(savedClient.getId());
+        try {
+            Client savedClient = clientService.create(client);
+            final URI uri = UriBuilder.fromPath("/clients/{resourceServerId}").build(savedClient.getId());
 
-        return Response.created(uri).entity(savedClient).build();
+            return Response.created(uri).entity(savedClient).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}")
@@ -173,8 +177,13 @@ public class Clients {
         oldClient.setSurname(newClient.getSurname());
         oldClient.setEmail(newClient.getEmail());
         oldClient.setImage(newClient.getImage());
+        try {
+            Client createdClient = clientService.update(oldClient);
 
-        return Response.ok(clientService.update(oldClient)).build();
+            return Response.ok(createdClient).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/meetings")
@@ -251,11 +260,14 @@ public class Clients {
 
         Client client = optClient.get();
         Employee employee = optEmployee.get();
+        try {
+            employee.addClient(client);
+            employeeService.update(employee);
 
-        employee.addClient(client);
-        employeeService.update(employee);
-
-        return Response.ok(employeeService.findByClient(client)).build();
+            return Response.ok(employeeService.findByClient(client)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/remove_employee")
@@ -287,11 +299,14 @@ public class Clients {
 
         Client client = optClient.get();
         Employee employee = optEmployee.get();
+        try {
+            employee.removeClient(client);
+            employeeService.update(employee);
 
-        employee.removeClient(client);
-        employeeService.update(employee);
-
-        return Response.ok().build();
+            return Response.ok().build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/client_products")

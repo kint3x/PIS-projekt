@@ -119,7 +119,12 @@ public class Employees {
             @ApiResponse(responseCode = "409", description = "Employee with the provided username already exists", content = @Content)
     })
     public Response createEmployee(Employee employee) {
-        Optional<Employee> existing = employeeService.findByUsername(employee.getUsername());
+        Optional<Employee> existing;
+        try {
+            existing = employeeService.findByUsername(employee.getUsername());
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
 
         if (existing.isPresent()) {
             return Response.status(Status.CONFLICT)
@@ -129,11 +134,14 @@ public class Employees {
                                             employee.getUsername())))
                     .build();
         }
+        try {
+            Employee savedEmployee = employeeService.create(employee);
+            final URI uri = UriBuilder.fromPath("/employees/{resourceServerId}").build(savedEmployee.getId());
 
-        Employee savedEmployee = employeeService.create(employee);
-        final URI uri = UriBuilder.fromPath("/employees/{resourceServerId}").build(savedEmployee.getId());
-
-        return Response.created(uri).entity(savedEmployee).build();
+            return Response.created(uri).entity(savedEmployee).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}")
@@ -179,7 +187,12 @@ public class Employees {
                     .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
         }
 
-        Optional<Employee> existing = employeeService.findByUsername(newEmployee.getUsername());
+        Optional<Employee> existing;
+        try {
+            existing = employeeService.findByUsername(newEmployee.getUsername());
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
 
         Employee oldEmployee = old.get();
 
@@ -201,7 +214,12 @@ public class Employees {
         oldEmployee.setEmail(newEmployee.getEmail());
         oldEmployee.setImage(newEmployee.getImage());
 
-        return Response.ok(employeeService.update(oldEmployee)).build();
+        try {
+            Employee updatedEmployee = employeeService.update(oldEmployee);
+            return Response.ok(updatedEmployee).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/meetings")
@@ -298,11 +316,14 @@ public class Employees {
 
         Employee employee = optEmployee.get();
         Client client = optClient.get();
+        try {
+            employee.addClient(client);
+            employeeService.update(employee);
 
-        employee.addClient(client);
-        employeeService.update(employee);
-
-        return Response.ok(clientService.findByEmployee(employee)).build();
+            return Response.ok(clientService.findByEmployee(employee)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/remove_client")
@@ -333,11 +354,14 @@ public class Employees {
 
         Employee employee = optEmployee.get();
         Client client = optClient.get();
+        try {
+            employee.removeClient(client);
+            employeeService.update(employee);
 
-        employee.removeClient(client);
-        employeeService.update(employee);
-
-        return Response.ok().build();
+            return Response.ok().build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/add_product")
@@ -368,11 +392,14 @@ public class Employees {
 
         Employee employee = optEmployee.get();
         Product product = optProduct.get();
+        try {
+            employee.addProduct(product);
+            employeeService.update(employee);
 
-        employee.addProduct(product);
-        employeeService.update(employee);
-
-        return Response.ok(productService.findByEmployee(employee)).build();
+            return Response.ok(productService.findByEmployee(employee)).build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/remove_product")
@@ -402,11 +429,14 @@ public class Employees {
 
         Employee employee = optEmployee.get();
         Product product = optProduct.get();
+        try {
+            employee.removeProduct(product);
+            employeeService.update(employee);
 
-        employee.removeProduct(product);
-        employeeService.update(employee);
-
-        return Response.ok().build();
+            return Response.ok().build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
+        }
     }
 
     @Path("/{id}/client_products")
