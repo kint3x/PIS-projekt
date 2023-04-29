@@ -204,7 +204,9 @@ public class Employees {
         }
 
         oldEmployee.setUsername(newEmployee.getUsername());
-        oldEmployee.setPassword(newEmployee.getPassword());
+        if (!newEmployee.getPassword().equals("")) {
+                oldEmployee.setPassword(newEmployee.getPassword());
+        }
         oldEmployee.setType(newEmployee.getType());
         oldEmployee.setPhone(newEmployee.getPhone());
         oldEmployee.setAddress(newEmployee.getAddress());
