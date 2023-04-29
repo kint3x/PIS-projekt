@@ -60,6 +60,7 @@ const Clients = () => {
     const [selected_employee_id, setSelectedEmployeeId] = useState(0);
 
     const [assign_values, setAssignValues] = useState<any>([]);
+    const [assign_products, setProductAssignValues] = useState<any>([]);
 
     const cps = useSelector((state: AppState) => state.client.clientProducts);
 
@@ -79,6 +80,11 @@ const Clients = () => {
     useEffect(() => {
       getAssignValues();
     },[products_loading]);
+
+    useEffect(() => {
+      getAssignProducts();
+    },[show_clientproduct_dialog,loading]);
+    
 
 
     function onInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) {
@@ -164,6 +170,14 @@ const Clients = () => {
 
   function getAssignValues(){
     setAssignValues(Object.values(productEmployees));
+  }
+
+  function getAssignProducts(){
+    var products_ = products;
+    for(const key in cps){
+      delete products_[cps[key].product.id];
+    }
+    setProductAssignValues(Object.values(products_));
   }
 
     return(
@@ -298,7 +312,7 @@ const Clients = () => {
           <Splitter >
               <SplitterPanel >
                 <Dropdown value={selected_product_id} onChange={(e) => onProductSelect(e)} placeholder="Select a product"
-              optionLabel="name" optionValue="id" options={Object.values(products)} className="w-full md:w-14rem" />
+              optionLabel="name" optionValue="id" options={assign_products} className="w-full md:w-14rem" />
               </SplitterPanel>
               <SplitterPanel >
                 <Dropdown value={selected_employee_id} onChange={(e) => onEmployeeSelect(e)} placeholder="Select an employee"
@@ -308,8 +322,7 @@ const Clients = () => {
 
           <br />
           <Button label="Add selected" severity="success" onClick = {() => onClientProductCreate()} />
-      
-
+          
          <DataTable loading={loading} value={Object.values(cps)} tableStyle={{ minWidth: '50rem' }}>
             <Column filter={true} field="product.name" header="Product"></Column>
             <Column filter={true} field="active" header="Status"></Column>
