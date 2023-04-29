@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.Optional;
 
 import cz.vut.fit.pis.xmatej55.dto.ClientDTO;
-import cz.vut.fit.pis.xmatej55.dto.ProductDTO;
 import cz.vut.fit.pis.xmatej55.dto.Error;
 import cz.vut.fit.pis.xmatej55.entities.Client;
 import cz.vut.fit.pis.xmatej55.entities.ClientProduct;
