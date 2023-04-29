@@ -156,12 +156,20 @@ const reducer: Reducer<EmployeeState> = (state = INITIAL_STATE, action: AnyActio
     case EmployeeTypes.LOAD_FAILURE:
     case EmployeeTypes.UPDATE_FAILURE:
     case EmployeeTypes.CREATE_FAILURE:
+      var errMsg = action.payload;
+
+      if ( action.payload.response !== undefined 
+        && action.payload.response.data !== undefined
+        && action.payload.response.data.message !== undefined ) {
+        errMsg = action.payload.response.data.message;
+      }
+
       return {
         ...state,
         loading: false,
         error: true,
-        errMsg: action.payload
-      }
+        errMsg: errMsg
+      };
     default:
       return state;
   }

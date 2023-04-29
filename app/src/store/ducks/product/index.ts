@@ -118,11 +118,19 @@ const reducer: Reducer<ProductState> = (state = INITIAL_STATE, action: AnyAction
     case ProductTypes.ADD_EMPLOYEE_FAILURE:
     case ProductTypes.REMOVE_EMPLOYEE_FAILURE:
     case ProductTypes.CHANGE_CLIENT_EMPLOYEE_FAILURE:
+      var errMsg = action.payload;
+
+      if ( action.payload.response !== undefined 
+        && action.payload.response.data !== undefined
+        && action.payload.response.data.message !== undefined ) {
+        errMsg = action.payload.response.data.message;
+      }
+
       return {
         ...state,
         loading: false,
         error: true,
-        errMsg: action.payload
+        errMsg: errMsg
       };
     default:
       return state;
