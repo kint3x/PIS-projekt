@@ -79,7 +79,7 @@ const Clients = () => {
 
     useEffect(() => {
       getAssignValues();
-    },[products_loading]);
+    },[products_loading,assign_products]);
 
     useEffect(() => {
       getAssignProducts();
@@ -156,8 +156,7 @@ const Clients = () => {
   }
 
   function onClientProductCreate() : void{
-    //dispatch(addClientProduct(client_dialog_data.id,selected_product_id));
-    dispatch(addClientEmployee(client_dialog_data.id,selected_employee_id));
+    dispatch(addClientProduct(client_dialog_data.id,selected_employee_id,selected_product_id));
     setSelectedEmployeeId(0)
     setSelectedProductId(0)
   }
@@ -184,6 +183,9 @@ const Clients = () => {
     return(
       <>
         <div className='page-heading'><h1>Clients</h1><br /></div>
+        <div className={error ? "error visible" : "hidden"}>
+            <Message severity="error" text={errMsg.toString()} />
+        </div>
 
         {loggedUser !== "Worker" && <Button label="Add client" severity="success" className="float-left" onClick={()=>setShowAddClientDialog(true)} />}
         <Button label="Change user" severity="danger"  onClick = {() => changeUser()} className="float-right" />

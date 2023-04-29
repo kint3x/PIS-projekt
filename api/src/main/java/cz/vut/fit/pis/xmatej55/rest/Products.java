@@ -340,7 +340,7 @@ public class Products {
         }
 
         ClientProduct clientProduct = new ClientProduct();
-        clientProduct.setActivateWithDate(true);
+        clientProduct.setActive(true);
         clientProduct.setClient(client);
         clientProduct.setProduct(product);
         clientProduct.setEmployee(employee);
