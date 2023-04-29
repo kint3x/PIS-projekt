@@ -156,7 +156,7 @@ const Clients = () => {
   }
 
   function onClientProductCreate() : void{
-    dispatch(addClientProduct(client_dialog_data.id,selected_product_id));
+    //dispatch(addClientProduct(client_dialog_data.id,selected_product_id));
     dispatch(addClientEmployee(client_dialog_data.id,selected_employee_id));
     setSelectedEmployeeId(0)
     setSelectedProductId(0)

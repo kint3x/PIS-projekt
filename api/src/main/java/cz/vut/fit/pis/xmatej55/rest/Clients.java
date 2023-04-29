@@ -107,7 +107,7 @@ public class Clients {
     }
 
     @POST
-    @RolesAllowed({ "manager" })
+    //@RolesAllowed({ "manager" })
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Create a new client")
@@ -125,7 +125,7 @@ public class Clients {
 
     @Path("/{id}")
     @DELETE
-    @RolesAllowed({ "manager" })
+    //@RolesAllowed({ "manager" })
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Delete a client by ID")
     @ApiResponses(value = {
@@ -147,7 +147,7 @@ public class Clients {
 
     @Path("/{id}")
     @PUT
-    @RolesAllowed({ "manager" })
+    //@RolesAllowed({ "manager" })
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update a client by ID")
@@ -223,7 +223,7 @@ public class Clients {
 
     @Path("/{id}/add_employee")
     @POST
-    @RolesAllowed({ "manager" })
+    //@RolesAllowed({ "manager" })
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add an employee to a client")
@@ -260,7 +260,7 @@ public class Clients {
 
     @Path("/{id}/remove_employee")
     @DELETE
-    @RolesAllowed({ "manager" })
+    //@RolesAllowed({ "manager" })
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Remove an employee from a client")
     @ApiResponses(value = {
