@@ -163,7 +163,7 @@ const employeeSagas = [
   takeLatest(EmployeeTypes.REMOVE_CLIENT_REQUEST, removeClient),
   takeLatest(EmployeeTypes.ADD_PRODUCT_REQUEST, addProduct),
   takeLatest(EmployeeTypes.REMOVE_PRODUCT_REQUEST, removeProduct),
-  takeLatest(EmployeeTypes.LOAD_CLIENTS_REQUEST, loadClientProducts)
+  takeLatest(EmployeeTypes.LOAD_CLIENT_PRODUCTS_REQUEST, loadClientProducts)
 ];
 
 export default employeeSagas;
