@@ -17,6 +17,9 @@ import { createRequest as addMeeting } from '../../store/ducks/meeting/actions';
 import { updateRequest as updateMeeting } from '../../store/ducks/meeting/actions';
 
 import { loadRequest as loadClients } from '../../store/ducks/client/actions';
+
+import { loadClientRequest as loadEmpClient } from '../../store/ducks/employee/actions';
+
 import { MeetingData } from "../../store/ducks/meeting/types";
 import { AppState } from '../../store';
 
@@ -39,6 +42,7 @@ const Meetings = () => {
     const meetings = useSelector((state: AppState) => state.employee.meetings);
     const loading = useSelector((state: AppState) => state.employee.loading);
     const clients = useSelector((state: AppState) => state.client.data );
+    const EmployeeClients = useSelector((state: AppState) => state.employee.clients );
     const loading_all = useSelector((state: AppState) => state.meeting.loading);
     const error = useSelector((state: AppState) => state.meeting.error);
     const errMsg = useSelector((state: AppState) => state.meeting.errMsg);
@@ -54,9 +58,12 @@ const Meetings = () => {
 
         if(localStorage.getItem("userType") === "owner"){
           dispatch(loadAllMeetings("all"));
+          dispatch(loadClients('all'));
         }
 
-        dispatch(loadClients('all'));
+        dispatch(loadEmpClient(authorId));
+
+        
       }, [dispatch]);   
 
     useEffect(()=>{
@@ -81,11 +88,11 @@ const Meetings = () => {
         end: null,
         notes: "",
         client: 0,
+        emps: []
       };
 
     const [add_dialog_data, setAddDialogData] = useState<any>(initialState);
 
-    const [modal_err_msg, setModalErr] = useState<any>({visible: "hidden", msg: ""});
 
 
     function stringToColor(str: string): string {
@@ -196,7 +203,8 @@ const Meetings = () => {
         date: g_date,
         notes : sel_meeting.notes,
         client: sel_meeting.client.id,
-        meeting_id : meeting_id
+        meeting_id : meeting_id,
+        emps : sel_meeting.employees
         });
         
         setShowAddDialog(true);
@@ -224,9 +232,11 @@ const Meetings = () => {
         
         <Dialog header={add_dialog_data.heading+" "+add_dialog_data.date} className="add-product" visible={show_add_dialog} style={{ width: '50vw' }} 
         onHide={() => {setShowAddDialog(false); setAddDialogData(initialState)}}>
-          <div className={modal_err_msg.visible}>
-            <Message severity="error" text={modal_err_msg.msg} />
-          </div>
+          <span className={adminMode ? "" : "hidden"}>
+            Meeting of {
+            Object.values(add_dialog_data.emps).map((val: any) => val.username).join(" ,")             
+            }
+          </span>
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Subject</span>
             <InputText value={add_dialog_data.subject} placeholder="Subject" onChange={(e) => setAddDialogData({...add_dialog_data,subject: e.target.value})} />
@@ -240,7 +250,10 @@ const Meetings = () => {
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Client:</span>
             <Dropdown value={add_dialog_data.client} onChange={(e) => setAddDialogData({...add_dialog_data, client: e.value})} placeholder="Select a client"
-                optionLabel="name" optionValue="id" options={Object.values(clients)} className="md:w-14rem" />
+                optionLabel="name" optionValue="id" 
+                options={(adminMode) ? Object.values(clients) : Object.values(EmployeeClients)} 
+                
+                className="md:w-14rem" />
           </div>
           <span className="in-head"><h5>Notes</h5></span>
           <div className="p-inputgroup">
