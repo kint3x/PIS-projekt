@@ -9,6 +9,7 @@ import { updateRequest as updateClient } from '../../store/ducks/client/actions'
 import { removeRequest as removeClient } from '../../store/ducks/client/actions';
 import { createRequest as addClient } from '../../store/ducks/client/actions';
 import { loadEmployeesRequest as loadClientEmployees} from '../../store/ducks/client/actions';
+import { loadMeetingsRequest as loadClientMeetings} from '../../store/ducks/client/actions';
 
 import {loadClientRequest as loadClientsForEmployee} from '../../store/ducks/employee/actions';
 
@@ -17,6 +18,8 @@ import { loadProductsRequest as loadEmployeeProducts } from '../../store/ducks/e
 import { loadClientProductsRequest as loadClientProducts } from '../../store/ducks/client/actions'
 import { addProductRequest as addClientProduct } from '../../store/ducks/client/actions'
 import { removeProductRequest as removeClientProduct } from '../../store/ducks/client/actions'
+
+
 import { loadEmployeesRequest as loadProductEmployees} from '../../store/ducks/product/actions'
 import { loadRequest as loadProducts } from '../../store/ducks/product/actions';
 
@@ -36,6 +39,7 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Calendar } from 'primereact/calendar';
 import { format } from "date-fns";
+import { MeetingModel } from '../../store/ducks/meeting/types';
 
 
 const Clients = () => {
@@ -43,12 +47,14 @@ const Clients = () => {
     const dispatch = useDispatch();
     
     const [show_client_dialog,setShowClientDialog] = useState(false);
-    const [show_notes_dialog,setShowNotesDialog] = useState(false)
+    const [show_notes_dialog,setShowNotesDialog] = useState(false);
+    const [show_meeting_dialog,setShowMeetingDialog] = useState(false);
 
     const clients = useSelector((state: AppState) => state.client.data);
     const employeeClients = useSelector((state: AppState) => state.employee.clients);
 
     const clientEmployees = useSelector((state: AppState) => state.client.employees);
+    const clientMeetings  = useSelector((state: AppState) => state.client.meetings);
     const loading = useSelector((state: AppState) => state.client.loading);
     const error = useSelector((state: AppState) => state.client.error);
     const errMsg = useSelector((state: AppState) => state.client.errMsg);
@@ -155,7 +161,7 @@ const Clients = () => {
       console.log(e.data);
       dispatch(removeClientProduct(e.data.client.id, e.data.product.id));
     }
-  
+
     return(
       <>
         <div className='page-heading'><h1>Clients</h1>
@@ -232,6 +238,10 @@ const Clients = () => {
           </div>
 
           <Button onClick={()=> setShowNotesDialog(true)}><i className="pi pi-file-word" style={{marginRight:"10px",color:"white"}}></i> Notes</Button>
+         
+          <Button style={{marginLeft:"10px"}} 
+          onClick={()=> {setShowMeetingDialog(true);dispatch(loadClientMeetings(client_dialog_data.id));}}>
+            <i className="pi pi-calendar" style={{marginRight:"10px",color:"white"}}></i> Meetings</Button>
           
           <Button className={loggedUser() == ("owner" || "manager") ? "" : "hidden" } onClick={()=> showAssignDialog()} style={{marginRight:"auto",marginLeft:"10px"}}>
             <span style={{color:"white", fontWeight:"bold"}}>Assign</span>
@@ -239,9 +249,23 @@ const Clients = () => {
 
           <Button onClick={client_dialog_data.addMode ?  addUser : editUser }  
           label={client_dialog_data.addMode ?  "Submit" : "Edit"} severity="success" className="customAdd customSubmit" 
-          style={{float:"right", width: "20%", minWidth:"100px"}} />
+          style={{float:"right", width: "20%", minWidth:"100px"}} /> 
+          
       </Dialog>
 
+      <Dialog header= "Client meetings" visible={show_meeting_dialog} 
+      onHide={() => {
+        setShowMeetingDialog(false);
+        }
+      }>
+          <DataTable loading={loading} value={Object.values(clientMeetings)} tableStyle={{ minWidth: '50rem', marginTop:"40px" }}>
+            <Column filter={true} field="subject" header="Subject"></Column>
+            <Column filter={true} field="start" header="Start"></Column>
+            <Column filter={true} field="end" header="End"></Column>
+            <Column filter={true} field="author.name" header="Author"></Column>
+          </DataTable>
+
+      </Dialog>
 
 
       <Dialog header="Assign employees" className="assign-employees" visible={assign_dialog.viewDialog} 
