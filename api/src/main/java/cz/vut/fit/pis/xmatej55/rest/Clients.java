@@ -151,7 +151,7 @@ public class Clients {
 
     @Path("/{id}")
     @PUT
-    @RolesAllowed({ "manager" })
+    @RolesAllowed({ "worker" })
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update a client by ID")
