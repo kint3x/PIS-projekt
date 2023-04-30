@@ -200,7 +200,7 @@ public class Employees {
 
         if (!securityContext.isUserInRole("manager")) {
             if (sender.getName() != oldEmployee.getName()) {
-                return Response.status(Status.CONFLICT)
+                return Response.status(Status.UNAUTHORIZED)
                         .entity(new Error(
                                 String.format("You don't have the needed rights to change other employees.",
                                         newEmployee.getUsername())))
@@ -208,26 +208,22 @@ public class Employees {
             }
         }
 
-        if (securityContext.isUserInRole("manager")
+        if (!securityContext.isUserInRole("owner")
             && newEmployee.getType() == EmployeeType.Owner) {
-            if (sender.getName() != oldEmployee.getName()) {
                 return Response.status(Status.CONFLICT)
                         .entity(new Error(
                                 String.format("You don't have the needed rights to change employee types.",
                                         newEmployee.getUsername())))
                         .build();
-            }
         }
 
-        if (securityContext.isUserInRole("worker")
+        if (!securityContext.isUserInRole("manager")
             && newEmployee.getType() != EmployeeType.Worker) {
-            if (sender.getName() != oldEmployee.getName()) {
                 return Response.status(Status.CONFLICT)
                         .entity(new Error(
                                 String.format("You don't have the needed rights to change employee types",
                                         newEmployee.getUsername())))
                         .build();
-            }
         }
 
         Optional<Employee> existing;
