@@ -42,6 +42,7 @@ import { format } from "date-fns";
 import { MeetingModel } from '../../store/ducks/meeting/types';
 
 
+
 const Clients = () => {
 
     const dispatch = useDispatch();
@@ -49,6 +50,8 @@ const Clients = () => {
     const [show_client_dialog,setShowClientDialog] = useState(false);
     const [show_notes_dialog,setShowNotesDialog] = useState(false);
     const [show_meeting_dialog,setShowMeetingDialog] = useState(false);
+    const [show_clientZone_dialog,setShowClientZone] = useState(false);
+    const [clientZone,setClientZone] = useState<any>({});
 
     const clients = useSelector((state: AppState) => state.client.data);
     const employeeClients = useSelector((state: AppState) => state.employee.clients);
@@ -89,10 +92,7 @@ const Clients = () => {
     const cps = useSelector((state: AppState) => state.client.clientProducts);
 
     useEffect(() => {
-      
-      const employeeId = localStorage.getItem('employeeId');
-      const authorId = employeeId ? parseInt(employeeId) : 0; // default to 0 if employeeId is null
-      if(authorId == 0) return;
+      const authorId = empID();
 
       if(loggedUser() == "worker")
       dispatch(loadClientsForEmployee(authorId));
@@ -100,6 +100,12 @@ const Clients = () => {
         dispatch(loadClients('all'));
     }, [dispatch]);  
 
+    const empID= () =>{
+      const employeeId = localStorage.getItem('employeeId');
+      const authorId = employeeId ? parseInt(employeeId) : 0; // default to 0 if employeeId is null
+      if(authorId == 0) return 0;
+      return authorId;
+    }
 
     function ClientRowClickHandle(event: DataTableRowClickEvent) : void{
       setClientDialogData(event.data);
@@ -162,6 +168,17 @@ const Clients = () => {
       dispatch(removeClientProduct(e.data.client.id, e.data.product.id));
     }
 
+    function openSeeProducts(row : any){
+      dispatch(loadClientProducts(row.id));
+      setClientZone(row);
+      setShowClientZone(true);
+    }
+
+    function contactClientProduct(row :any){
+      dispatch(addClientProduct(row.client.id,row.employee.id,row.product.id));
+    }
+
+
     return(
       <>
         <div className='page-heading'><h1>Clients</h1>
@@ -174,13 +191,42 @@ const Clients = () => {
             <Message severity="error" text={errMsg.toString()} />
         </div>
 
-     
+        {JSON.stringify(cps)}
         <DataTable loading={loading} value={loggedUser() == "worker" ? Object.values(employeeClients) : Object.values(clients)} tableStyle={{ minWidth: '50rem' }} 
         onRowClick={ClientRowClickHandle}>
           <Column field="id" header="ID"></Column>
           <Column filter={true} field="name" header="Name"></Column>
           <Column filter={true} field="surname" header="Surname"></Column>
+          <Column body={row => (
+            <Button label="Client Zone" className="customAdd" onClick={() => openSeeProducts(row)} />
+          )} />
         </DataTable>
+
+        <Dialog header={"Client "+clientZone.name+" "+clientZone.surname} visible={show_clientZone_dialog} onHide={()=>setShowClientZone(false)}>
+          <div className="contact flex justify-content-center">
+            <span className="m-1">Phone: {clientZone.phone}</span><br/>
+            <span className="m-1">Email: {clientZone.email}</span>
+          </div>
+          
+          <DataTable  loading={loading} 
+          value={Object.values(cps).filter((e)=>{
+            console.log(e.employee.id, empID())
+             if( loggedUser() != "worker" ) return true;
+             if(e.employee.id == empID() && e.active == true){ 
+              return true;}
+            else return false;})
+            } 
+          tableStyle={{ minWidth: '50rem', marginTop:"40px" }}>
+            <Column filter={true} field="product.name" header="Product"></Column>
+            <Column filter={true} field="active" header="Status"></Column>
+            <Column filter={true} field="date" header="Last updated"></Column>
+            <Column body={row => (<>
+              <Button className="" label="Contacted" onClick={() => contactClientProduct(row)} />
+              <Button severity="danger" style={{marginLeft:"10px"}} label="Done" onClick={() => cpsRowDoubleClick({ data: row})} /></>
+            )} />
+            
+          </DataTable>
+        </Dialog>
 
         <Dialog header={client_dialog_data.addMode ? "Add Client" : "Edit Client"} className="edit-client" visible={show_client_dialog} 
         style={{ width: '50%' }} onHide={() => setShowClientDialog(false)}>
@@ -289,10 +335,10 @@ const Clients = () => {
               style={{ width: "100%", minWidth:"100px", marginTop: "20px"}} />
    
       <DataTable  onRowDoubleClick={cpsRowDoubleClick} loading={loading} value={Object.values(cps)} tableStyle={{ minWidth: '50rem', marginTop:"40px" }}>
-            <Column filter={true} field="product.name" header="Product"></Column>
-            <Column filter={true} field="active" header="Status"></Column>
-            <Column filter={true} field="employee.name" header="Employee"></Column>
-          </DataTable>
+        <Column filter={true} field="product.name" header="Product"></Column>
+        <Column filter={true} field="active" header="Status"></Column>
+        <Column filter={true} field="employee.name" header="Employee"></Column>
+      </DataTable>
 
 
       </Dialog>

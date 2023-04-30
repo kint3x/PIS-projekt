@@ -41,7 +41,7 @@ public class ClientProduct {
 
     @Column(name = "date")
     @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
     public ClientProduct() {
