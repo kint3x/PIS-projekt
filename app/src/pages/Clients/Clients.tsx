@@ -191,7 +191,6 @@ const Clients = () => {
             <Message severity="error" text={errMsg.toString()} />
         </div>
 
-        {JSON.stringify(cps)}
         <DataTable loading={loading} value={loggedUser() == "worker" ? Object.values(employeeClients) : Object.values(clients)} tableStyle={{ minWidth: '50rem' }} 
         onRowClick={ClientRowClickHandle}>
           <Column field="id" header="ID"></Column>
