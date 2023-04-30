@@ -406,11 +406,7 @@ const Employees = () => {
       </Dialog>
 
       </>
-    );
-
-    
-   
-  
+    ); 
 }
    
 export default Employees;

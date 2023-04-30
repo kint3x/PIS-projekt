@@ -12,6 +12,7 @@ import cz.vut.fit.pis.xmatej55.entities.ClientProduct;
 import cz.vut.fit.pis.xmatej55.entities.Employee;
 import cz.vut.fit.pis.xmatej55.entities.Meeting;
 import cz.vut.fit.pis.xmatej55.entities.Product;
+import cz.vut.fit.pis.xmatej55.entities.Employee.EmployeeType;
 import cz.vut.fit.pis.xmatej55.services.ClientProductService;
 import cz.vut.fit.pis.xmatej55.services.ClientService;
 import cz.vut.fit.pis.xmatej55.services.EmployeeService;
@@ -195,13 +196,35 @@ public class Employees {
         }
 
         Employee oldEmployee = old.get();
+        Principal sender = securityContext.getUserPrincipal();
 
         if (!securityContext.isUserInRole("manager")) {
-            Principal sender = securityContext.getUserPrincipal();
             if (sender.getName() != oldEmployee.getName()) {
                 return Response.status(Status.CONFLICT)
                         .entity(new Error(
-                                String.format("You don't have the needed rights.",
+                                String.format("You don't have the needed rights to change other employees.",
+                                        newEmployee.getUsername())))
+                        .build();
+            }
+        }
+
+        if (securityContext.isUserInRole("manager")
+            && newEmployee.getType() == EmployeeType.Owner) {
+            if (sender.getName() != oldEmployee.getName()) {
+                return Response.status(Status.CONFLICT)
+                        .entity(new Error(
+                                String.format("You don't have the needed rights to change employee types.",
+                                        newEmployee.getUsername())))
+                        .build();
+            }
+        }
+
+        if (securityContext.isUserInRole("worker")
+            && newEmployee.getType() != EmployeeType.Worker) {
+            if (sender.getName() != oldEmployee.getName()) {
+                return Response.status(Status.CONFLICT)
+                        .entity(new Error(
+                                String.format("You don't have the needed rights to change employee types",
                                         newEmployee.getUsername())))
                         .build();
             }

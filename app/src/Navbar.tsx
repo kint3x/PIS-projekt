@@ -27,6 +27,10 @@ const Navbar = () => {
         url: "/meetings",
       },
       {
+        label: 'My Profile',
+        url: "/me",
+      },
+      {
         label: 'Logout',
         url: "/",
         command: logout
@@ -43,6 +47,10 @@ const Navbar = () => {
       {
         label: "Employees",
         url: "/employees",
+      },
+      {
+        label: 'My Profile',
+        url: "/me",
       },
       {
         label: 'Logout',
@@ -68,6 +76,10 @@ const Navbar = () => {
       {
         label: "Meetings",
         url: "/meetings",
+      },
+      {
+        label: 'My Profile',
+        url: "/me",
       },
       {
         label: 'Logout',

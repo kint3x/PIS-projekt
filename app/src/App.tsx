@@ -7,6 +7,7 @@ import PublicRoute from "./components/PublicRoute";
 import Navbar from './Navbar';
 import LoginForm from './pages/Home/LoginForm';
 import Clients from './pages/Clients/Clients';
+import Me from './pages/Me/Me';
 import Employees from './pages/Employees/Employees';
 import Products from './pages/Products/Products';
 
@@ -32,6 +33,7 @@ function App() {
               <PrivateRoute exact path="/products" component={Products} allowedUsers="owner"/>
               <PrivateRoute exact path="/employees" component={Employees} allowedUsers="manager,owner"/>
               <PrivateRoute exact path="/meetings" component={Meetings} allowedUsers="worker,owner"/>
+              <PrivateRoute exact path="/me" component={Me} allowedUsers="worker,owner,manager"/>
             </Switch>
           </div>
         </div>
