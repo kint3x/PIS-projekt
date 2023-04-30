@@ -1,6 +1,7 @@
 package cz.vut.fit.pis.xmatej55.rest;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.Optional;
 
 import cz.vut.fit.pis.xmatej55.dto.ClientDTO;
@@ -35,6 +36,7 @@ import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.SecurityContext;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -62,6 +64,9 @@ public class Employees {
 
     @Context
     private UriInfo context;
+
+    @Context
+    private SecurityContext securityContext;
 
     public Employees() {
 
@@ -171,7 +176,7 @@ public class Employees {
 
     @Path("/{id}")
     @PUT
-    @RolesAllowed({ "manager" })
+    @RolesAllowed({ "worker" })
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update an employee")
@@ -189,14 +194,26 @@ public class Employees {
                     .entity(new Error(String.format("Employee with id '%d' not found.", id))).build();
         }
 
+        Employee oldEmployee = old.get();
+
+        if (!securityContext.isUserInRole("manager")) {
+            Principal sender = securityContext.getUserPrincipal();
+            if (sender.getName() != oldEmployee.getName()) {
+                return Response.status(Status.CONFLICT)
+                        .entity(new Error(
+                                String.format("You don't have the needed rights.",
+                                        newEmployee.getUsername())))
+                        .build();
+            }
+        }
+
         Optional<Employee> existing;
+        
         try {
             existing = employeeService.findByUsername(newEmployee.getUsername());
         } catch (IllegalArgumentException e) {
             return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
         }
-
-        Employee oldEmployee = old.get();
 
         if (existing.isPresent() && existing.get().getId() != oldEmployee.getId()) {
             return Response.status(Status.CONFLICT)
