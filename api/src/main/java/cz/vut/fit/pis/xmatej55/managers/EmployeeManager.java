@@ -38,6 +38,10 @@ public class EmployeeManager {
 
     @Transactional
     public Employee update(Employee employee) {
+        String plainTextPassword = employee.getPassword();
+        String hashedPassword = BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+        employee.setPassword(hashedPassword);
+
         return em.merge(employee);
     }
 
