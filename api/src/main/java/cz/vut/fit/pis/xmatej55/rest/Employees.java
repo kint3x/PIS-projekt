@@ -199,11 +199,10 @@ public class Employees {
         Principal sender = securityContext.getUserPrincipal();
 
         if (!securityContext.isUserInRole("manager")) {
-            if (sender.getName() != oldEmployee.getName()) {
-                return Response.status(Status.UNAUTHORIZED)
+            if (!sender.getName().equals(oldEmployee.getUsername())) {
+                return Response.status(Status.CONFLICT)
                         .entity(new Error(
-                                String.format("You don't have the needed rights to change other employees.",
-                                        newEmployee.getUsername())))
+                                String.format("You don't have the needed rights to change other employees.")))
                         .build();
             }
         }
