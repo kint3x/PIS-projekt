@@ -13,9 +13,7 @@ import { addProductRequest as addClientProduct } from '../../store/ducks/client/
 import { removeProductRequest as removeClientProduct } from '../../store/ducks/client/actions'
 import { loadEmployeesRequest as loadProductEmployees} from '../../store/ducks/product/actions'
 import { loadRequest as loadProducts } from '../../store/ducks/product/actions';
-import { addClientRequest as addEmployeeClient} from '../../store/ducks/employee/actions'
-import { removeClientRequest as removeEmployeeClient} from '../../store/ducks/employee/actions'
-import { addEmployeeRequest as addClientEmployee} from '../../store/ducks/client/actions'
+
 import { removeEmployeeRequest as removeClientEmployee} from '../../store/ducks/client/actions'
 
 
@@ -40,7 +38,6 @@ const Clients = () => {
     const dispatch = useDispatch();
     
     const [show_client_dialog,setShowClientDialog] = useState(false);
-    const [show_add_client_dialog,setShowAddClientDialog] = useState(false);
     const [show_notes_dialog,setShowNotesDialog] = useState(false)
     const [show_clientproduct_dialog,setShowClientProductDialog] = useState(false); 
 
@@ -49,18 +46,24 @@ const Clients = () => {
     const error = useSelector((state: AppState) => state.client.error);
     const errMsg = useSelector((state: AppState) => state.client.errMsg);
 
-    const [client_dialog_data, setClientDialogData] = useState<any>({});
-    const [add_client_dialog_data, setAddClientDialogData] = useState<any>({});
+    const initialData={
+      addMode: true,
+      name: "",
+      surname: "",
+      dob: "",
+      email: "",
+      phone: "",
+      adress: "",
+      notes: ""
+    }
+
+    const [client_dialog_data, setClientDialogData] = useState<any>(initialData);
+
 
     const products = useSelector((state: AppState) => state.product.data);
     const products_loading = useSelector((state: AppState) => state.product.loading);
     const productEmployees = useSelector((state: AppState) => state.product.employees);
 
-    const [selected_product_id, setSelectedProductId] = useState(0);
-    const [selected_employee_id, setSelectedEmployeeId] = useState(0);
-
-    const [assign_values, setAssignValues] = useState<any>([]);
-    const [assign_products, setProductAssignValues] = useState<any>([]);
 
     const cps = useSelector((state: AppState) => state.client.clientProducts);
 
@@ -70,39 +73,12 @@ const Clients = () => {
 
     useEffect(() => {
       dispatch(loadClients('all'));
-    }, [dispatch,show_add_client_dialog]);  
+    }, [dispatch,]);  
 
-    useEffect(() => {
-      if(selected_product_id == 0) return;
-      dispatch(loadProductEmployees(selected_product_id));
-    }, [dispatch,selected_product_id]);  
-
-    useEffect(() => {
-      getAssignValues();
-    },[products_loading,assign_products]);
-
-    useEffect(() => {
-      getAssignProducts();
-    },[show_clientproduct_dialog,loading]);
-    
-
-
-    function onInputChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, key: string) {
-      const { value } = event.target;
-      setClientDialogData((prevState: any) => ({
-        ...prevState,
-        [key]: value
-      }));
-    }
 
     function ClientRowClickHandle(event: DataTableRowClickEvent) : void{
       setClientDialogData(event.data);
       setShowClientDialog(true);
-    }
-
-    function onClientEdit() : void{
-      dispatch(updateClient(client_dialog_data.id, {...client_dialog_data}))
-      setShowClientDialog(false);
     }
 
     function onClientDelete() : void{
@@ -110,90 +86,55 @@ const Clients = () => {
         setShowClientDialog(false);
     }
 
-    function AddClientSubmit(){
-      dispatch(addClient(add_client_dialog_data));
-    }
-
-    function onNotesSubmit(): void{
-      onClientEdit();
-      setShowNotesDialog(false);
-      setShowClientDialog(true);
-    }
-
-    //temporary solution till authentification works
-    const [loggedUser,setLoggedUser] = useState("Worker");
-    const [readOnly,setReadOnly] = useState(true);
-
-    function changeUser() : void{
-        if (loggedUser === "Worker"){
-          setLoggedUser("Manager")
-          setReadOnly(false)
-        }
-        else if (loggedUser === "Manager"){
-          setLoggedUser("Owner")
-          setReadOnly(false)
-        }
-        else if (loggedUser === "Owner"){
-          setLoggedUser("Worker")
-          setReadOnly(true)
-        }
-        console.log(loggedUser)
-    } 
-
     function onClientProductDialogOpen() : void{
       setShowClientProductDialog(true)
       dispatch(loadClientProducts(client_dialog_data.id));
     }
-   
-    function onProductSelect(event: DropdownChangeEvent) : void{
-      // TODO nacitavaju sa zle
-      setSelectedProductId(event.value)
-      setSelectedEmployeeId(0)
-  }
 
-  function onEmployeeSelect(event: DropdownChangeEvent) : void{
-      setSelectedEmployeeId(event.value)
-  }
-
-  function onClientProductCreate() : void{
-    dispatch(addClientProduct(client_dialog_data.id,selected_employee_id,selected_product_id));
-    setSelectedEmployeeId(0)
-    setSelectedProductId(0)
-  }
-
-  function onClientProductDelete() : void{
-    dispatch(removeClientProduct(client_dialog_data.id,selected_product_id));
-    dispatch(removeClientEmployee(client_dialog_data.id,selected_employee_id));
-    setSelectedEmployeeId(0)
-    setSelectedProductId(0)
-  }
-
-  function getAssignValues(){
-    setAssignValues(Object.values(productEmployees));
-  }
-
-  function getAssignProducts(){
-    var products_ = products;
-    for(const key in cps){
-      delete products_[cps[key].product.id];
+    function onAddClientButton(){
+      setClientDialogData(initialData);
+      setShowClientDialog(true);
     }
-    setProductAssignValues(Object.values(products_));
-  }
 
+    const loggedUser = () => {
+      if(localStorage.getItem("userType") == "owner") return "owner";
+      if(localStorage.getItem("userType") == "manager") return "manager";
+      if(localStorage.getItem("userType") == "worker") return "worker";
+      return "";
+    };
+
+    const readOnly = () => { 
+      if(localStorage.getItem("userType") == "owner") return false;
+      if(localStorage.getItem("userType") == "manager") return false;
+      if(localStorage.getItem("userType") == "worker") return true;
+      return true;
+    };
+
+    function addUser(){
+      dispatch(addClient(client_dialog_data));
+      setShowClientDialog(false);
+    }
+
+    function editUser(){
+      dispatch(updateClient(client_dialog_data.id, client_dialog_data));
+      setShowClientDialog(false);
+    }
+    
+    
+  
     return(
       <>
-        <div className='page-heading'><h1>Clients</h1><br /></div>
+        <div className='page-heading'><h1>Clients</h1>
+          <Button className={"customAdd" + ((loggedUser() == "worker") ? "hidden" : "")} severity="success" onClick={()=>onAddClientButton()} rounded>
+            <i className="pi pi-plus" style={{ color: 'green' }}></i>
+          </Button>
+        </div>
+
         <div className={error ? "error visible" : "hidden"}>
             <Message severity="error" text={errMsg.toString()} />
         </div>
 
-        {loggedUser !== "Worker" && <Button label="Add client" severity="success" className="float-left" onClick={()=>setShowAddClientDialog(true)} />}
-        <Button label="Change user" severity="danger"  onClick = {() => changeUser()} className="float-right" />
-
-        <br />
-        <br />
-        <br />
-
+     
         <DataTable loading={loading} value={Object.values(clients)} tableStyle={{ minWidth: '50rem' }} 
         onRowClick={ClientRowClickHandle}>
           <Column field="id" header="ID"></Column>
@@ -201,37 +142,37 @@ const Clients = () => {
           <Column filter={true} field="surname" header="Surname"></Column>
         </DataTable>
 
-        <Dialog header="Edit Client" className="edit-client" visible={show_client_dialog} style={{ width: '50%' }} onHide={() => setShowClientDialog(false)}>
+        <Dialog header={client_dialog_data.addMode ? "Add Client" : "Edit Client"} className="edit-client" visible={show_client_dialog} 
+        style={{ width: '50%' }} onHide={() => setShowClientDialog(false)}>
           
           <Dialog header="Notes" visible={show_notes_dialog} style={{ width: '50%' }} onHide={() => setShowNotesDialog(false)}>
-            <InputTextarea style={{ width: '100%' }} placeholder="Notes" value={client_dialog_data.notes}
-            onChange={(e) => onInputChange(e, 'notes')} />
-            <Button label="Submit" severity="success" onClick = {() => onNotesSubmit()}/>
+            <InputTextarea style={{ width: '100%', marginTop:"20px"}} placeholder="Notes" value={client_dialog_data.notes}
+            onChange={(e) => setClientDialogData({...client_dialog_data, notes: e.target.value })} />
           </Dialog>
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Email</span>
-            <InputText placeholder="Email" readOnly={readOnly}  value={client_dialog_data.email} 
-            onChange={(e) => onInputChange(e, 'email')} />
+            <InputText placeholder="Email" readOnly={readOnly()}  value={client_dialog_data.email} 
+            onChange={(e) => {setClientDialogData({...client_dialog_data, email: e.target.value })}} />
           </div>
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Name</span>
-            <InputText placeholder="Name" readOnly={readOnly} value={client_dialog_data.name}
-            onChange={(e) => onInputChange(e, 'name')} />
+            <InputText placeholder="Name" readOnly={readOnly()} value={client_dialog_data.name}
+            onChange={(e) => setClientDialogData({...client_dialog_data, name: e.target.value })} />
           </div>
           
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Surname</span>
-            <InputText placeholder="Surname" readOnly={readOnly} value={client_dialog_data.surname}
-            onChange={(e) => onInputChange(e, 'surname')} />
+            <InputText placeholder="Surname" readOnly={readOnly()} value={client_dialog_data.surname}
+            onChange={(e) => setClientDialogData({...client_dialog_data, surname: e.target.value })} />
           </div>
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">DOB</span>
             <Calendar
               showIcon={true}
-              disabled={readOnly}
+              disabled={readOnly()}
               value={new Date(client_dialog_data.dob)}
               onChange={(e) => 
                 {
@@ -244,96 +185,27 @@ const Clients = () => {
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Phone</span>
-            <InputText placeholder="Phone" readOnly={readOnly} value={client_dialog_data.phone}
-            onChange={(e) => onInputChange(e, 'phone')} />
+            <InputText placeholder="Phone" readOnly={readOnly()} value={client_dialog_data.phone}
+            onChange={(e) => setClientDialogData({...client_dialog_data, phone: e.target.value })} />
           </div>
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Address</span>
-            <InputTextarea style={{ height: '50px' }} placeholder="Address" readOnly={readOnly} value={client_dialog_data.address}
-            onChange={(e) => onInputChange(e, 'address')} />
+            <InputTextarea style={{ height: '50px' }} placeholder="Address" readOnly={readOnly()} value={client_dialog_data.address}
+            onChange={(e) => setClientDialogData({...client_dialog_data, address: e.target.value })} />
           </div>
 
-          {loggedUser !== "Worker" && <Button label="Submit" severity="success" onClick = {() => onClientEdit()} />}
-          {loggedUser !== "Manager" && <Button label="View notes" severity="success" onClick = {() => setShowNotesDialog(true)} />}
-          {loggedUser !== "Worker" && <Button label="Assign employees" severity="success"  onClick = {() => onClientProductDialogOpen()}/>}
-          {loggedUser !== "Worker" && <Button label="Delete" severity="danger"  onClick = {() => onClientDelete()} className="float-right"/>}
-      </Dialog>
-
-
-
-
-      <Dialog header="Add Client" className="add-client" visible={show_add_client_dialog} style={{ width: '50%' }} onHide={() => {setShowAddClientDialog(false);setAddClientDialogData({}) }}>
+          <Button onClick={()=> setShowNotesDialog(true)}><i className="pi pi-file-word" style={{marginRight:"10px",color:"white"}}></i> Notes</Button>
           
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Email</span>
-            <InputText placeholder="Email" onChange={(e)=>setAddClientDialogData({...add_client_dialog_data, email: e.target.value})} />
-          </div>
-
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Name</span>
-            <InputText placeholder="Name" onChange={(e)=>setAddClientDialogData({...add_client_dialog_data, name: e.target.value})} />
-          </div>
-          
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Surname</span>
-            <InputText placeholder="Surname" onChange={(e)=>setAddClientDialogData({...add_client_dialog_data, surname: e.target.value})} />
-          </div>
-
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">DOB</span>
-            <Calendar
-              showIcon={true}
-              onChange={(e) => 
-                {
-                  if(e.value instanceof Date) setAddClientDialogData({...add_client_dialog_data, dob: format(e.value, "yyyy-MM-dd")+"T00:00:00"})
-                }
-              }
-              dateFormat="yy-mm-dd"
-                  />
-          </div>
-
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Phone</span>
-            <InputText placeholder="Phone" onChange={(e)=>setAddClientDialogData({...add_client_dialog_data, phone: e.target.value})} />
-          </div>
-
-          <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Address</span>
-            <InputTextarea style={{ height: '50px' }} placeholder="Address" onChange={(e)=>setAddClientDialogData({...add_client_dialog_data, address: e.target.value})} />
-          </div>
-
-          <Button label="Submit" severity="success" onClick = {() => AddClientSubmit()} />
-          <Button label="Sumbit and Assign employees" severity="success"  onClick = {() => {AddClientSubmit();onClientProductDialogOpen()}}/>
+          <Button onClick={client_dialog_data.addMode ?  addUser : editUser }  
+          label={client_dialog_data.addMode ?  "Submit" : "Edit"} severity="success" className="customAdd customSubmit" 
+          style={{float:"right", width: "20%", minWidth:"100px"}} />
       </Dialog>
-
 
 
 
       <Dialog header="Assign employees" className="assign-employees" visible={show_clientproduct_dialog} style={{ width: '75%' }} onHide={() => setShowClientProductDialog(false)}>
-          <br />
-          <Splitter >
-              <SplitterPanel >
-                <Dropdown value={selected_product_id} onChange={(e) => onProductSelect(e)} placeholder="Select a product"
-              optionLabel="name" optionValue="id" options={assign_products} className="w-full md:w-14rem" />
-              </SplitterPanel>
-              <SplitterPanel >
-                <Dropdown value={selected_employee_id} onChange={(e) => onEmployeeSelect(e)} placeholder="Select an employee"
-              optionLabel="username" optionValue="id" options={assign_values} className="w-full md:w-14rem" />
-              </SplitterPanel>
-            </Splitter>
-
-          <br />
-          <Button label="Add selected" severity="success" onClick = {() => onClientProductCreate()} />
           
-         <DataTable loading={loading} value={Object.values(cps)} tableStyle={{ minWidth: '50rem' }}>
-            <Column filter={true} field="product.name" header="Product"></Column>
-            <Column filter={true} field="active" header="Status"></Column>
-            <Column filter={true} field="employee.name" header="Employee"></Column>
-          </DataTable>
-
-          
-          <Button label="Delete selected" severity="danger"  onClick = {() => onClientProductDelete()}/>
       </Dialog>
       </>
     );
