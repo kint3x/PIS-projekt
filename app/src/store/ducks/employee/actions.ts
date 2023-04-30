@@ -112,7 +112,7 @@ export const addProductRequest = (
 
 export const addProductSuccess = (
   data: ProductModel[]
-) => action(EmployeeTypes.ADD_PRODUCT_REQUEST, { data });
+) => action(EmployeeTypes.ADD_PRODUCT_SUCCESS, { data });
 
 export const addProductFailure = (err: any) => action(EmployeeTypes.ADD_PRODUCT_FAILURE, err);
 

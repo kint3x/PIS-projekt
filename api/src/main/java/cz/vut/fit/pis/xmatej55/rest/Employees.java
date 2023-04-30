@@ -20,6 +20,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.PathParam;
+import org.mindrot.jbcrypt.BCrypt;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.OPTIONS;
 import jakarta.ws.rs.PUT;
@@ -134,10 +135,11 @@ public class Employees {
                                             employee.getUsername())))
                     .build();
         }
+
         try {
             Employee savedEmployee = employeeService.create(employee);
             final URI uri = UriBuilder.fromPath("/employees/{resourceServerId}").build(savedEmployee.getId());
-
+            
             return Response.created(uri).entity(savedEmployee).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Status.BAD_REQUEST).entity(new Error(e.getMessage())).build();
@@ -205,7 +207,9 @@ public class Employees {
 
         oldEmployee.setUsername(newEmployee.getUsername());
         if (!newEmployee.getPassword().equals("")) {
-                oldEmployee.setPassword(newEmployee.getPassword());
+            String plainTextPassword = newEmployee.getPassword();
+            String hashedPassword = BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+            oldEmployee.setPassword(hashedPassword);
         }
         oldEmployee.setType(newEmployee.getType());
         oldEmployee.setPhone(newEmployee.getPhone());
