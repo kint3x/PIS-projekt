@@ -74,11 +74,13 @@ const Products = () => {
 
     return(
       <>
-        <div className='page-heading'><h1>Products</h1><br /></div>
+        <div className='page-heading'><h1>Products</h1>
+        <Button className="customAdd"  severity="success" onClick={()=>setShowAddDialog(true)} rounded>
+            <i className="pi pi-plus" style={{ color: 'green' }}></i></Button></div>
         <div className={error ? "error visible" : "hidden"}>
             <Message severity="error" text={errMsg.toString()} />
         </div>
-        <Button label="Add" severity="success" onClick={()=>setShowAddDialog(true)}/>
+        
         <DataTable loading={loading} value={Object.values(products)} tableStyle={{ minWidth: '50rem' }} 
         onRowClick={onClickHandle}>
           <Column field="id" header="ID"></Column>
