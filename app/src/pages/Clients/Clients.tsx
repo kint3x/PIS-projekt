@@ -7,7 +7,13 @@ import { useHistory } from "react-router-dom";
 import { loadRequest as loadClients } from '../../store/ducks/client/actions';
 import { updateRequest as updateClient } from '../../store/ducks/client/actions';
 import { removeRequest as removeClient } from '../../store/ducks/client/actions';
-import { createRequest as addClient } from '../../store/ducks/client/actions'
+import { createRequest as addClient } from '../../store/ducks/client/actions';
+import { loadEmployeesRequest as loadClientEmployees} from '../../store/ducks/client/actions';
+
+import {loadClientRequest as loadClientsForEmployee} from '../../store/ducks/employee/actions';
+
+import { loadProductsRequest as loadEmployeeProducts } from '../../store/ducks/employee/actions';
+
 import { loadClientProductsRequest as loadClientProducts } from '../../store/ducks/client/actions'
 import { addProductRequest as addClientProduct } from '../../store/ducks/client/actions'
 import { removeProductRequest as removeClientProduct } from '../../store/ducks/client/actions'
@@ -31,7 +37,6 @@ import { Splitter, SplitterPanel } from 'primereact/splitter';
 import { Calendar } from 'primereact/calendar';
 import { format } from "date-fns";
 
-// TODD page available for every user, but for "worker" it only shows their own clients
 
 const Clients = () => {
 
@@ -39,9 +44,11 @@ const Clients = () => {
     
     const [show_client_dialog,setShowClientDialog] = useState(false);
     const [show_notes_dialog,setShowNotesDialog] = useState(false)
-    const [show_clientproduct_dialog,setShowClientProductDialog] = useState(false); 
 
     const clients = useSelector((state: AppState) => state.client.data);
+    const employeeClients = useSelector((state: AppState) => state.employee.clients);
+
+    const clientEmployees = useSelector((state: AppState) => state.client.employees);
     const loading = useSelector((state: AppState) => state.client.loading);
     const error = useSelector((state: AppState) => state.client.error);
     const errMsg = useSelector((state: AppState) => state.client.errMsg);
@@ -57,23 +64,35 @@ const Clients = () => {
       notes: ""
     }
 
+    const initialAssignData= {
+      viewDialog: false,
+      client: "",
+      employee: 0,
+      product: 0
+    }
+
+
     const [client_dialog_data, setClientDialogData] = useState<any>(initialData);
+    const [assign_dialog, setAssignData] = useState<any>(initialAssignData);
 
 
-    const products = useSelector((state: AppState) => state.product.data);
-    const products_loading = useSelector((state: AppState) => state.product.loading);
-    const productEmployees = useSelector((state: AppState) => state.product.employees);
+    const employeeProducts = useSelector((state: AppState) => state.employee.products);
+
 
 
     const cps = useSelector((state: AppState) => state.client.clientProducts);
 
     useEffect(() => {
-      dispatch(loadProducts('all'));
-    }, [dispatch])
+      
+      const employeeId = localStorage.getItem('employeeId');
+      const authorId = employeeId ? parseInt(employeeId) : 0; // default to 0 if employeeId is null
+      if(authorId == 0) return;
 
-    useEffect(() => {
-      dispatch(loadClients('all'));
-    }, [dispatch,]);  
+      if(loggedUser() == "worker")
+      dispatch(loadClientsForEmployee(authorId));
+      else
+        dispatch(loadClients('all'));
+    }, [dispatch]);  
 
 
     function ClientRowClickHandle(event: DataTableRowClickEvent) : void{
@@ -84,11 +103,6 @@ const Clients = () => {
     function onClientDelete() : void{
         dispatch(removeClient(client_dialog_data.id));
         setShowClientDialog(false);
-    }
-
-    function onClientProductDialogOpen() : void{
-      setShowClientProductDialog(true)
-      dispatch(loadClientProducts(client_dialog_data.id));
     }
 
     function onAddClientButton(){
@@ -120,12 +134,25 @@ const Clients = () => {
       setShowClientDialog(false);
     }
     
-    
+    function showAssignDialog(){
+      dispatch(loadClientEmployees(client_dialog_data.id));
+      setAssignData({...assign_dialog,viewDialog:true, client: client_dialog_data.id})
+    }
+
+    function fetchAndShowProducts(e : any){
+      setAssignData({...assign_dialog, employee: e.value});
+      dispatch(loadEmployeeProducts(e.value));
+    }
+
+    function onAddClientProduct(){
+      dispatch(addClientProduct(client_dialog_data.id,assign_dialog.employee,assign_dialog.product));
+      setAssignData({...assign_dialog,viewDialog: false});
+    }
   
     return(
       <>
         <div className='page-heading'><h1>Clients</h1>
-          <Button className={"customAdd" + ((loggedUser() == "worker") ? "hidden" : "")} severity="success" onClick={()=>onAddClientButton()} rounded>
+          <Button className={"customAdd " + ((loggedUser() == "worker") ? "hidden" : "")} severity="success" onClick={()=>onAddClientButton()} rounded>
             <i className="pi pi-plus" style={{ color: 'green' }}></i>
           </Button>
         </div>
@@ -135,7 +162,7 @@ const Clients = () => {
         </div>
 
      
-        <DataTable loading={loading} value={Object.values(clients)} tableStyle={{ minWidth: '50rem' }} 
+        <DataTable loading={loading} value={loggedUser() == "worker" ? Object.values(employeeClients) : Object.values(clients)} tableStyle={{ minWidth: '50rem' }} 
         onRowClick={ClientRowClickHandle}>
           <Column field="id" header="ID"></Column>
           <Column filter={true} field="name" header="Name"></Column>
@@ -149,6 +176,8 @@ const Clients = () => {
             <InputTextarea style={{ width: '100%', marginTop:"20px"}} placeholder="Notes" value={client_dialog_data.notes}
             onChange={(e) => setClientDialogData({...client_dialog_data, notes: e.target.value })} />
           </Dialog>
+
+          <br/>
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon">Email</span>
@@ -197,6 +226,10 @@ const Clients = () => {
 
           <Button onClick={()=> setShowNotesDialog(true)}><i className="pi pi-file-word" style={{marginRight:"10px",color:"white"}}></i> Notes</Button>
           
+          <Button className={loggedUser() == ("owner" || "manager") ? "" : "hidden" } onClick={()=> showAssignDialog()} style={{marginRight:"auto",marginLeft:"10px"}}>
+            <span style={{color:"white", fontWeight:"bold"}}>Assign</span>
+          </Button>
+
           <Button onClick={client_dialog_data.addMode ?  addUser : editUser }  
           label={client_dialog_data.addMode ?  "Submit" : "Edit"} severity="success" className="customAdd customSubmit" 
           style={{float:"right", width: "20%", minWidth:"100px"}} />
@@ -204,14 +237,33 @@ const Clients = () => {
 
 
 
-      <Dialog header="Assign employees" className="assign-employees" visible={show_clientproduct_dialog} style={{ width: '75%' }} onHide={() => setShowClientProductDialog(false)}>
-          
+      <Dialog header="Assign employees" className="assign-employees" visible={assign_dialog.viewDialog} 
+      style={{ width: '500px' }} onHide={() => setAssignData({...assign_dialog,viewDialog:false})}>
+      
+      <Dropdown value={assign_dialog.employee} onChange={(e) => fetchAndShowProducts(e)} 
+        placeholder="Select a employee"
+        optionLabel="name" optionValue="id" 
+        options={Object.values(clientEmployees)} 
+        className="md:w-14rem" style={{width: "48%", marginTop:"20px", marginRight:"1%"}} />
+
+
+      <Dropdown value={assign_dialog.product} onChange={(e) => setAssignData({...assign_dialog, product: e.value})} 
+        placeholder="Select a Product"
+        optionLabel="name" optionValue="id" 
+        options={Object.values(employeeProducts)} 
+        className="md:w-14rem" style={{width: "48%", marginTop: "20px", marginLeft:"1%"}} />
+
+      <Button onClick={onAddClientProduct}  
+              label={"Submit"} severity="success" className="customAdd customSubmit" 
+              style={{float:"right", width: "100%", minWidth:"100px", marginTop: "20px"}} />
+
       </Dialog>
+
       </>
     );
 
     
-   
+    
   
 }
    
