@@ -142,7 +142,7 @@ function* removeProduct(action: AnyAction) {
 function* loadClientProducts(action: AnyAction) {
   const { id } = action.payload;
   try {
-    const response: { [key: string]: any } = yield call(api.get, `/${id}/client_products`);
+    const response: { [key: string]: any } = yield call(api.get, `${endpoint}/${id}/client_products`);
     const data = response.data;
     yield put(actions.loadClientProductsSuccess(id, data));
   } catch (err) {
