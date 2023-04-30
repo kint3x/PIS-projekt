@@ -171,6 +171,9 @@ textarea {
   justify-content: center;
   flex-wrap: wrap;
 }
+.card .rounded{
+  height: 100%;
+}
 .card {
   text-align: center;
   width: 19%;

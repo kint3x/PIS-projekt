@@ -27,7 +27,7 @@ public class DataSeeder {
             admin.setPhone("+421918420420");
             admin.setName("John");
             admin.setSurname("Doe");
-            admin.setImage("image.png");
+            admin.setImage("https://bootdey.com/img/Content/avatar/avatar6.png");
             admin.setType(EmployeeType.Owner);
 
             employeeService.create(admin);
