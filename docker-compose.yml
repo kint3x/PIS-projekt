@@ -12,8 +12,7 @@ services:
       - 9443:9443
     container_name: pis-api
     volumes:
-       - /opt/api/target/
-       - ./api:/opt/api
+      - ./api:/opt/api
   app:
     build:
       context: ./app
