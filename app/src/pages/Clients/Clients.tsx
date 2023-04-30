@@ -136,7 +136,9 @@ const Clients = () => {
     
     function showAssignDialog(){
       dispatch(loadClientEmployees(client_dialog_data.id));
+      dispatch(loadClientProducts(client_dialog_data.id));
       setAssignData({...assign_dialog,viewDialog:true, client: client_dialog_data.id})
+
     }
 
     function fetchAndShowProducts(e : any){
@@ -147,6 +149,11 @@ const Clients = () => {
     function onAddClientProduct(){
       dispatch(addClientProduct(client_dialog_data.id,assign_dialog.employee,assign_dialog.product));
       setAssignData({...assign_dialog,viewDialog: false});
+    }
+
+    function cpsRowDoubleClick(e : any){
+      console.log(e.data);
+      dispatch(removeClientProduct(e.data.client.id, e.data.product.id));
     }
   
     return(
@@ -238,7 +245,7 @@ const Clients = () => {
 
 
       <Dialog header="Assign employees" className="assign-employees" visible={assign_dialog.viewDialog} 
-      style={{ width: '500px' }} onHide={() => setAssignData({...assign_dialog,viewDialog:false})}>
+      style={{ width: "auto" }} onHide={() => setAssignData({...assign_dialog,viewDialog:false})}>
       
       <Dropdown value={assign_dialog.employee} onChange={(e) => fetchAndShowProducts(e)} 
         placeholder="Select a employee"
@@ -255,7 +262,14 @@ const Clients = () => {
 
       <Button onClick={onAddClientProduct}  
               label={"Submit"} severity="success" className="customAdd customSubmit" 
-              style={{float:"right", width: "100%", minWidth:"100px", marginTop: "20px"}} />
+              style={{ width: "100%", minWidth:"100px", marginTop: "20px"}} />
+   
+      <DataTable  onRowDoubleClick={cpsRowDoubleClick} loading={loading} value={Object.values(cps)} tableStyle={{ minWidth: '50rem', marginTop:"40px" }}>
+            <Column filter={true} field="product.name" header="Product"></Column>
+            <Column filter={true} field="active" header="Status"></Column>
+            <Column filter={true} field="employee.name" header="Employee"></Column>
+          </DataTable>
+
 
       </Dialog>
 
