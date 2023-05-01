@@ -124,7 +124,9 @@ const Meetings = () => {
 
     function handleDateClick(info: any) {
         const clickedDate = info.dateStr;
-        setAddDialogData({...add_dialog_data,date: clickedDate, heading: "Add meeting", adding: true})
+        var today = new Date();
+          today.setHours(today.getHours() + 1);
+        setAddDialogData({...add_dialog_data,date: clickedDate, heading: "Add meeting", adding: true, start:new Date(), end: today})
         setShowAddDialog(true);
       }
 

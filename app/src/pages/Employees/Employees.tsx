@@ -87,7 +87,7 @@ const Employees = () => {
 
     useEffect(() => {
       dispatch(loadEmployees('all'));
-    }, [dispatch,show_dialog]);   
+    }, [dispatch]);   
 
     useEffect(() => {
       dispatch(loadProducts('all'));
@@ -117,7 +117,10 @@ const Employees = () => {
     }
     
     function addClick(){
+      if(!employeeError)
       setDialogData({...dialogInitialData, addMode: true});
+      else
+      setDialogData({...dialog_data, addMode: true});
       setShowDialog(true);
     }
 
@@ -333,38 +336,38 @@ const Employees = () => {
           </div>
 
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Username</span>
-            <InputText placeholder="Username" value={dialog_data.username} 
-            onChange={(e) => setDialogData({...dialog_data, username: e.target.value})} />
+            <span className="p-inputgroup-addon required">Username</span>
+            <InputText placeholder="Username" value={dialog_data.username}
+            onChange={(e) => setDialogData({...dialog_data, username: e.target.value})}/>
           </div>
           
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Password</span>
+            <span className="p-inputgroup-addon required">Password</span>
             <Password placeholder="Password" value={dialog_data.password} 
             onChange={(e) => setDialogData({...dialog_data, password: e.target.value})}/>
           </div>
 
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Email</span>
+            <span className="p-inputgroup-addon required">Email</span>
             <InputText placeholder="Email"  value={dialog_data.email} 
               onChange={(e) => setDialogData({...dialog_data, email: e.target.value})} />
           </div>
           
       
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Name</span>
+            <span className="p-inputgroup-addon required">Name</span>
             <InputText placeholder="Name" value={dialog_data.name}
              onChange={(e) => setDialogData({...dialog_data, name: e.target.value})} />
           </div>
           
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Surname</span>
+            <span className="p-inputgroup-addon required">Surname</span>
             <InputText placeholder="Surname" value={dialog_data.surname}
             onChange={(e) => setDialogData({...dialog_data, surname: e.target.value})} />
           </div>
 
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">DOB</span>
+            <span className="p-inputgroup-addon required">DOB</span>
             <Calendar
               showIcon={true}
               value={new Date(dialog_data.dob)}
@@ -378,7 +381,7 @@ const Employees = () => {
           </div>
           
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Phone</span>
+            <span className="p-inputgroup-addon required">Phone</span>
             <InputText placeholder="Phone" value={dialog_data.phone}
             onChange={(e) => setDialogData({...dialog_data, phone: e.target.value})}  />
           </div>

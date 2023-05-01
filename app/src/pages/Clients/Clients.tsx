@@ -118,6 +118,7 @@ const Clients = () => {
     }
 
     function onAddClientButton(){
+      if(!error)
       setClientDialogData(initialData);
       setShowClientDialog(true);
     }
@@ -238,25 +239,25 @@ const Clients = () => {
           <br/>
 
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Email</span>
+            <span className="p-inputgroup-addon required">Email</span>
             <InputText placeholder="Email" readOnly={readOnly()}  value={client_dialog_data.email} 
             onChange={(e) => {setClientDialogData({...client_dialog_data, email: e.target.value })}} />
           </div>
 
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Name</span>
+            <span className="p-inputgroup-addon required">Name</span>
             <InputText placeholder="Name" readOnly={readOnly()} value={client_dialog_data.name}
             onChange={(e) => setClientDialogData({...client_dialog_data, name: e.target.value })} />
           </div>
           
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Surname</span>
+            <span className="p-inputgroup-addon required">Surname</span>
             <InputText placeholder="Surname" readOnly={readOnly()} value={client_dialog_data.surname}
             onChange={(e) => setClientDialogData({...client_dialog_data, surname: e.target.value })} />
           </div>
 
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">DOB</span>
+            <span className="p-inputgroup-addon required">DOB</span>
             <Calendar
               showIcon={true}
               disabled={readOnly()}
@@ -271,7 +272,7 @@ const Clients = () => {
           </div>
 
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon">Phone</span>
+            <span className="p-inputgroup-addon required">Phone</span>
             <InputText placeholder="Phone" readOnly={readOnly()} value={client_dialog_data.phone}
             onChange={(e) => setClientDialogData({...client_dialog_data, phone: e.target.value })} />
           </div>
@@ -288,7 +289,7 @@ const Clients = () => {
           onClick={()=> {setShowMeetingDialog(true);dispatch(loadClientMeetings(client_dialog_data.id));}}>
             <i className="pi pi-calendar" style={{marginRight:"10px",color:"white"}}></i> Meetings</Button>
           
-          <Button className={loggedUser() == ("owner" || "manager") ? "" : "hidden" } onClick={()=> showAssignDialog()} style={{marginRight:"auto",marginLeft:"10px"}}>
+          <Button className={(loggedUser() == ("owner" || "manager") ? "" : "hidden") + (client_dialog_data.addMode ? " hidden" : "") } onClick={()=> showAssignDialog()} style={{marginRight:"auto",marginLeft:"10px"}}>
             <span style={{color:"white", fontWeight:"bold"}}>Assign</span>
           </Button>
 

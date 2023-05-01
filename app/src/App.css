@@ -193,3 +193,7 @@ textarea {
 .card-icons i{
   cursor: pointer;
 }
+
+.required{
+  border-color: #ea9999 !important;
+}
