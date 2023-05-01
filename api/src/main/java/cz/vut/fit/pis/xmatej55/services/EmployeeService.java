@@ -84,7 +84,8 @@ public class EmployeeService {
         if (employee.getPhone() == null || !PhoneNumberValidator.isValidPhoneNumber(employee.getPhone())) {
             errors.add("Invalid phone number");
         }
-        if (!DOBValidator.isValidDateOfBirth(employee.getDob())) {
+
+        if (employee.getDob() != null && !DOBValidator.isValidDateOfBirth(employee.getDob())) {
             errors.add("Invalid date of birth");
         }
 

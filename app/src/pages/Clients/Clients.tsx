@@ -257,7 +257,7 @@ const Clients = () => {
           </div>
 
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon required">DOB</span>
+            <span className="p-inputgroup-addon">DOB</span>
             <Calendar
               showIcon={true}
               disabled={readOnly()}
@@ -273,7 +273,7 @@ const Clients = () => {
 
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon required">Phone</span>
-            <InputText placeholder="Phone" readOnly={readOnly()} value={client_dialog_data.phone}
+            <InputText placeholder="+420 000 000 000" readOnly={readOnly()} value={client_dialog_data.phone}
             onChange={(e) => setClientDialogData({...client_dialog_data, phone: e.target.value })} />
           </div>
 

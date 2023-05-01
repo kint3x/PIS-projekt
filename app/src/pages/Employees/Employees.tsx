@@ -367,7 +367,7 @@ const Employees = () => {
           </div>
 
           <div className="p-inputgroup">
-            <span className="p-inputgroup-addon required">DOB</span>
+            <span className="p-inputgroup-addon">DOB</span>
             <Calendar
               showIcon={true}
               value={new Date(dialog_data.dob)}
@@ -382,7 +382,7 @@ const Employees = () => {
           
           <div className="p-inputgroup">
             <span className="p-inputgroup-addon required">Phone</span>
-            <InputText placeholder="Phone" value={dialog_data.phone}
+            <InputText placeholder="+420 000 000 000" value={dialog_data.phone}
             onChange={(e) => setDialogData({...dialog_data, phone: e.target.value})}  />
           </div>
           <div className="p-inputgroup">

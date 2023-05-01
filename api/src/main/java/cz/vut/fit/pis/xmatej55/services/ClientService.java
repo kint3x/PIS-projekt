@@ -85,7 +85,8 @@ public class ClientService {
         if (client.getPhone() == null || !PhoneNumberValidator.isValidPhoneNumber(client.getPhone())) {
             errors.add("Invalid phone number");
         }
-        if (!DOBValidator.isValidDateOfBirth(client.getDob())) {
+
+        if (client.getDob() != null && !DOBValidator.isValidDateOfBirth(client.getDob())) {
             errors.add("Invalid date of birth");
         }
 
