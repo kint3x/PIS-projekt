@@ -45,7 +45,7 @@ public class DataSeeder {
             worker.setName("John");
             worker.setSurname("Workerino");
             worker.setImage("https://bootdey.com/img/Content/avatar/avatar1.png");
-            worker.setType(EmployeeType.Owner);
+            worker.setType(EmployeeType.Worker);
 
             employeeService.create(worker);
         }
@@ -62,7 +62,7 @@ public class DataSeeder {
             manager.setName("John");
             manager.setSurname("Managerski");
             manager.setImage("https://bootdey.com/img/Content/avatar/avatar4.png");
-            manager.setType(EmployeeType.Owner);
+            manager.setType(EmployeeType.Manager);
 
             employeeService.create(manager);
         }
