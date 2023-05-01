@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Projekt PIS</title>
+    <style type="text/css">
+    	table { border-collapse: collapse; }
+    	td, th { border: 1px solid black; padding: 0.3em 0.5em; text-align: left; }
+    	dt { font-weight: bold; margin-top: 0.5em; }
+    </style>
+</head>
+<body>
+
+<!-- Nahraďte prosím názvem tématu -->
+<h1>CRM Systém</h1>
+
+<!-- Editujte jména a maily autorů a jejich činnost -->
+<dl>
+	<dt>Autoři</dt>
+	<dd>Matěj Hůlek
+	    <a href="mailto:xhulek02@stud.fit.vutbr.cz">xhulek021@stud.fit.vutbr.cz</a> -
+		Backend - biznis operácie, práca s databázou, autentizácia
+	</dd>
+	<dd>Simon Košina
+	    <a href="mailto:xkosin09@stud.fit.vutbr.cz">xkosin09@stud.fit.vutbr.cz</a> - 
+		REST API endpointy (backend aj frontend), vytvorenie Docker containera, obrazovka profilu používateľa
+	</dd>
+    <dd>Martin Matějka
+	    <a href="mailto:xmatej55@stud.fit.vutbr.cz">xmatej55@stud.fit.vutbr.cz</a> - 
+		Dizajn používateľského rozhrania, obrazovky klientov, zamestnancov a meetingov
+	</dd>
+    <dd>Adam Rybanský
+	    <a href="mailto:xryban00@stud.fit.vutbr.cz">xryban00@stud.fit.vutbr.cz</a> - 
+		Obrazovky klientov, zamesntancov a produktov
+	</dd>
+</dl>
+
+<!-- uživatelské účty -->
+<h2>Uživatelé systému pro testování</h2>
+<p>Uveďte prosím existující zástupce <strong>všech rolí uživatelů</strong>.</p>
+<table>
+<tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
+<tr><td>admin</td><td>admin</td><td>Administrator (Majiteľ)</td></tr>
+<tr><td>worker</td><td>worker</td><td>Worker (Pracovník)</td></tr>
+<tr><td>manager</td><td>manager</td><td>Manager (Vedúci oddelenia styku so zákazníkmi)</td></tr>
+</table>
+
+<h2>Postup instalace</h2>
+<p>Prerekvizita: Nainštalovaný Docker</p>
+<p>Spustenie projektu: príkazom <strong>docker compose up</strong> v koreňovom adresári projektu</p>
+<p>Aplikácia beží na <strong>http://localhost:3000/</strong></p>
+
+</body>
+</html>
