@@ -4,15 +4,16 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.json.bind.annotation.JsonbDateFormat;
+import cz.vut.fit.pis.xmatej55.utils.DateDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 
 public class MeetingDTO {
     private String subject;
 
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")
+    @JsonbTypeDeserializer(DateDeserializer.class)
     private Date start;
 
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")
+    @JsonbTypeDeserializer(DateDeserializer.class)
     private Date end;
 
     private String notes;

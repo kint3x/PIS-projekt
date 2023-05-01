@@ -2,7 +2,8 @@ package cz.vut.fit.pis.xmatej55.entities;
 
 import java.util.Date;
 
-import jakarta.json.bind.annotation.JsonbDateFormat;
+import cz.vut.fit.pis.xmatej55.utils.DateDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,7 +27,7 @@ public class Person {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "dob")
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")  
+    @JsonbTypeDeserializer(DateDeserializer.class)
     private Date dob;
 
     @Column(name = "name")
@@ -42,7 +43,7 @@ public class Person {
     private String image;
 
     public Person() {
-    
+
     }
 
     public Long getId() {

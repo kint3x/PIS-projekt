@@ -2,7 +2,8 @@ package cz.vut.fit.pis.xmatej55.entities;
 
 import java.util.Date;
 
-import jakarta.json.bind.annotation.JsonbDateFormat;
+import cz.vut.fit.pis.xmatej55.utils.DateDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -40,12 +41,12 @@ public class ClientProduct {
     private Boolean active;
 
     @Column(name = "date")
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")
+    @JsonbTypeDeserializer(DateDeserializer.class)
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
     public ClientProduct() {
-        
+
     }
 
     public Long getId() {

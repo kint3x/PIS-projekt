@@ -4,7 +4,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.json.bind.annotation.JsonbDateFormat;
+import cz.vut.fit.pis.xmatej55.utils.DateDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,12 +32,12 @@ public class Meeting {
     private String subject;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")
+    @JsonbTypeDeserializer(DateDeserializer.class)
     @Column(name = "meeting_start")
     private Date start;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonbDateFormat(value = "yyyy-MM-dd'T'HH:mm:ss", locale = "Locale.ENGLISH")
+    @JsonbTypeDeserializer(DateDeserializer.class)
     @Column(name = "meeting_end")
     private Date end;
 
@@ -55,7 +56,7 @@ public class Meeting {
     private Employee author;
 
     public Meeting() {
-    
+
     }
 
     public Long getId() {
