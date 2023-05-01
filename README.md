@@ -10,6 +10,3 @@ docker compose up
 ```
 
 Check if everything works properly by going to http://localhost:3000 (UI) and http://localhost:9080/crm/api/ping (API).
-
-# Building the application
-**TODO:** Create a docker-compose file for building the application (both api and app).
